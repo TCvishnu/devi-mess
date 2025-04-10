@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "zen:generate": "npx zenstack generate",
+    "dev": "nodemon app"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "prisma": "6.5.x",
+    "zenstack": "2.13.3"
+  },
+  "dependencies": {
+    "@prisma/client": "6.5.x",
+    "@zenstackhq/runtime": "2.13.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0"
+  }
+}
