@@ -7,7 +7,13 @@ RUN npm install
 
 COPY . .
 
-RUN npx zenstack generate
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# RUN npx zenstack generate
 
 EXPOSE 3000
-CMD ["npm", "start"]
+
+# CMD ["npm", "run", "dev"]
+
+ENTRYPOINT [ "/entrypoint.sh" ]

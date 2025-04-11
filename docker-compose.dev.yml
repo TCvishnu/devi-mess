@@ -5,6 +5,7 @@ services:
       - "3000:3000"
     volumes:
       - ./backend:/app
+      - /app/node_modules # explicitly specifying to use the node_modules build inside container
     depends_on:
       - db
     environment:
@@ -16,6 +17,7 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - /app/node_modules # explicitly specifying to use the node_modules build inside container
     stdin_open: true
     tty: true
 
