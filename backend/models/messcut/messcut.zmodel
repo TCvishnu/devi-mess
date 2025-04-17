@@ -1,0 +1,17 @@
+import '../base/base.zmodel'
+
+model Messcut extends Base {
+   date DateTime
+   cutType CutType
+
+  @@allow('create', true)
+  @@allow('read', auth() == this || auth().role == "ADMIN")
+  @@allow('update,delete', auth() == this)
+}
+
+enum CutType {  
+  MORNING
+  AFTERNOON
+  EVENING
+  FULL
+}
