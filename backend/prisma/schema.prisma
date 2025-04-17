@@ -11,3 +11,34 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+enum MealType {
+  MORNING
+  AFTERNOON
+  EVENING
+  FULL
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum UserRole {
+  ADMIN
+  RESIDENT
+  MESS
+}
+
+model User {
+  id          String   @id() @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+  name        String
+  phoneNumber String   @unique()
+  password    String
+  gender      Gender
+  mealType    MealType
+  role        UserRole
+  isVeg       Boolean
+}

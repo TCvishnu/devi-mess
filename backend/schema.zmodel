@@ -1,3 +1,6 @@
+import "models/base/base"
+import "models/user/user"
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -5,10 +8,4 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-abstract model Base {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
