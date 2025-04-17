@@ -1,3 +1,6 @@
+import "models/base/base"
+import "models/user/user"
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -5,41 +8,4 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-abstract model Base {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model User extends Base {
-  name        String
-  phoneNumber String @unique()
-  password    String @length(min: 8)
-  gender      Gender
-  mealType    MealType
-  role        UserRole
-
-  @@allow('create', true)
-  @@allow('read', auth() == this || auth().role == "ADMIN")
-  @@allow('update,delete', auth() == this)
-}
-
-enum MealType{
-  MORNING
-  AFTERNOON
-  EVENING
-  FULL
-}
-
-enum Gender {
-  MALE
-  FEMALE
-}
-
-enum UserRole {
-  ADMIN
-  RESIDENT
-  MESS
 }

@@ -40,4 +40,5 @@ model User {
   gender      Gender
   mealType    MealType
   role        UserRole
+  isVeg       Boolean
 }
