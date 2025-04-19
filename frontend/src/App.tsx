@@ -1,5 +1,15 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UserDashboard from "./pages/UserDashboard";
+
 function App() {
-  return <div className=" w-screen h-screen bg-black"></div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* User routes */}
+        <Route path="/user/:id" element={<UserDashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
