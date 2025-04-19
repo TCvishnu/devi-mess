@@ -10,6 +10,10 @@ type CalendarProps = {
 
 export default function Calendar({ messCuts }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
+  const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
+  const [newCutRange, setNewCutRange] = useState<
+    [number | null, number | null]
+  >([null, null]);
 
   const startOfMonth: Dayjs = currentMonth.startOf("month");
   const endOfMonth: Dayjs = currentMonth.endOf("month");
@@ -24,8 +28,26 @@ export default function Calendar({ messCuts }: CalendarProps) {
 
   const today: Dayjs = dayjs();
 
-  const handleButtonClick: (day: number) => void = (day) => {
-    console.log(day);
+  const handleButtonClick = (day: number) => {
+    if (!isSelectingCuts) return;
+
+    const [start, end] = newCutRange;
+
+    if (start === null || (start !== null && end !== null)) {
+      setNewCutRange([day, null]);
+    } else if (start !== null && end === null) {
+      if (day === start) {
+        setNewCutRange([day, day]);
+      } else {
+        const sortedRange = [start, day].sort((a, b) => a - b);
+        setNewCutRange([sortedRange[0], sortedRange[1]]);
+      }
+    }
+  };
+
+  const handleNewCutsCancel: () => void = () => {
+    setIsSelectingCuts(false);
+    setNewCutRange([null, null]);
   };
 
   const generateCalendar = () => {
@@ -43,14 +65,23 @@ export default function Calendar({ messCuts }: CalendarProps) {
         today.isSame(currentMonth.date(day), "day") &&
         today.isSame(currentMonth, "month");
 
+      const isInNewCutRange =
+        isSelectingCuts &&
+        newCutRange[0] !== null &&
+        (newCutRange[1] === null
+          ? day === newCutRange[0]
+          : isCurrentMonth && day >= newCutRange[0]! && day <= newCutRange[1]!);
+
       days.push(
         <button
+          disabled={isSelectingCuts && messCuts.includes(day)}
           onClick={() => handleButtonClick(day)}
           key={i}
           className={`w-10 h-10 flex items-center justify-center rounded-sm text-sm 
             ${isCurrentMonth ? " text-gray-600" : "bg-white"} 
             ${messCuts.includes(day) ? " border-2 border-accent" : "bg-gray-50"}
             ${isToday ? "text-primary font-black bg-gray-100" : " font-medium"}
+            ${isInNewCutRange ? "border-2 border-primary" : ""}
           `}
         >
           {isCurrentMonth ? day : "-"}
@@ -99,10 +130,25 @@ export default function Calendar({ messCuts }: CalendarProps) {
       <div className="grid grid-cols-7 gap-2">{generateCalendar()}</div>
 
       <div className=" w-full flex justify-between mt-6 text-sm font-semibold text-white">
-        <button className=" bg-primary py-2 rounded-xs w-28">Add Cuts</button>
-        <button className=" bg-primary py-2 rounded-xs w-28">
-          Revoke Cuts
+        <button
+          className=" bg-primary py-2 rounded-xs w-28"
+          onClick={() => setIsSelectingCuts((prev) => !prev)}
+        >
+          {isSelectingCuts ? "Confirm Cuts" : "Add Cuts"}
         </button>
+        {!isSelectingCuts && (
+          <button className=" bg-primary py-2 rounded-xs w-28">
+            Revoke Cuts
+          </button>
+        )}
+        {isSelectingCuts && (
+          <button
+            className=" bg-primary py-2 rounded-xs w-28"
+            onClick={handleNewCutsCancel}
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </div>
   );

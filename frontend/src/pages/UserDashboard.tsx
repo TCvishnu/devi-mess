@@ -3,9 +3,7 @@ import Calendar from "../components/Calendar";
 
 export default function UserDashboard() {
   const [fullName, setFullName] = useState<string>("Dummy");
-  const [messCuts, setMessCuts] = useState<number[]>([
-    10, 11, 12, 13, 19, 24, 25,
-  ]);
+  const [messCuts, setMessCuts] = useState<number[]>([10, 11, 21, 22]);
 
   return (
     <div className="w-screen h-screen flex flex-col p-4 bg-primary">
