@@ -6,7 +6,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
 
 const LoginPage = () => {
-	const [pending, setPending] = useState(false)
+	const [pending, setPending] = useState<boolean>(false)
 
 	const handleSubmit = (
 		event: FormEvent<HTMLFormElement>,
@@ -45,7 +45,7 @@ const LoginPage = () => {
 				<LoginForm disable={pending} onSubmit={handleSubmit} />
 				<div className=" text-center">
 					<span className=" text-sm font-semibold text-gray-400">
-						New here? click here to{" "}
+						new here? click here to{" "}
 						<Link
 							to="/register"
 							className=" underline text-gray-800"

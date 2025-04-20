@@ -1,4 +1,4 @@
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
 import { RegisterFormData } from "../../types/auth"
 import RegisterForm from "../../components/auth/form/RegisterForm"
 import { Link } from "react-router-dom"
@@ -6,6 +6,8 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
 
 const RegisterPage = () => {
+	const [pending, setPending] = useState<boolean>(false)
+
 	const handleSubmit = (
 		event: FormEvent<HTMLFormElement>,
 		formData: RegisterFormData
@@ -40,11 +42,15 @@ const RegisterPage = () => {
 					<h1>An Account</h1>
 				</div>
 
-				<RegisterForm onSubmit={handleSubmit} />
-				<div className=" text-center">
-					<span className=" text-sm font-semibold text-gray-400">
-						already have an account? click here to{" "}
-						<Link to="/login" className=" underline text-gray-800">
+				<RegisterForm disable={pending} onSubmit={handleSubmit} />
+				<div className=" text-sm font-semibold text-gray-400 text-center flex flex-col">
+					<span>already have an account?</span>
+					<span>
+						click here to
+						<Link
+							to="/login"
+							className=" ml-1 underline text-gray-800"
+						>
 							login
 						</Link>
 					</span>

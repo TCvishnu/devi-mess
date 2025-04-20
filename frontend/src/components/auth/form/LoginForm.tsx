@@ -37,7 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, disable = false }) => {
 		}
 
 		if (!(values.phoneNumber.length == 10)) {
-			errors.phoneNumber = "Phone must have 10 digits"
+			errors.phoneNumber = "Phone number must have 10 digits"
 			isError = true
 		}
 
