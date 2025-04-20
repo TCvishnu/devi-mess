@@ -3,6 +3,8 @@ import '../base/base.zmodel'
 model Messcut extends Base {
    date DateTime
    cutType CutType
+   user User @relation(fields: [userId], references: [id])
+   userId Int 
 
   @@allow('create', true)
   @@allow('read', auth() == this || auth().role == "ADMIN")
