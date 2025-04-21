@@ -56,12 +56,10 @@ const RegisterForm: React.FC<LoginFormProps> = ({
 			isError = true
 		}
 
-		if (!values.password.trim()) {
-			errors.password = "Password is required"
+		if (!(values.password.length >= 8)) {
+			errors.password = "Password must contain atleast 8 characters"
 			isError = true
-		}
-
-		if (values.password !== values.confirmPassword) {
+		} else if (values.password !== values.confirmPassword) {
 			errors.confirmPassword = "Password must be same"
 			isError = true
 		}
