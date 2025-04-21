@@ -79,9 +79,13 @@ export default function Calendar({ messCuts }: CalendarProps) {
           key={i}
           className={`w-10 h-10 flex items-center justify-center rounded-sm text-sm 
             ${isCurrentMonth ? " text-gray-600" : "bg-white"} 
-            ${messCuts.includes(day) ? " border-2 border-accent" : "bg-gray-50"}
             ${isToday ? "text-primary font-black bg-gray-100" : " font-medium"}
-            ${isInNewCutRange ? "border-2 border-primary" : ""}
+            ${
+              isInNewCutRange && !messCuts.includes(day)
+                ? "border-2 border-primary"
+                : ""
+            }
+            ${messCuts.includes(day) ? " border-2 border-accent" : "bg-gray-50"}
           `}
         >
           {isCurrentMonth ? day : "-"}
