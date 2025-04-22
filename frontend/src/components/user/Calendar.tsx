@@ -45,6 +45,17 @@ const Calendar: FC<CalendarProps> = ({ userID }) => {
 
   const toggleSelectingCuts: () => void = () => {
     setIsSelectingCuts((prev) => !prev);
+    console.log(
+      newCutRange[0]?.year(),
+      newCutRange[0]?.month(),
+      newCutRange[0]?.date()
+    );
+    console.log(
+      newCutRange[1]?.year(),
+      newCutRange[1]?.month(),
+      newCutRange[1]?.date()
+    );
+    setNewCutRange([null, null]);
   };
 
   const handleButtonClick = (day: Dayjs) => {
@@ -90,10 +101,13 @@ const Calendar: FC<CalendarProps> = ({ userID }) => {
     );
   };
 
-  const isDayInNewCutRange = (day: number): boolean => {
+  const isDayInNewCutRange = (day: Dayjs): boolean => {
     if (!isSelectingCuts || newCutRange[0] === null) return false;
-    if (newCutRange[1] === null) return day === newCutRange[0].date();
-    return day >= newCutRange[0].date() && day <= newCutRange[1].date();
+    if (newCutRange[1] === null) return day.isSame(newCutRange[0], "day");
+    return (
+      (day.isSame(newCutRange[0], "day") || day.isAfter(newCutRange[0])) &&
+      (day.isSame(newCutRange[1], "day") || day.isBefore(newCutRange[1]))
+    );
   };
 
   const generateCalendar = () => {
@@ -102,13 +116,17 @@ const Calendar: FC<CalendarProps> = ({ userID }) => {
     return Array.from({ length: totalCells }, (_, i) => {
       const day = i - startDayOfWeek + 1;
       const date = dayjs(
-        new Date(today.year(), currentMonthDisplayed.month(), day)
+        new Date(
+          currentMonthDisplayed.year(),
+          currentMonthDisplayed.month(),
+          day
+        )
       );
       const dayIsWithinMonthDates = day > 0 && day <= daysInMonth;
       const isToday =
         dayIsWithinMonthDates &&
         today.isSame(currentMonthDisplayed.date(day), "day");
-      const isInNewCutRange = dayIsWithinMonthDates && isDayInNewCutRange(day);
+      const isInNewCutRange = dayIsWithinMonthDates && isDayInNewCutRange(date);
 
       return (
         <CalendarDateButton
