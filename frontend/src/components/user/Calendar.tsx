@@ -27,7 +27,7 @@ const Calendar: FC<CalendarProps> = ({ userID }) => {
     dayjs("2025-04-10"),
     dayjs("2025-04-11"),
     dayjs("2025-04-21"),
-    dayjs("2025-04-22"),
+    dayjs("2025-04-24"),
   ]);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
@@ -128,13 +128,17 @@ const Calendar: FC<CalendarProps> = ({ userID }) => {
         today.isSame(currentMonthDisplayed.date(day), "day");
       const isInNewCutRange = dayIsWithinMonthDates && isDayInNewCutRange(date);
 
+      const disabled =
+        isSelectingCuts && // while selecting cuts
+        (date.isBefore(today, "day") || // dates before today not allowed
+          (date.isSame(today, "day") && dayjs().hour() >= 6) || // cut today after today 6am not allowed
+          messCuts.some((cut) => cut.isSame(date, "day"))); // already the cut is there
+
       return (
         <CalendarDateButton
           key={i}
           onClick={() => handleButtonClick(date)}
-          disabled={
-            isSelectingCuts && messCuts.some((cut) => cut.isSame(date, "day"))
-          }
+          disabled={disabled}
           className={getDayClassNames(
             date,
             dayIsWithinMonthDates,
