@@ -1,7 +1,8 @@
 import { useState } from "react";
-import Calendar from "../components/Calendar";
+import Calendar from "../components/user/Calendar";
+import type { FC } from "react";
 
-export default function UserDashboard() {
+const UserDashboard: FC = () => {
   const [fullName, setFullName] = useState<string>("Dummy");
   const [messCuts, setMessCuts] = useState<number[]>([10, 11, 21, 22]);
 
@@ -23,4 +24,6 @@ export default function UserDashboard() {
       <div className="bg-white w-full h-16 mt-4 rounded-md"></div>
     </div>
   );
-}
+};
+
+export default UserDashboard;
