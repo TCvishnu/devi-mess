@@ -11,17 +11,24 @@ import CalendarDateButton from "./CalendarDateButton";
 const daysOfWeek: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 type CalendarProps = {
-  messCuts: number[];
+  userID: string;
 };
 
-const Calendar: FC<CalendarProps> = ({ messCuts }) => {
+const Calendar: FC<CalendarProps> = ({ userID }) => {
   const [currentMonthDisplayed, setCurrentMonthDisplayed] = useState<Dayjs>(
     dayjs()
   );
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
-  const [newCutRange, setNewCutRange] = useState<
-    [number | null, number | null]
-  >([null, null]);
+  const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
+    null,
+    null,
+  ]);
+  const [messCuts, setMessCuts] = useState<Dayjs[]>([
+    dayjs("2025-04-10"),
+    dayjs("2025-04-11"),
+    dayjs("2025-04-21"),
+    dayjs("2025-04-22"),
+  ]);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
@@ -40,7 +47,7 @@ const Calendar: FC<CalendarProps> = ({ messCuts }) => {
     setIsSelectingCuts((prev) => !prev);
   };
 
-  const handleButtonClick = (day: number) => {
+  const handleButtonClick = (day: Dayjs) => {
     if (!isSelectingCuts) return;
 
     const [start, end] = newCutRange;
@@ -54,7 +61,7 @@ const Calendar: FC<CalendarProps> = ({ messCuts }) => {
         // user wants single day cut
         setNewCutRange([day, day]);
       } else {
-        const sortedRange = [start, day].sort((a, b) => a - b);
+        const sortedRange = [start, day].sort((a, b) => a.date() - b.date());
         setNewCutRange([sortedRange[0], sortedRange[1]]);
       }
     }
@@ -66,24 +73,27 @@ const Calendar: FC<CalendarProps> = ({ messCuts }) => {
   };
 
   const getDayClassNames = (
-    day: number,
+    day: Dayjs,
     dayIsWithinMonthDates: boolean,
     isToday: boolean,
-    isInNewCutRange: boolean,
-    messCuts: number[]
+    isInNewCutRange: boolean
   ) => {
     return clsx(
       dayIsWithinMonthDates ? "text-gray-600" : "bg-white",
       isToday ? "text-primary font-black" : "font-medium",
-      isInNewCutRange && !messCuts.includes(day) && "border-2 border-primary",
-      messCuts.includes(day) ? "border-2 border-accent" : "bg-gray-50"
+      isInNewCutRange &&
+        !messCuts.some((cut) => cut.isSame(day, "day")) &&
+        "border-2 border-primary",
+      messCuts.some((cut) => cut.isSame(day, "day"))
+        ? "border-2 border-accent"
+        : "bg-gray-50"
     );
   };
 
   const isDayInNewCutRange = (day: number): boolean => {
     if (!isSelectingCuts || newCutRange[0] === null) return false;
-    if (newCutRange[1] === null) return day === newCutRange[0];
-    return day >= newCutRange[0] && day <= newCutRange[1];
+    if (newCutRange[1] === null) return day === newCutRange[0].date();
+    return day >= newCutRange[0].date() && day <= newCutRange[1].date();
   };
 
   const generateCalendar = () => {
@@ -91,6 +101,9 @@ const Calendar: FC<CalendarProps> = ({ messCuts }) => {
 
     return Array.from({ length: totalCells }, (_, i) => {
       const day = i - startDayOfWeek + 1;
+      const date = dayjs(
+        new Date(today.year(), currentMonthDisplayed.month(), day)
+      );
       const dayIsWithinMonthDates = day > 0 && day <= daysInMonth;
       const isToday =
         dayIsWithinMonthDates &&
@@ -100,14 +113,15 @@ const Calendar: FC<CalendarProps> = ({ messCuts }) => {
       return (
         <CalendarDateButton
           key={i}
-          onClick={() => handleButtonClick(day)}
-          disabled={isSelectingCuts && messCuts.includes(day)}
+          onClick={() => handleButtonClick(date)}
+          disabled={
+            isSelectingCuts && messCuts.some((cut) => cut.isSame(date, "day"))
+          }
           className={getDayClassNames(
-            day,
+            date,
             dayIsWithinMonthDates,
             isToday,
-            isInNewCutRange,
-            messCuts
+            isInNewCutRange
           )}
         >
           {dayIsWithinMonthDates ? day : "-"}

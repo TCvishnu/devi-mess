@@ -6,7 +6,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* User routes */}
-        <Route path="/user/:id" element={<UserDashboard />} />
+        <Route path="/user/:userID" element={<UserDashboard />} />
       </Routes>
     </BrowserRouter>
   );
