@@ -1,13 +1,17 @@
-import '../base/base.zmodel'
+import '../base/base'
+import "../messcut/messcut"
 
 model User extends Base {
-  name        String
-  phoneNumber String   @unique()
-  password    String   @password()
-  gender      Gender
-  mealType    MealType
-  role        UserRole
-  isVeg       Boolean
+  name          String
+  phoneNumber   String    @unique()
+  password      String    @password()
+  gender        Gender
+  mealType      MealType
+  role          UserRole
+  isVeg         Boolean
+  messcuts      Messcut[]
+  hasOnboarded  Boolean   @default(false)
+  adminVerified Boolean   @default(false)
 
   @@allow('create', true)
   @@allow('read', auth() == this || auth().role == "ADMIN")
