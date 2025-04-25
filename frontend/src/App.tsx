@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import LoginPage from "./pages/auth/LoginPage"
 import RegisterPage from "./pages/auth/RegisterPage"
 import OTPVerification from "./pages/auth/OTPVerification"
+import ProfileCompletePage from "./pages/user/ProfileCompletePage"
 
 function App() {
 	return (
@@ -13,6 +14,10 @@ function App() {
 					<Route
 						path="/otp-verification"
 						element={<OTPVerification />}
+					/>
+					<Route
+						path="/complete-profile"
+						element={<ProfileCompletePage />}
 					/>
 				</Routes>
 			</Router>
