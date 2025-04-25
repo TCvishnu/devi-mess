@@ -6,7 +6,7 @@ type PrimaryButtonProps = {
 
 const PrimaryButton: FC<PrimaryButtonProps> = ({ children, ...props }) => {
   return (
-    <button className=" bg-primary py-2 w-28 text-xs rounded-xs" {...props}>
+    <button className=" bg-primary h-12 w-40 rounded-xs" {...props}>
       {children}
     </button>
   );

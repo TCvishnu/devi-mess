@@ -7,14 +7,24 @@ import { clsx } from "clsx";
 
 import PrimaryButton from "./PrimaryButton";
 import CalendarDateButton from "./CalendarDateButton";
+import CutTypeButton from "./CutTypeButton";
+
+type CutType = "Morning" | "Afternoon" | "Evening" | "Full";
 
 const daysOfWeek: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const cutTypes: { cutType: CutType; icon: string }[] = [
+  { cutType: "Morning", icon: "fe:sunrise" },
+  { cutType: "Afternoon", icon: "charm:sun" },
+  { cutType: "Evening", icon: "lets-icons:moon-fill" },
+  { cutType: "Full", icon: "flowbite:bowl-food-solid" },
+];
 
 const Calendar: FC = () => {
   const [currentMonthDisplayed, setCurrentMonthDisplayed] = useState<Dayjs>(
     dayjs()
   );
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
+  const [selectedCutType, setSelectedCutType] = useState<CutType>("Full");
   const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
@@ -23,7 +33,7 @@ const Calendar: FC = () => {
     dayjs("2025-04-10"),
     dayjs("2025-04-11"),
     dayjs("2025-04-21"),
-    dayjs("2025-04-24"),
+    dayjs("2025-05-24"),
   ]);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
@@ -54,6 +64,10 @@ const Calendar: FC = () => {
     setNewCutRange([null, null]);
   };
 
+  const handleCutTypeChange = (cutType: CutType) => {
+    setSelectedCutType(cutType);
+  };
+
   const handleButtonClick = (day: Dayjs) => {
     if (!isSelectingCuts) return;
 
@@ -68,7 +82,9 @@ const Calendar: FC = () => {
         // user wants single day cut
         setNewCutRange([day, day]);
       } else {
-        const sortedRange = [start, day].sort((a, b) => a.date() - b.date());
+        const sortedRange = [start, day].sort(
+          (a, b) => a.date() - b.date() && a.month() - b.month()
+        );
         setNewCutRange([sortedRange[0], sortedRange[1]]);
       }
     }
@@ -77,6 +93,7 @@ const Calendar: FC = () => {
   const handleNewCutsCancel: () => void = () => {
     setIsSelectingCuts(false);
     setNewCutRange([null, null]);
+    setSelectedCutType("Full");
   };
 
   const getDayClassNames = (
@@ -86,13 +103,13 @@ const Calendar: FC = () => {
     isInNewCutRange: boolean
   ) => {
     return clsx(
-      dayIsWithinMonthDates ? "text-gray-600" : "bg-white",
+      dayIsWithinMonthDates ? "text-gray-800" : "bg-white",
       isToday ? "text-primary font-black" : "font-medium",
       isInNewCutRange &&
         !messCuts.some((cut) => cut.isSame(day, "day")) &&
         "border-2 border-primary",
       messCuts.some((cut) => cut.isSame(day, "day"))
-        ? "border-2 border-accent"
+        ? "border-2 border-primary line-through decoration-primary"
         : "bg-gray-50"
     );
   };
@@ -149,7 +166,7 @@ const Calendar: FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg p-4">
+    <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col">
       <div className="w-full flex justify-between border-b-2 border-gray-600 py-2 mb-6">
         <h2 className=" text-gray-600 font-semibold text-lg">
           Handle Messcuts
@@ -185,7 +202,20 @@ const Calendar: FC = () => {
 
       <div className="grid grid-cols-7 gap-2">{generateCalendar()}</div>
 
-      <div className="w-full flex justify-between mt-6 text-sm font-semibold text-white">
+      <div className="w-full flex justify-between h-full items-end pb-8">
+        {isSelectingCuts &&
+          cutTypes.map(({ cutType, icon }) => (
+            <CutTypeButton
+              key={cutType}
+              cutType={cutType}
+              icon={icon}
+              selectedCutType={selectedCutType}
+              onClick={() => handleCutTypeChange(cutType)}
+            />
+          ))}
+      </div>
+
+      <div className="w-full flex justify-between items-end gap-4 text-sm font-semibold text-white">
         <PrimaryButton onClick={toggleSelectingCuts}>
           {isSelectingCuts ? "Confirm Cuts" : "Add Cuts"}
         </PrimaryButton>

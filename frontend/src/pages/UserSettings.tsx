@@ -1,8 +1,6 @@
 import type { FC } from "react";
 
-type UserSettingsProps = {};
-
-const UserSettings: FC<UserSettingsProps> = () => {
+const UserSettings: FC = () => {
   return <></>;
 };
 

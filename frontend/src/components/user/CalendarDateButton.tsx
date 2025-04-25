@@ -14,7 +14,7 @@ const CalendarDateButton: FC<CalendarDateButtonProps> = ({
     <button
       {...props}
       className={clsx(
-        "w-10 h-10 flex items-center justify-center rounded-sm text-sm disabled:cursor-not-allowed",
+        "w-10 h-10 flex items-center justify-center rounded-sm text-sm disabled:cursor-not-allowed disabled:text-gray-400 disabled:font-normal",
         className
       )}
     >
