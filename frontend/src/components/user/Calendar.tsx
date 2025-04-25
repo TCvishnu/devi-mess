@@ -10,11 +10,7 @@ import CalendarDateButton from "./CalendarDateButton";
 
 const daysOfWeek: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-type CalendarProps = {
-  userID: string;
-};
-
-const Calendar: FC<CalendarProps> = ({ userID }) => {
+const Calendar: FC = () => {
   const [currentMonthDisplayed, setCurrentMonthDisplayed] = useState<Dayjs>(
     dayjs()
   );
