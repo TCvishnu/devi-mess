@@ -2,44 +2,44 @@ import { FC, ButtonHTMLAttributes } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
 
-type CutType = "Morning" | "Afternoon" | "Evening" | "Full";
+import type { MealType } from "../../types/user";
 
 type CutTypeButtonProps = {
-  cutType: CutType;
-  selectedCutType?: CutType;
+  mealType: MealType;
+  selectedMealType?: MealType;
   icon: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 const MealTypeButton: FC<CutTypeButtonProps> = ({
-  cutType,
-  selectedCutType,
+  mealType,
+  selectedMealType,
   icon,
   className,
   ...props
 }) => {
   return (
     <button
-      key={cutType}
+      key={mealType}
       {...props}
       className={clsx(
         "size-16 xs:size-18 flex flex-col gap-1 justify-center items-center border-2 active:animate-ping rounded-md",
-        selectedCutType === cutType ? "border-primary" : "border-gray-300",
+        selectedMealType === mealType ? "border-primary" : "border-gray-300",
         className
       )}
     >
       <span
         className={`${
-          selectedCutType === cutType
+          selectedMealType === mealType
             ? "text-primary font-bold"
             : "text-gray-500 font-medium"
         } text-xs `}
       >
-        {cutType}
+        {mealType}
       </span>
       <Icon
         icon={icon}
         className={`size-8 ${
-          selectedCutType === cutType ? " text-primary" : "text-gray-500"
+          selectedMealType === mealType ? " text-primary" : "text-gray-500"
         } `}
       />
     </button>

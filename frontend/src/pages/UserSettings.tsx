@@ -1,28 +1,13 @@
 import { useState, type FC, type ChangeEvent } from "react";
+
+import { Icon } from "@iconify/react/dist/iconify.js";
+
 import Input from "../common/components/form/Input";
 import PrimaryButton from "../components/user/PrimaryButton";
 import PhoneNumberField from "../common/components/form/PhoneNumberField";
 import MealTypeButton from "../components/user/MealTypeButton";
-
-type ProfileDataType = {
-  fullName: string;
-  gender: "MALE" | "FEMALE";
-  isVeg: boolean;
-  phoneNumber: string;
-};
-type MealType = "Morning" | "Afternoon" | "Evening" | "Full";
-
-type ResidentialDataType = {
-  building: "Devi House" | "Devi Hostel";
-  floor: "Top" | "Ground";
-};
-
-const MealTypes: { MealType: MealType; icon: string }[] = [
-  { MealType: "Morning", icon: "fe:sunrise" },
-  { MealType: "Afternoon", icon: "charm:sun" },
-  { MealType: "Evening", icon: "lets-icons:moon-fill" },
-  { MealType: "Full", icon: "flowbite:bowl-food-solid" },
-];
+import type { ProfileDataType, ResidentialDataType } from "../types/user";
+import { mealTypes } from "@constants/mealTypes";
 
 const UserSettings: FC = () => {
   const [profileData, setProfileData] = useState<ProfileDataType>({
@@ -30,11 +15,12 @@ const UserSettings: FC = () => {
     gender: "MALE",
     isVeg: true,
     phoneNumber: "9080706050",
+    mealType: "Full",
   });
 
   const [residentialData, setResidentialData] =
     useState<null | ResidentialDataType>({
-      building: "Devi Hostel",
+      building: "Rockland Arcade",
       floor: "Top",
     });
 
@@ -129,19 +115,40 @@ const UserSettings: FC = () => {
         </PrimaryButton>
       </div>
 
-      <span className="mt-12 font-semibold text-primary text-lg">
+      <span className="mt-12 font-semibold opacity-60 text-lg">
         Your Meal Plan
       </span>
       <div className="mt-4 w-full flex gap-3 items-center justify-between">
-        {MealTypes.map(({ MealType: cutType, icon }) => (
+        {mealTypes.map(({ mealType, icon }) => (
           <MealTypeButton
-            key={cutType}
-            cutType={cutType}
+            key={mealType}
+            mealType={mealType}
             icon={icon}
-            selectedCutType="Full"
+            selectedMealType={profileData.mealType}
           />
         ))}
       </div>
+
+      {residentialData && (
+        <div className="mt-4 w-full flex flex-col gap-2 items-center ">
+          <span className="mt-12 font-semibold opacity-60 text-lg">
+            Stay Details
+          </span>
+          <div className="flex gap-1 items-center justify-around w-full text-primary">
+            <div className="flex flex-col items-center">
+              <Icon icon="mingcute:building-2-fill" className="size-16" />
+              <span className=" font-semibold">{residentialData.building}</span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <Icon icon="game-icons:stairs" className="size-16" />
+              <span className=" font-semibold ">
+                {residentialData.floor} Floor
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

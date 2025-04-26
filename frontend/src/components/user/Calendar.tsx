@@ -8,16 +8,9 @@ import { clsx } from "clsx";
 import PrimaryButton from "./PrimaryButton";
 import CalendarDateButton from "./CalendarDateButton";
 import MealTypeButton from "./MealTypeButton";
+import { mealTypes, type MealType } from "@constants/mealTypes";
 
-type MealType = "Morning" | "Afternoon" | "Evening" | "Full";
-
-const daysOfWeek: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const mealTypes: { mealType: MealType; icon: string }[] = [
-  { mealType: "Morning", icon: "fe:sunrise" },
-  { mealType: "Afternoon", icon: "charm:sun" },
-  { mealType: "Evening", icon: "lets-icons:moon-fill" },
-  { mealType: "Full", icon: "flowbite:bowl-food-solid" },
-];
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar: FC = () => {
   const [currentMonthDisplayed, setCurrentMonthDisplayed] = useState<Dayjs>(
@@ -207,9 +200,9 @@ const Calendar: FC = () => {
           mealTypes.map(({ mealType, icon }) => (
             <MealTypeButton
               key={mealType}
-              cutType={mealType}
+              mealType={mealType}
               icon={icon}
-              selectedCutType={selectedCutType}
+              selectedMealType={selectedCutType}
               onClick={() => handleCutTypeChange(mealType)}
             />
           ))}
