@@ -166,7 +166,7 @@ const Calendar: FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col">
+    <div className="w-full max-w-md bg-white rounded-lg px-4 h-full flex flex-col">
       <div className="w-full flex justify-between border-b-2 border-gray-600 py-2 mb-6">
         <h2 className=" text-gray-600 font-semibold text-lg">
           Handle Messcuts
@@ -202,7 +202,7 @@ const Calendar: FC = () => {
 
       <div className="grid grid-cols-7 gap-2">{generateCalendar()}</div>
 
-      <div className="w-full flex justify-between h-full items-end pb-8">
+      <div className="w-full flex justify-between h-full items-end pb-8 mt-2">
         {isSelectingCuts &&
           mealTypes.map(({ mealType, icon }) => (
             <MealTypeButton

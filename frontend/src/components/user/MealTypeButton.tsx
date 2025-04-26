@@ -22,7 +22,7 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
       key={cutType}
       {...props}
       className={clsx(
-        "size-18 flex flex-col gap-1 justify-center items-center border-2 active:animate-ping rounded-md",
+        "size-16 xs:size-18 flex flex-col gap-1 justify-center items-center border-2 active:animate-ping rounded-md",
         selectedCutType === cutType ? "border-primary" : "border-gray-300",
         className
       )}
