@@ -7,16 +7,16 @@ import { clsx } from "clsx";
 
 import PrimaryButton from "./PrimaryButton";
 import CalendarDateButton from "./CalendarDateButton";
-import CutTypeButton from "./CutTypeButton";
+import MealTypeButton from "./MealTypeButton";
 
-type CutType = "Morning" | "Afternoon" | "Evening" | "Full";
+type MealType = "Morning" | "Afternoon" | "Evening" | "Full";
 
 const daysOfWeek: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const cutTypes: { cutType: CutType; icon: string }[] = [
-  { cutType: "Morning", icon: "fe:sunrise" },
-  { cutType: "Afternoon", icon: "charm:sun" },
-  { cutType: "Evening", icon: "lets-icons:moon-fill" },
-  { cutType: "Full", icon: "flowbite:bowl-food-solid" },
+const mealTypes: { mealType: MealType; icon: string }[] = [
+  { mealType: "Morning", icon: "fe:sunrise" },
+  { mealType: "Afternoon", icon: "charm:sun" },
+  { mealType: "Evening", icon: "lets-icons:moon-fill" },
+  { mealType: "Full", icon: "flowbite:bowl-food-solid" },
 ];
 
 const Calendar: FC = () => {
@@ -24,7 +24,7 @@ const Calendar: FC = () => {
     dayjs()
   );
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
-  const [selectedCutType, setSelectedCutType] = useState<CutType>("Full");
+  const [selectedCutType, setSelectedCutType] = useState<MealType>("Full");
   const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
@@ -64,7 +64,7 @@ const Calendar: FC = () => {
     setNewCutRange([null, null]);
   };
 
-  const handleCutTypeChange = (cutType: CutType) => {
+  const handleCutTypeChange = (cutType: MealType) => {
     setSelectedCutType(cutType);
   };
 
@@ -204,13 +204,13 @@ const Calendar: FC = () => {
 
       <div className="w-full flex justify-between h-full items-end pb-8">
         {isSelectingCuts &&
-          cutTypes.map(({ cutType, icon }) => (
-            <CutTypeButton
-              key={cutType}
-              cutType={cutType}
+          mealTypes.map(({ mealType, icon }) => (
+            <MealTypeButton
+              key={mealType}
+              cutType={mealType}
               icon={icon}
               selectedCutType={selectedCutType}
-              onClick={() => handleCutTypeChange(cutType)}
+              onClick={() => handleCutTypeChange(mealType)}
             />
           ))}
       </div>
@@ -222,7 +222,7 @@ const Calendar: FC = () => {
         {isSelectingCuts ? (
           <PrimaryButton onClick={handleNewCutsCancel}>Cancel</PrimaryButton>
         ) : (
-          <PrimaryButton>Revoke Cuts</PrimaryButton>
+          <PrimaryButton>Remove Cuts</PrimaryButton>
         )}
       </div>
     </div>
