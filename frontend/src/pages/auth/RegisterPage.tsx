@@ -1,22 +1,50 @@
 import { FormEvent, useState } from "react"
-import { RegisterFormData } from "../../types/auth"
+import { RegisterFormData, RegistrationDetails } from "../../types/auth"
 import RegisterForm from "../../components/auth/form/RegisterForm"
 import { Link } from "react-router-dom"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
+import OTPVerification from "../../components/auth/OTPVerification"
+import { register } from "../../services/authService"
 
 const RegisterPage = () => {
+	const [registrationDetails, setRegistrationDetails] =
+		useState<RegistrationDetails>({
+			password: "",
+			phoneNumber: "",
+			fullName: "",
+			otp: "",
+		})
+	const [showOtpWindow, setShowOtpWindow] = useState<boolean>(false)
 	const [pending, setPending] = useState<boolean>(false)
+
+	const triggerShowOtpWindow = () => {
+		setShowOtpWindow((prev) => !prev)
+	}
 
 	const handleSubmit = (
 		event: FormEvent<HTMLFormElement>,
 		formData: RegisterFormData
 	) => {
 		try {
+			setRegistrationDetails({ ...formData, otp: "" })
+			setShowOtpWindow(true)
 			console.log(formData, "FROM LOGIN")
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
 		}
+	}
+
+	const handleOtpSuccess = async (otp: string) => {
+		try {
+			const { status, data } = await register({
+				...registrationDetails,
+				otp,
+			})
+
+			console.log(status, data)
+			setShowOtpWindow(false)
+		} catch (err) {}
 	}
 
 	return (
@@ -56,6 +84,13 @@ const RegisterPage = () => {
 					</span>
 				</div>
 			</div>
+			{showOtpWindow && (
+				<OTPVerification
+					phoneNumber="12121"
+					onClose={triggerShowOtpWindow}
+					onSuccess={handleOtpSuccess}
+				/>
+			)}
 		</div>
 	)
 }

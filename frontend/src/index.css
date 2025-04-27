@@ -5,6 +5,8 @@
 	--color-accent: #fc6874;
 
 	--animate-shake: shake 0.2s ease-in-out;
+	--animate-slide-in: slide-in 0.2s ease-in-out;
+	--animate-slide-out: slide-out 0.2s ease-in-out;
 
 	@keyframes shake {
 		0% {
@@ -18,6 +20,24 @@
 		}
 		100% {
 			transform: translateX(0px);
+		}
+	}
+
+	@keyframes slide-in {
+		0% {
+			transform: translateX(100%);
+		}
+		100% {
+			transform: translateX(0%);
+		}
+	}
+
+	@keyframes slide-out {
+		0% {
+			transform: translateX(0%);
+		}
+		100% {
+			transform: translateX(100%);
 		}
 	}
 }
