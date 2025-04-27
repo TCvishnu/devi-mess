@@ -2,21 +2,36 @@ import { FormEvent, useState } from "react"
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm"
 import { ProfileCompleteFormData } from "../../types/user"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
+import { saveProfile } from "../../services/userService"
+import { useNavigate } from "react-router-dom"
+import { useAuthContext } from "../../context/AuthContext"
 
 const ProfileCompletePage = () => {
+	const navigate = useNavigate()
+
+	const { updateUser } = useAuthContext()
+
 	const [pending, setPending] = useState<boolean>(false)
 	const [disable, setDisable] = useState<boolean>(false)
 
-	const handleSubmit = (
+	const handleSubmit = async (
 		event: FormEvent,
 		formData: ProfileCompleteFormData
 	) => {
 		try {
 			console.log(formData)
+
+			const { data, error } = await saveProfile(formData)
+
+			if (!error) {
+				updateUser(formData)
+				navigate("/dashboard")
+			}
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
 		}
 	}
+
 	return (
 		<div className=" px-6 py-4 min-h-dvh flex flex-col gap-10 justify-between">
 			<div className=" space-y-4">
