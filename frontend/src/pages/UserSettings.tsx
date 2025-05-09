@@ -8,6 +8,7 @@ import PhoneNumberField from "../common/components/form/PhoneNumberField";
 import MealTypeButton from "../components/user/MealTypeButton";
 import type { ProfileDataType, ResidentialDataType } from "../types/user";
 import { mealTypes } from "@constants/mealTypes";
+import Button from "../common/components/button/Button";
 
 const UserSettings: FC = () => {
   const [profileData, setProfileData] = useState<ProfileDataType>({
@@ -98,9 +99,12 @@ const UserSettings: FC = () => {
             </button>
           </div>
         </div>
-        <PrimaryButton className="w-full text-white font-semibold mt-6">
+        <Button
+          className="w-full text-white font-semibold mt-6"
+          radiusSize="sm"
+        >
           Save Changes
-        </PrimaryButton>
+        </Button>
       </form>
 
       <div className="mt-10 w-full flex flex-col gap-3">
@@ -110,9 +114,9 @@ const UserSettings: FC = () => {
           value={profileData.phoneNumber}
           onChange={handleChange}
         />
-        <PrimaryButton className="w-full text-white font-semibold">
+        <Button className="w-full text-white font-semibold" radiusSize="sm">
           Change Phone Number
-        </PrimaryButton>
+        </Button>
       </div>
 
       <span className="mt-12 font-semibold opacity-60 text-lg">

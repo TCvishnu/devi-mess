@@ -2,7 +2,7 @@ import { FC, ButtonHTMLAttributes } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
 
-import type { MealType } from "../../types/user";
+import { MealType } from "@constants/mealTypes";
 
 type CutTypeButtonProps = {
   mealType: MealType;
