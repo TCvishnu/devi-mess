@@ -18,6 +18,8 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@constants": path.resolve(__dirname, "src/constants"),
+        "@components": path.resolve(__dirname, "src/components"),
+        "@contexts": path.resolve(__dirname, "src/contexts"),
       },
     },
   };

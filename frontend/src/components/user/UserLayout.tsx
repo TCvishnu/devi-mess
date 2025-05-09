@@ -5,7 +5,7 @@ import NavBar from "./NavBar";
 import { useState } from "react";
 
 const UserLayout: FC = () => {
-  const [fullName, setFullName] = useState<string>("Dummy");
+  const [fullName] = useState<string>("Dummy");
   return (
     <div className="w-screen h-screen flex flex-col p-4 bg-primary">
       <div className="w-full flex justify-between">
@@ -16,7 +16,7 @@ const UserLayout: FC = () => {
       </div>
 
       <h1 className="text-white text-3xl font-bold">{fullName}</h1>
-      <div className="bg-white w-full h-full mt-4 rounded-md p-4 flex flex-col items-center overflow-y-auto">
+      <div className="bg-white w-full h-full mt-4 rounded-md px-4 flex flex-col items-center overflow-y-auto">
         <Outlet />
       </div>
 

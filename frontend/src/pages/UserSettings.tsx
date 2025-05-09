@@ -43,7 +43,7 @@ const UserSettings: FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center overflow-y-auto">
+    <div className="w-full flex flex-col items-center overflow-y-auto py-4">
       <h1 className=" text-xl font-semibold text-primary">Edit Profile</h1>
       <form className="w-full flex flex-col gap-2">
         <Input
