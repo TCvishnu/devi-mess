@@ -45,17 +45,17 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 
 		let isError = false
 
-		if (!values.gender.trim()) {
+		if (!values.gender?.trim()) {
 			errors.gender = "Gender is required"
 			isError = true
 		}
 
-		if (!values.mealType.trim()) {
+		if (!values.mealType?.trim()) {
 			errors.mealType = "Meal type is required"
 			isError = true
 		}
 
-		if (!values.role.trim()) {
+		if (!values.role?.trim()) {
 			errors.role = "Role is required"
 			isError = true
 		}
