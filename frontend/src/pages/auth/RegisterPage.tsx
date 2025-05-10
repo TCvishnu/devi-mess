@@ -44,7 +44,13 @@ const RegisterPage = () => {
 
 			console.log(status, data)
 			setShowOtpWindow(false)
-		} catch (err) {}
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				console.log(err)
+			} else {
+				console.log(err)
+			}
+		}
 	}
 
 	return (
