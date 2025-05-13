@@ -1,4 +1,10 @@
-import React, { ChangeEvent, KeyboardEvent, useRef, useState } from "react"
+import React, {
+	ChangeEvent,
+	KeyboardEvent,
+	useEffect,
+	useRef,
+	useState,
+} from "react"
 import ErrorBox from "./ErrorBox"
 
 type OTPInputProps = {
@@ -15,6 +21,8 @@ const OTPInput: React.FC<OTPInputProps> = ({
 	errorMessage,
 }) => {
 	const inputFieldRef = useRef<Array<HTMLInputElement | null>>([])
+	const currentInputFieldIndex = useRef<number>(0)
+
 	const [otp, setOtp] = useState<Array<string>>(
 		initialValue ? initialValue.split("") : ["", "", "", ""]
 	)
@@ -33,7 +41,10 @@ const OTPInput: React.FC<OTPInputProps> = ({
 		onChange?.(newOtp.join(""))
 
 		if (changedIndex < otp.length - 1) {
-			inputFieldRef.current[changedIndex + 1]?.focus()
+			currentInputFieldIndex.current = changedIndex + 1
+			// inputFieldRef.current[changedIndex + 1]?.focus()
+		} else {
+			currentInputFieldIndex.current = otp.length - 1
 		}
 	}
 
@@ -42,18 +53,24 @@ const OTPInput: React.FC<OTPInputProps> = ({
 		const index = Number(event.currentTarget.name)
 
 		if (pressedKey === "Backspace") {
-			console.log("Called 1")
 			if (otp[index]) {
 				const newOtp = [...otp]
 				newOtp[index] = ""
 				setOtp(newOtp)
 				onChange?.(newOtp.join(""))
+				currentInputFieldIndex.current = index
 			} else if (index > 0) {
-				console.log(inputFieldRef.current[index - 1])
 				inputFieldRef.current[index - 1]?.focus()
+				currentInputFieldIndex.current = index - 1
 			}
+		} else if (inputFieldRef.current[index]?.value.length) {
+			inputFieldRef.current[index + 1]?.focus()
 		}
 	}
+
+	useEffect(() => {
+		inputFieldRef.current[currentInputFieldIndex.current]?.focus()
+	}, [otp])
 
 	return (
 		<div className=" w-full">
