@@ -1,12 +1,5 @@
 import { Gender, MealType, UserRole } from "./enums"
 
-export interface ProfileCompleteFormDataError {
-	gender: string
-	mealType: string
-	role: string
-	isVeg: string
-}
-
 export interface UserDetails {
 	id?: number
 	name?: string

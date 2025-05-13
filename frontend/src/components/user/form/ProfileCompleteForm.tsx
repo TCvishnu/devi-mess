@@ -1,9 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import Button from "../../../common/components/button/Button"
-import {
-	ProfileCompleteFormData,
-	ProfileCompleteFormDataError,
-} from "../../../types/user"
+import { ProfileCompleteFormData } from "../../../types/user"
 import { Gender, MealType, UserRole } from "../../../types/enums"
 import SelectBox from "../../../common/components/form/Select"
 import CheckBox from "../../../common/components/form/Checkbox"
@@ -27,44 +24,6 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 		isVeg: false,
 	})
 
-	const [fieldErrors, setFieldErrors] =
-		useState<ProfileCompleteFormDataError>({
-			gender: "",
-			mealType: "",
-			role: "",
-			isVeg: "",
-		})
-
-	const validateFormFields = (values: ProfileCompleteFormData) => {
-		let errors: ProfileCompleteFormDataError = {
-			gender: "",
-			mealType: "",
-			role: "",
-			isVeg: "",
-		}
-
-		let isError = false
-
-		if (!values.gender?.trim()) {
-			errors.gender = "Gender is required"
-			isError = true
-		}
-
-		if (!values.mealType?.trim()) {
-			errors.mealType = "Meal type is required"
-			isError = true
-		}
-
-		if (!values.role?.trim()) {
-			errors.role = "Role is required"
-			isError = true
-		}
-
-		setFieldErrors(errors)
-
-		return isError
-	}
-
 	const handleChange = (
 		event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
@@ -80,9 +39,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
-		const isError = validateFormFields(formData)
-
-		if (!isError) onSubmit(event, formData)
+		onSubmit(event, formData)
 	}
 
 	return (
@@ -92,8 +49,6 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				label="Gender"
 				onChange={handleChange}
 				value={formData.gender}
-				isError={fieldErrors.gender ? true : false}
-				errorMessage={fieldErrors.gender}
 			>
 				<SelectBox.Option value={Gender.Male}>Male</SelectBox.Option>
 				<SelectBox.Option value={Gender.Female}>
@@ -106,8 +61,6 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				label="Meal Selection"
 				onChange={handleChange}
 				value={formData.mealType}
-				isError={fieldErrors.mealType ? true : false}
-				errorMessage={fieldErrors.mealType}
 			>
 				<SelectBox.Option value={MealType.Full}>
 					Full day
@@ -128,8 +81,6 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				label="Type"
 				onChange={handleChange}
 				value={formData.role}
-				isError={fieldErrors.role ? true : false}
-				errorMessage={fieldErrors.role}
 			>
 				<SelectBox.Option value={UserRole.Mess}>Mess</SelectBox.Option>
 				<SelectBox.Option value={UserRole.Resident}>
@@ -142,8 +93,6 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				label="Is vegetarian?"
 				onChange={handleChange}
 				checked={formData.isVeg}
-				isError={fieldErrors.isVeg ? true : false}
-				errorMessage={fieldErrors.isVeg}
 			/>
 
 			<Button className=" mt-4" disabled={disable}>

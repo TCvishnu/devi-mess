@@ -25,7 +25,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({
 	const [otp, setOtp] = useState<string>("")
 
 	const handleChange = (newValue: string) => {
-		setOtp(otp)
+		setOtp(newValue)
 		console.log(newValue)
 	}
 

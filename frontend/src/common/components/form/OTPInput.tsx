@@ -77,7 +77,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
 			<div className=" w-full flex justify-around gap-4 text-2xl">
 				{otp.map((eachOtp, index) => (
 					<input
-						key={eachOtp + index}
+						key={index}
 						ref={(element) => {
 							inputFieldRef.current[index] = element
 						}}
