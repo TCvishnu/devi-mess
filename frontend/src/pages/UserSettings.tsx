@@ -3,7 +3,6 @@ import { useState, type FC, type ChangeEvent } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import Input from "../common/components/form/Input";
-import PrimaryButton from "../components/user/PrimaryButton";
 import PhoneNumberField from "../common/components/form/PhoneNumberField";
 import MealTypeButton from "../components/user/MealTypeButton";
 import type { ProfileDataType, ResidentialDataType } from "../types/user";

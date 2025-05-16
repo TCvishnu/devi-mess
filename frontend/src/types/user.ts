@@ -1,15 +1,15 @@
 // should type from prisma client
 import { MealType } from "@constants/mealTypes";
 
-export type ProfileDataType = {
+export interface ProfileDataType {
   fullName: string;
   gender: "MALE" | "FEMALE";
   isVeg: boolean;
   phoneNumber: string;
   mealType: MealType;
-};
+}
 
-export type ResidentialDataType = {
+export interface ResidentialDataType {
   building: "Devi House" | "Rockland Arcade";
   floor: "Top" | "Ground";
-};
+}
