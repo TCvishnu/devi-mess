@@ -3,7 +3,6 @@ import { useState, type FC, type ChangeEvent } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import Input from "../common/components/form/Input";
-import PrimaryButton from "../components/user/PrimaryButton";
 import PhoneNumberField from "../common/components/form/PhoneNumberField";
 import MealTypeButton from "../components/user/MealTypeButton";
 import type { ProfileDataType, ResidentialDataType } from "../types/user";
@@ -43,8 +42,8 @@ const UserSettings: FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center overflow-y-auto py-4">
-      <h1 className=" text-xl font-semibold text-primary">Edit Profile</h1>
+    <div className="w-full flex flex-col items-center overflow-y-auto pb-4">
+      <h1 className=" text-xl font-semibold text-primary mt-2">Edit Profile</h1>
       <form className="w-full flex flex-col gap-2">
         <Input
           label="Full name"
