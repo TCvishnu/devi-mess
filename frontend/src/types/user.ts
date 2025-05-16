@@ -9,9 +9,13 @@ export interface UserDetails {
 	role?: UserRole
 	isVeg?: boolean
 	messcuts?: Array<Object>
+	residentType?: string // replace with recident enum
 	hasOnBoarded?: boolean
 	adminVerified?: boolean
 }
 
 export interface ProfileCompleteFormData
-	extends Pick<UserDetails, "gender" | "mealType" | "role" | "isVeg"> {}
+	extends Pick<
+		UserDetails,
+		"gender" | "mealType" | "role" | "isVeg" | "residentType"
+	> {}

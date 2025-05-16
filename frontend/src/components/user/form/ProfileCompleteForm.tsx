@@ -22,6 +22,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 		mealType: MealType.Full,
 		role: UserRole.Mess,
 		isVeg: false,
+		residentType: "",
 	})
 
 	const handleChange = (
@@ -32,6 +33,14 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 
 		setFormData((prev) => ({
 			...prev,
+			mealType:
+				name === "gender" && value == Gender.Male
+					? MealType.Full
+					: prev.mealType,
+			residentType:
+				name === "role" && value === UserRole.Mess
+					? ""
+					: prev.residentType,
 			[name]: name === "isVeg" ? checked : value,
 		}))
 	}
@@ -65,15 +74,19 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				<SelectBox.Option value={MealType.Full}>
 					Full day
 				</SelectBox.Option>
-				<SelectBox.Option value={MealType.Morning}>
-					Morning
-				</SelectBox.Option>
-				<SelectBox.Option value={MealType.Afternoon}>
-					Afternoon
-				</SelectBox.Option>
-				<SelectBox.Option value={MealType.Evening}>
-					Evening
-				</SelectBox.Option>
+				{formData.gender == Gender.Female && (
+					<>
+						<SelectBox.Option value={MealType.Morning}>
+							Morning
+						</SelectBox.Option>
+						<SelectBox.Option value={MealType.Afternoon}>
+							Afternoon
+						</SelectBox.Option>
+						<SelectBox.Option value={MealType.Evening}>
+							Evening
+						</SelectBox.Option>
+					</>
+				)}
 			</SelectBox.Select>
 
 			<SelectBox.Select
@@ -87,6 +100,28 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 					Resident
 				</SelectBox.Option>
 			</SelectBox.Select>
+
+			{formData.role == UserRole.Resident && (
+				// replace the value of each option with corresponding enum values
+				<SelectBox.Select
+					name="residentType"
+					label="Recident place"
+					onChange={handleChange}
+					value={formData.residentType}
+					required
+				>
+					<SelectBox.Option value="">Select a type</SelectBox.Option>
+					<SelectBox.Option value="Devi house">
+						Devi house
+					</SelectBox.Option>
+					<SelectBox.Option value="Arcade first floor">
+						Arcade first floor
+					</SelectBox.Option>
+					<SelectBox.Option value="Arcade second floor">
+						Arcade second floor
+					</SelectBox.Option>
+				</SelectBox.Select>
+			)}
 
 			<CheckBox
 				name="isVeg"
