@@ -24,8 +24,12 @@
 
     "baseUrl": "src",
     "paths": {
-      "@constants/*": ["constants/*"]
-    }
+      "@constants/*": ["constants/*"],
+      "@utils/*": ["utils/*"],
+      "@components/*": ["components/*"],
+      "@contexts/*": ["contexts/*"]
+    },
+    "types": []
   },
   "include": ["src"]
 }

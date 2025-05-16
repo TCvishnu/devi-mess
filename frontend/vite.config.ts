@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
         "@constants": path.resolve(__dirname, "src/constants"),
         "@components": path.resolve(__dirname, "src/components"),
         "@contexts": path.resolve(__dirname, "src/contexts"),
+        "@utils": path.resolve(__dirname, "src/utils"),
       },
     },
   };

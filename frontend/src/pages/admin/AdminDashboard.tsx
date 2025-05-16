@@ -1,11 +1,13 @@
 import { useState, FC } from "react";
 import FoodCountDisplay from "@components/admin/FoodCountDisplay";
 import UserReport from "@components/admin/UserReport";
+import DisplayStudents from "@components/admin/DisplayStudents";
 
 const AdminDashboard: FC = () => {
   const [showStatistics, setShowStatistics] = useState<boolean>(true);
   const displayStatistics = () => setShowStatistics(true);
   const displayStudents = () => setShowStatistics(false);
+
   return (
     <div className=" w-full bg-white h-full rounded-xs flex flex-col overflow-y-auto p-4">
       <div className="w-full flex justify-evenly">
@@ -32,10 +34,14 @@ const AdminDashboard: FC = () => {
         </button>
       </div>
 
-      {showStatistics && (
+      {showStatistics ? (
         <>
           <FoodCountDisplay />
           <UserReport />
+        </>
+      ) : (
+        <>
+          <DisplayStudents />
         </>
       )}
     </div>
