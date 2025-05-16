@@ -16,7 +16,7 @@ const UserLayout: FC = () => {
       </div>
 
       <h1 className="text-white text-3xl font-bold">{fullName}</h1>
-      <div className="bg-white w-full h-full mt-4 rounded-md p-4 flex flex-col items-center overflow-y-auto">
+      <div className="bg-white w-full h-full mt-4 rounded-md px-4 flex flex-col items-center overflow-y-auto">
         <Outlet />
       </div>
 

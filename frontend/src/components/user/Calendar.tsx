@@ -159,7 +159,7 @@ const Calendar: FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg px-4 h-full flex flex-col">
+    <div className="w-full max-w-md bg-white rounded-lg px-4 h-full flex flex-col py-4">
       <div className="w-full flex justify-between border-b-2 border-gray-600 py-2 mb-6">
         <h2 className=" text-gray-600 font-semibold text-lg">
           Handle Messcuts
