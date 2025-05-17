@@ -1,9 +1,9 @@
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
-import OTPInput from "../../common/components/form/OTPInput"
+import OTPInput from "@form/OTPInput"
 import Button from "../../common/components/button/Button"
-import { requestOtpVerification, verifyOtp } from "../../services/authService"
+import { requestOtpVerification, verifyOtp } from "@services/authService"
 import { useState } from "react"
-import useTimer from "../../hooks/useTimer"
+import useTimer from "@hooks/useTimer"
 import { convertSecondsToString } from "../../common/utils/time"
 
 type OTPVerificationProps = {

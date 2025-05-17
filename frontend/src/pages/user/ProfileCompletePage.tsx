@@ -1,8 +1,8 @@
 import { FormEvent, useState } from "react"
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm"
-import { ProfileCompleteFormData } from "../../types/user"
+import { ProfileCompleteFormData } from "@type/user"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
-import { saveProfile } from "../../services/userService"
+import { saveProfile } from "@services/userService"
 import { useNavigate } from "react-router-dom"
 import { useAuthContext } from "../../context/AuthContext"
 

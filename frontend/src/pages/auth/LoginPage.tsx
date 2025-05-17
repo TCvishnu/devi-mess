@@ -1,11 +1,11 @@
 import { FormEvent, useState } from "react"
-import { LoginFormData } from "../../types/auth"
-import LoginForm from "../../components/auth/form/LoginForm"
 import { Link, useNavigate } from "react-router-dom"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
+import LoginForm from "../../components/auth/form/LoginForm"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
-import { login } from "../../services/authService"
+import { login } from "@services/authService"
 import { useAuthContext } from "../../context/AuthContext"
+import { LoginFormData } from "@type/auth"
 
 const LoginPage = () => {
 	const navigate = useNavigate()

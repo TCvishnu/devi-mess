@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import Button from "../../../common/components/button/Button"
-import { ProfileCompleteFormData } from "../../../types/user"
-import { Gender, MealType, UserRole } from "../../../types/enums"
-import SelectBox from "../../../common/components/form/Select"
-import CheckBox from "../../../common/components/form/Checkbox"
+import { ProfileCompleteFormData } from "@type/user"
+import { Gender, MealType, UserRole } from "@type/enums"
+import SelectBox from "@form/Select"
+import CheckBox from "@form/Checkbox"
 
 type ProfileCompleteFormProps = {
 	onSubmit: (

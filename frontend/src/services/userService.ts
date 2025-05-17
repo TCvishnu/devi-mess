@@ -1,4 +1,4 @@
-import { UserDetails } from "../types/user"
+import { UserDetails } from "@type/user"
 import fetchApi from "./fetchConfig/fetchWrapper"
 import { handleError } from "./handlerService"
 
