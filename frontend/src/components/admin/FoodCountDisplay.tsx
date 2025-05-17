@@ -1,49 +1,85 @@
 import { FC, useState, useEffect } from "react";
 import { useDate } from "@contexts/DateContext";
-import { Icon } from "@iconify/react/dist/iconify.js";
+
+type mealStructure = {
+  count: number;
+  veg: number;
+  nonVeg: number;
+};
 
 type FoodCountsType = {
-  morning: number;
-  afternoon: number;
-  night: number;
+  morning: mealStructure;
+  afternoon: mealStructure;
+  night: mealStructure;
 };
 
 const FoodCountDisplay: FC = () => {
   const [foodCounts, setFoodCounts] = useState<FoodCountsType>({
-    morning: 50,
-    afternoon: 60,
-    night: 90,
+    morning: { count: 50, veg: 30, nonVeg: 20 },
+    afternoon: { count: 50, veg: 30, nonVeg: 20 },
+    night: { count: 50, veg: 30, nonVeg: 20 },
   });
 
   const { selectedDate } = useDate();
 
   useEffect(() => {
-    setFoodCounts({
-      morning: Math.floor(Math.random() * 100),
-      afternoon: Math.floor(Math.random() * 100),
-      night: Math.floor(Math.random() * 100),
+    setFoodCounts(() => {
+      const mrngCount = Math.floor(Math.random() * 100);
+      const afternoonCount = Math.floor(Math.random() * 100);
+      const nightCount = Math.floor(Math.random() * 100);
+
+      return {
+        morning: {
+          count: mrngCount,
+          veg: Math.floor(mrngCount / 4),
+          nonVeg: Math.floor((mrngCount / 4) * 3),
+        },
+        afternoon: {
+          count: afternoonCount,
+          veg: Math.floor(afternoonCount / 4),
+          nonVeg: Math.floor((afternoonCount / 4) * 3),
+        },
+        night: {
+          count: nightCount,
+          veg: Math.floor(nightCount / 4),
+          nonVeg: Math.floor((nightCount / 4) * 3),
+        },
+      };
     });
   }, [selectedDate]);
 
   return (
-    <div className="my-6 w-full border-2 rounded-md border-primary h-24 xs:h-28 flex justify-evenly items-center text-lg">
-      <div className="flex flex-col items-center">
-        <Icon icon="bi:sunrise-fill" className=" size-10" />
-        <span className=" font-medium text-primary">{foodCounts.morning}</span>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+      <div className="rounded-sm shadow-sm p-4 border border-gray-400 active:animate-shake">
+        <h3 className="text-lg font-semibold text-primary">Morning</h3>
+        <p className="mt-2 text-3xl font-bold text-accent">
+          {foodCounts.morning.count}
+        </p>
+        <p className="text-sm text-gray-400 font-medium mt-1">Total Meals</p>
       </div>
 
-      <div className="w-[1px] h-1/2 bg-primary"></div>
-      <div className="flex flex-col items-center">
-        <Icon icon="solar:sun-bold" className=" size-10" />
-        <span className=" font-medium text-primary">
-          {foodCounts.afternoon}
-        </span>
+      <div className="rounded-sm shadow-sm p-4 border border-gray-400 active:animate-shake">
+        <h3 className="text-lg font-semibold text-primary">Afternoon</h3>
+        <p className="mt-2 text-3xl font-bold text-accent">
+          {foodCounts.afternoon.count}
+        </p>
+        <p className="text-sm text-gray-400 font-medium mt-1">Total Meals</p>
+        <div className="mt-3 flex justify-between text-sm text-primary font-semibold">
+          <span>Veg: {foodCounts.afternoon.veg}</span>
+          <span>Non-Veg: {foodCounts.afternoon.nonVeg}</span>
+        </div>
       </div>
 
-      <div className="w-[1px] h-1/2 bg-primary"></div>
-      <div className="flex flex-col items-center">
-        <Icon icon="lets-icons:moon-fill" className=" size-10" />
-        <span className="font-medium text-primary">{foodCounts.night}</span>
+      <div className="rounded-sm shadow-sm p-4 border border-gray-400 active:animate-shake">
+        <h3 className="text-lg font-semibold text-primary">Night</h3>
+        <p className="mt-2 text-3xl font-bold text-accent">
+          {foodCounts.night.count}
+        </p>
+        <p className="text-sm text-gray-400 font-medium mt-1">Total Meals</p>
+        <div className="mt-3 flex justify-between text-sm text-primary font-semibold">
+          <span>Veg: {foodCounts.night.veg}</span>
+          <span>Non-Veg: {foodCounts.night.nonVeg}</span>
+        </div>
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ const dummyMessUsers: User[] = [
     id: "user4",
     createdAt: new Date(),
     updatedAt: new Date(),
-    name: "Priya Singh Rajendra Jogis",
+    name: "Priya Singh",
     phoneNumber: "9988776655",
     password: "hashedpassword4",
     gender: "FEMALE",
@@ -156,7 +156,7 @@ const DisplayStudents: FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 py-4 h-full">
+    <div className="w-full flex flex-col gap-4 py-6 h-full">
       <div className="w-full min-h-12 border border-gray-400 flex items-center rounded-sm gap-2 px-2">
         <Icon icon="uil:search" className="size-6 text-gray-500" />
         <div className="w-[1.5px] h-6 bg-gray-400" />
@@ -205,7 +205,7 @@ const DisplayStudents: FC = () => {
                       {index + 1}.
                     </span>
                     <div className="w-[1.5px] h-6 bg-gray-300" />
-                    <span className="font-semibold text-gray-500">
+                    <span className="font-semibold text-gray-500 line-clamp-1">
                       {user.name}
                     </span>
                   </div>
