@@ -1,11 +1,11 @@
 import { FormEvent, useState } from "react"
-import { RegisterFormData, RegistrationDetails } from "../../types/auth"
-import RegisterForm from "../../components/auth/form/RegisterForm"
 import { Link } from "react-router-dom"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
+import RegisterForm from "../../components/auth/form/RegisterForm"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
 import OTPVerification from "../../components/auth/OTPVerification"
-import { register } from "../../services/authService"
+import { RegisterFormData, RegistrationDetails } from "@type/auth"
+import { register } from "@services/authService"
 
 const RegisterPage = () => {
 	const [registrationDetails, setRegistrationDetails] =

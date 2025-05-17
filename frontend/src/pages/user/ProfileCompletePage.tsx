@@ -1,9 +1,9 @@
 import { FormEvent, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm"
 import { ProfileCompleteFormData } from "@type/user"
-import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import { saveProfile } from "@services/userService"
-import { useNavigate } from "react-router-dom"
 import { useAuthContext } from "../../context/AuthContext"
 
 const ProfileCompletePage = () => {
