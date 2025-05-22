@@ -11,7 +11,7 @@ import Button from "../common/components/button/Button";
 const UserSettings: FC = () => {
   const [profileData, setProfileData] = useState<ProfileDataType>({
     fullName: "Dummy",
-    gender: "FEMALE",
+    gender: "MALE",
     isVeg: true,
     phoneNumber: "9080706050",
     mealType: "Full",
@@ -34,10 +34,6 @@ const UserSettings: FC = () => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleGenderChange = (gender: "MALE" | "FEMALE") => {
-    setProfileData((prev) => ({ ...prev, gender }));
   };
 
   const handleFoodTypeChange = (isVeg: boolean) => {
@@ -105,57 +101,71 @@ const UserSettings: FC = () => {
 
       <div className="w-full border border-gray-300 my-8" />
 
-      <div className="w-full grid grid-cols-2 text-primary font-semibold">
-        <div className="col-span-1 flex flex-col items-center gap-2">
-          {/* use toTitleCase util function here after merge */}
-          <span>{profileData.gender === "MALE" ? "Male" : "Female"}</span>
-
-          {profileData.gender === "MALE" ? (
-            <Icon icon="ion:male-sharp" className="size-18" />
-          ) : (
-            <Icon icon="ion:female-sharp" className="size-18" />
-          )}
-        </div>
-        <div className=" col-span-1 flex flex-col items-center gap-2">
-          <span>
-            {profileData.mealType + " "}
-            {profileData.mealType === "Full" ? "Day Meal" : "Only"}
+      <div className="w-full grid grid-cols-2 text-gray-600 font-semibold gap-4 py-4">
+        <div className="col-span-1 flex flex-col items-center gap-1 bg-primary-50 rounded-xl p-3">
+          <span className="text-sm uppercase tracking-wide ">
+            {profileData.gender}
           </span>
+          <Icon
+            icon={
+              profileData.gender === "MALE"
+                ? "ion:male-sharp"
+                : "ion:female-sharp"
+            }
+            className="size-20 text-primary"
+          />
+        </div>
 
+        <div className="col-span-1 flex flex-col items-center gap-1 bg-primary-50 rounded-xl p-3">
+          <span className="text-sm uppercase tracking-wide ">
+            {profileData.mealType === "Full"
+              ? "Full Day Meal"
+              : `${profileData.mealType} Only`}
+          </span>
           {meal ? (
-            <Icon icon={meal.icon} className=" size-18" />
+            <Icon icon={meal.icon} className="size-20 text-primary" />
           ) : (
-            // just for type safety. no such case
-            <span>Unknown meal type</span>
+            <span className="text-xs text-red-400 italic">
+              Unknown meal type
+            </span>
           )}
         </div>
       </div>
 
       {residentialData && (
-        <>
-          <div className="w-full border border-gray-300 my-4" />
+        <div className="w-full flex flex-col items-center gap-4">
+          <span className="font-semibold text-lg text-primary tracking-wide">
+            Stay Details
+          </span>
 
-          <div className="w-full flex flex-col gap-2 items-center ">
-            <span className="font-semibold opacity-60 text-lg">
-              Stay Details
-            </span>
-            <div className="grid grid-cols-2 w-full text-primary">
-              <div className="flex flex-col items-center">
-                <Icon icon="mingcute:building-2-fill" className="size-16" />
-                <span className=" font-semibold">
-                  {residentialData.building}
-                </span>
-              </div>
+          <div className="w-full grid grid-cols-2 gap-4">
+            <div className="flex flex-col items-center justify-center py-4 px-2">
+              <Icon
+                icon="mingcute:building-2-fill"
+                className="size-20 text-secondary-700"
+              />
+              <span className="mt-2 text-sm font-medium text-gray-500">
+                Building
+              </span>
+              <span className="font-semibold text-lg text-primary">
+                {residentialData.building}
+              </span>
+            </div>
 
-              <div className="flex flex-col items-center">
-                <Icon icon="game-icons:stairs" className="size-16" />
-                <span className=" font-semibold ">
-                  {residentialData.floor} Floor
-                </span>
-              </div>
+            <div className="flex flex-col items-center justify-center py-4 px-2 ">
+              <Icon
+                icon="game-icons:stairs"
+                className="size-20 text-secondary-700"
+              />
+              <span className="mt-2 text-sm text-gray-500 font-medium">
+                Floor
+              </span>
+              <span className="font-semibold text-lg text-primary">
+                {residentialData.floor} Floor
+              </span>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
