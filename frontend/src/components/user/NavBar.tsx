@@ -5,9 +5,9 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 type RouteKey = "" | "fees" | "settings";
 
 const routes: { key: RouteKey; icon: string }[] = [
-  { key: "settings", icon: "ic:round-settings" },
-  { key: "", icon: "material-symbols:dashboard-rounded" },
   { key: "fees", icon: "mingcute:bill-fill" },
+  { key: "", icon: "material-symbols:dashboard-rounded" },
+  { key: "settings", icon: "ic:round-settings" },
 ];
 
 const NavBar: FC = () => {

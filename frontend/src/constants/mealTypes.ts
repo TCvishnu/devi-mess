@@ -1,8 +1,8 @@
-export type MealType = "Morning" | "Afternoon" | "Evening" | "Full";
+export type MealType = "MORNING" | "AFTERNOON" | "EVENING" | "FULL";
 
 export const mealTypes: { mealType: MealType; icon: string }[] = [
-  { mealType: "Morning", icon: "fe:sunrise" },
-  { mealType: "Afternoon", icon: "charm:sun" },
-  { mealType: "Evening", icon: "lets-icons:moon-fill" },
-  { mealType: "Full", icon: "flowbite:bowl-food-solid" },
+  { mealType: "MORNING", icon: "fe:sunrise" },
+  { mealType: "AFTERNOON", icon: "charm:sun" },
+  { mealType: "EVENING", icon: "lets-icons:moon-fill" },
+  { mealType: "FULL", icon: "flowbite:bowl-food-solid" },
 ];
