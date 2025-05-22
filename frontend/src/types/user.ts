@@ -12,7 +12,7 @@ export interface UserDetails {
 	role?: UserRole
 	isVeg?: boolean
 	messcuts?: Array<Object>
-	residentType?: string // replace with recident enum
+	residentType?: ResidentialDataType // replace with recident enum
 	hasOnBoarded?: boolean
 	adminVerified?: boolean
 }

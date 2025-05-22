@@ -22,7 +22,10 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 		mealType: MealType.Full,
 		role: UserRole.Mess,
 		isVeg: false,
-		residentType: "",
+		residentType: {
+			floor: "Ground",
+			building: "Devi House",
+		},
 	})
 
 	const handleChange = (
@@ -39,9 +42,24 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 					: prev.mealType,
 			residentType:
 				name === "role" && value === UserRole.Mess
-					? ""
+					? undefined
 					: prev.residentType,
 			[name]: name === "isVeg" ? checked : value,
+		}))
+	}
+
+	const handleResidentChange = (event: ChangeEvent<HTMLSelectElement>) => {
+		const { name, value } = event.target
+
+		setFormData((prev) => ({
+			...prev,
+			residentType: {
+				...(prev.residentType || {
+					building: "Devi House",
+					floor: "Ground",
+				}),
+				[name]: value,
+			},
 		}))
 	}
 
@@ -102,25 +120,46 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 			</SelectBox.Select>
 
 			{formData.role == UserRole.Resident && (
-				// replace the value of each option with corresponding enum values
-				<SelectBox.Select
-					name="residentType"
-					label="Recident place"
-					onChange={handleChange}
-					value={formData.residentType}
-					required
-				>
-					<SelectBox.Option value="">Select a type</SelectBox.Option>
-					<SelectBox.Option value="Devi house">
-						Devi house
-					</SelectBox.Option>
-					<SelectBox.Option value="Arcade first floor">
-						Arcade first floor
-					</SelectBox.Option>
-					<SelectBox.Option value="Arcade second floor">
-						Arcade second floor
-					</SelectBox.Option>
-				</SelectBox.Select>
+				<>
+					<SelectBox.Select
+						name="building"
+						label="Recident place"
+						onChange={handleResidentChange}
+						value={formData.residentType?.building}
+						required
+					>
+						<SelectBox.Option value="">
+							Select a type
+						</SelectBox.Option>
+						<SelectBox.Option value="Devi house">
+							Devi house
+						</SelectBox.Option>
+						<SelectBox.Option value="Rockland Arcade">
+							Rockland arcade
+						</SelectBox.Option>
+					</SelectBox.Select>
+
+					<SelectBox.Select
+						name="floor"
+						label="Recident place"
+						onChange={handleResidentChange}
+						value={formData.residentType?.floor}
+						required
+					>
+						<SelectBox.Option value="">
+							Select a floor
+						</SelectBox.Option>
+						<SelectBox.Option value="Ground">
+							Ground floor
+						</SelectBox.Option>
+						{formData.residentType?.building ===
+							"Rockland Arcade" && (
+							<SelectBox.Option value="Top">
+								Top floor
+							</SelectBox.Option>
+						)}
+					</SelectBox.Select>
+				</>
 			)}
 
 			<CheckBox
