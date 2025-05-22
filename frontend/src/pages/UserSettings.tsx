@@ -14,7 +14,7 @@ const UserSettings: FC = () => {
     gender: "MALE",
     isVeg: true,
     phoneNumber: "9080706050",
-    mealType: "Full",
+    mealType: "FULL",
   });
 
   const meal = mealTypes.find(
@@ -118,7 +118,7 @@ const UserSettings: FC = () => {
 
         <div className="col-span-1 flex flex-col items-center gap-1 bg-primary-50 rounded-xl p-3">
           <span className="text-sm uppercase tracking-wide ">
-            {profileData.mealType === "Full"
+            {profileData.mealType === "FULL"
               ? "Full Day Meal"
               : `${profileData.mealType} Only`}
           </span>
@@ -139,7 +139,7 @@ const UserSettings: FC = () => {
           </span>
 
           <div className="w-full grid grid-cols-2 gap-4">
-            <div className="flex flex-col items-center justify-center py-4 px-2">
+            <div className="flex flex-col items-center py-4 px-2">
               <Icon
                 icon="mingcute:building-2-fill"
                 className="size-20 text-secondary-700"
@@ -147,12 +147,12 @@ const UserSettings: FC = () => {
               <span className="mt-2 text-sm font-medium text-gray-500">
                 Building
               </span>
-              <span className="font-semibold text-lg text-primary">
+              <span className="font-semibold text-lg text-primary text-center">
                 {residentialData.building}
               </span>
             </div>
 
-            <div className="flex flex-col items-center justify-center py-4 px-2 ">
+            <div className="flex flex-col items-center py-4 px-2 ">
               <Icon
                 icon="game-icons:stairs"
                 className="size-20 text-secondary-700"

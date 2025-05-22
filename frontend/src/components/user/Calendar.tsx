@@ -17,7 +17,7 @@ const Calendar: FC = () => {
     dayjs()
   );
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
-  const [selectedCutType, setSelectedCutType] = useState<MealType>("Full");
+  const [selectedCutType, setSelectedCutType] = useState<MealType>("FULL");
   const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
@@ -86,7 +86,7 @@ const Calendar: FC = () => {
   const handleNewCutsCancel: () => void = () => {
     setIsSelectingCuts(false);
     setNewCutRange([null, null]);
-    setSelectedCutType("Full");
+    setSelectedCutType("FULL");
   };
 
   const getDayClassNames = (

@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { MealType } from "@constants/mealTypes";
+import { ResidentFeesType, UserRole } from "types/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 type MessCut = {
@@ -16,19 +17,27 @@ const totalFees = daysInPreviousMonth * 160;
 
 // from backend and gender wise
 const cutToCostMap = {
-  Full: 160,
-  Evening: 60,
-  Morning: 50,
-  Afternoon: 40,
+  FULL: 160,
+  EVENING: 60,
+  MORNING: 50,
+  AFTERNOON: 40,
 };
 
 const UserFees: FC = () => {
+  const userRole: UserRole = "RESIDENT";
   const AprMessCuts: MessCut[] = [
-    { date: dayjs("2025-03-10"), cutType: "Full" },
-    { date: dayjs("2025-03-11"), cutType: "Morning" },
-    { date: dayjs("2025-03-21"), cutType: "Full" },
-    { date: dayjs("2025-03-24"), cutType: "Evening" },
+    { date: dayjs("2025-03-10"), cutType: "FULL" },
+    { date: dayjs("2025-03-11"), cutType: "MORNING" },
+    { date: dayjs("2025-03-21"), cutType: "FULL" },
+    { date: dayjs("2025-03-24"), cutType: "EVENING" },
   ];
+
+  const residentialFees: ResidentFeesType = {
+    rent: 3100,
+    wifi: 0,
+    electricity: 0,
+    totalFees: 3100,
+  };
 
   const finalFees = AprMessCuts.reduce(
     (fees, cutDate) => fees - cutToCostMap[cutDate.cutType],
@@ -43,16 +52,16 @@ const UserFees: FC = () => {
       };
     },
     {
-      Full: 0,
-      Morning: 0,
-      Evening: 0,
-      Afternoon: 0,
+      FULL: 0,
+      MORNING: 0,
+      EVENING: 0,
+      AFTERNOON: 0,
     }
   );
 
   return (
-    <div className="py-6 w-full max-w-md mx-auto">
-      <button
+    <div className="py-6 w-full max-w-md mx-auto flex flex-col gap-4">
+      <div
         className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"
       >
@@ -88,22 +97,60 @@ const UserFees: FC = () => {
         <div className="w-full mt-4 flex flex-col gap-1 font-medium text-gray-500">
           <div className="w-full flex justify-between">
             <span>Full day cuts:</span>
-            <span>{cutDetails.Full}</span>
+            <span>{cutDetails.FULL}</span>
           </div>
           <div className="w-full flex justify-between">
             <span>Morning cuts:</span>
-            <span>{cutDetails.Morning}</span>
+            <span>{cutDetails.MORNING}</span>
           </div>
           <div className="w-full flex justify-between">
             <span>Afternoon cuts:</span>
-            <span>{cutDetails.Afternoon}</span>
+            <span>{cutDetails.AFTERNOON}</span>
           </div>
           <div className="w-full flex justify-between">
             <span>Evening cuts:</span>
-            <span>{cutDetails.Evening}</span>
+            <span>{cutDetails.EVENING}</span>
           </div>
         </div>
-      </button>
+      </div>
+
+      {userRole === "RESIDENT" && (
+        <div
+          className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
+        flex flex-col justify-start"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+              <Icon icon="healthicons:home-outline" className="size-8" />
+              Hostel Fees
+            </h2>
+            <span className="text-primary font-semibold">
+              {prevMonth.format("MMMM, YYYY")}
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <span>Room Rent</span>
+            <span>{residentialFees.rent}</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600 pb-2">
+            <span>Electricity Bill</span>
+            <span>{residentialFees.electricity || "--"}</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600 pb-2 border-b">
+            <span>Wifi Charges</span>
+            <span>{residentialFees.wifi || "--"}</span>
+          </div>
+
+          <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
+            <span className="flex items-center gap-1">Final Fees</span>
+            <span className="text-accent font-black flex items-center">
+              <Icon icon="mdi:currency-inr" className=" size-5 " />
+              {residentialFees.totalFees}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
