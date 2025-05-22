@@ -1,6 +1,6 @@
 // import { Gender, MealType, UserRole } from "./enums"
 
-export type Gender = "MALE" | "FEMALE"
+export type Gender = "MALE" | "FEMALE" // Need to change to an enum type
 export type UserRole = "ADMIN" | "RESIDENT" | "MESS"
 
 export interface UserDetails {
