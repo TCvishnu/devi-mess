@@ -3,6 +3,7 @@
 @theme {
 	--color-primary: #001522;
 	--color-accent: #fc6874;
+	--breakpoint-xs: 400px;
 
 	--animate-shake: shake 0.2s ease-in-out;
 	--animate-slide-in: slide-in 0.2s ease-in-out;

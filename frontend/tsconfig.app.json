@@ -22,14 +22,14 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 
-		"baseUrl": ".",
+		"baseUrl": "src",
 		"paths": {
+			"@constants/*": ["constants/*"],
 			"@hooks/*": ["src/hooks/*"],
 			"@form/*": ["src/common/components/form/*"],
 			"@utils/*": ["src/common/utils/*"],
 			"@services/*": ["src/services/*"],
 			"@type/*": ["src/types/*"]
 		}
-	},
-	"include": ["src"]
+	}
 }
