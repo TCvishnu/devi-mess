@@ -1,7 +1,4 @@
-// import { Gender, MealType, UserRole } from "./enums"
-
-export type Gender = "MALE" | "FEMALE" // Need to change to an enum type
-export type UserRole = "ADMIN" | "RESIDENT" | "MESS"
+import { Gender, MealType, UserRole } from "./enums"
 
 export interface UserDetails {
 	id?: number
@@ -12,7 +9,7 @@ export interface UserDetails {
 	role?: UserRole
 	isVeg?: boolean
 	messcuts?: Array<Object>
-	residentType?: ResidentialDataType // replace with recident enum
+	residentType?: ResidentialDataType
 	hasOnBoarded?: boolean
 	adminVerified?: boolean
 }
@@ -22,7 +19,6 @@ export interface ProfileCompleteFormData
 		UserDetails,
 		"gender" | "mealType" | "role" | "isVeg" | "residentType"
 	> {}
-import { MealType } from "@constants/mealTypes"
 
 export type ProfileDataType = {
 	fullName: string
