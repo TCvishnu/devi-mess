@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from "react"
-import PhoneNumberField from "../../../common/components/form/PhoneNumberField"
-import PasswordField from "../../../common/components/form/PasswordField"
-import Input from "../../../common/components/form/Input"
+import PhoneNumberField from "@form/PhoneNumberField"
+import PasswordField from "@form/PasswordField"
+import Input from "@form/Input"
 import Button from "../../../common/components/button/Button"
-import { RegisterFormData, RegisterFormDataError } from "../../../types/auth"
+import { RegisterFormData, RegisterFormDataError } from "@type/auth"
 
 type LoginFormProps = {
 	onSubmit: (

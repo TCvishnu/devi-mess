@@ -21,3 +21,7 @@ export interface RegisterFormDataError {
 	password: string
 	confirmPassword: string
 }
+
+export type RegistrationDetails = Omit<RegisterFormData, "confirmPassword"> & {
+	otp: string
+}
