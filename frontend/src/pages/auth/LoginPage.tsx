@@ -1,19 +1,35 @@
 import { FormEvent, useState } from "react"
-import { LoginFormData } from "../../types/auth"
-import LoginForm from "../../components/auth/form/LoginForm"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
+import LoginForm from "../../components/auth/form/LoginForm"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
+import { login } from "@services/authService"
+import { useAuthContext } from "../../context/AuthContext"
+import { LoginFormData } from "@type/auth"
 
 const LoginPage = () => {
+	const navigate = useNavigate()
+
+	const { login: updateUserState } = useAuthContext()
+
 	const [pending, setPending] = useState<boolean>(false)
 
-	const handleSubmit = (
+	const handleSubmit = async (
 		event: FormEvent<HTMLFormElement>,
 		formData: LoginFormData
 	) => {
 		try {
-			console.log(formData, "FROM LOGIN")
+			const { status, data } = await login(formData)
+
+			console.log(status, data, formData, "FROM LOGIN")
+
+			if (status && data) {
+				updateUserState(data)
+			}
+
+			if (!data?.hasOnBoarded) {
+				navigate("/profile-complete")
+			}
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
 		}

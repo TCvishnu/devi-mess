@@ -22,14 +22,16 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@constants/*": ["constants/*"],
-      "@utils/*": ["utils/*"],
-      "@components/*": ["components/*"],
-      "@contexts/*": ["contexts/*"]
-    },
-    "types": []
-  },
-  "include": ["src"]
+      "@constants/*": ["src/constants/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@form/*": ["src/common/components/form/*"],
+      "@utils/*": ["src/common/utils/*"],
+      "@services/*": ["src/services/*"],
+      "@type/*": ["src/types/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@components/*": ["src/components/*"]
+    }
+  }
 }
