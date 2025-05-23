@@ -1,7 +1,24 @@
-import { MealType } from "@constants/mealTypes";
+import { Gender, MealType, UserRole } from "./enums";
 
-export type Gender = "MALE" | "FEMALE";
-export type UserRole = "ADMIN" | "RESIDENT" | "MESS";
+export interface UserDetails {
+  id?: number;
+  name?: string;
+  phoneNumber?: string;
+  gender?: Gender;
+  mealType?: MealType;
+  role?: UserRole;
+  isVeg?: boolean;
+  messcuts?: Array<Object>;
+  residentType?: ResidentialDataType;
+  hasOnBoarded?: boolean;
+  adminVerified?: boolean;
+}
+
+export interface ProfileCompleteFormData
+  extends Pick<
+    UserDetails,
+    "gender" | "mealType" | "role" | "isVeg" | "residentType"
+  > {}
 
 export type ProfileDataType = {
   fullName: string;
@@ -15,6 +32,31 @@ export type ResidentialDataType = {
   building: "Devi House" | "Rockland Arcade";
   floor: "Top" | "Ground";
 };
+
+export interface User {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  phoneNumber: string;
+  password: string;
+  gender: Gender;
+  mealType: MealType;
+  role: UserRole;
+  isVeg: boolean;
+  hasOnboarded: boolean;
+  adminVerified: boolean;
+  messcuts: Messcut[];
+}
+
+export interface Messcut {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  date: Date;
+  cutType: MealType;
+  userId: string;
+}
 
 export type ResidentFeesType = {
   rent: number;

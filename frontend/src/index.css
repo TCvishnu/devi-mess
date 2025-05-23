@@ -6,6 +6,8 @@
   --breakpoint-xs: 400px;
 
   --animate-shake: shake 0.2s ease-in-out;
+  --animate-slide-in: slide-in 0.2s ease-in-out;
+  --animate-slide-out: slide-out 0.2s ease-in-out;
 
   @keyframes shake {
     0% {
@@ -19,6 +21,24 @@
     }
     100% {
       transform: translateX(0px);
+    }
+  }
+
+  @keyframes slide-in {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  @keyframes slide-out {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(100%);
     }
   }
 }
@@ -46,5 +66,28 @@
 @media (min-width: 2100px) {
   .shapedividers::before {
     background-size: 209% calc(2vw + 360px);
+  }
+}
+
+@layer utilities {
+  .tab-underline {
+    position: relative;
+  }
+
+  .tab-underline::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    height: 2px;
+    width: 105%;
+    background-color: theme("colors.accent");
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .tab-underline-active::after {
+    transform: translateX(-50%) scaleX(1);
   }
 }
