@@ -1,13 +1,14 @@
 require("dotenv").config();
 
-import express, { Request, Response } from "express";
-import { UserRole } from "@prisma/client";
+import express from "express";
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "./auth/passport";
-import jwt from "jsonwebtoken";
-import authenticateAdmin from "./auth/authenticateAdmin";
+import { enhance } from "@zenstackhq/runtime";
+import { ZenStackMiddleware } from "@zenstackhq/server/express";
+import prisma from "./lib/prisma";
+import { User } from "@prisma/client";
 
 const app = express();
 const PORT = 3000;
@@ -19,6 +20,14 @@ app.use(passport.initialize());
 
 // every API request MUST pass authentication
 app.use("/api", passport.authenticate("jwt", { session: false }));
+app.use(
+  "/api",
+  ZenStackMiddleware({
+    getPrisma: (req) => {
+      enhance(prisma, { user: req.user! as User });
+    },
+  })
+);
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);

@@ -6,7 +6,8 @@ import {
 } from "passport-jwt";
 
 import { Request } from "express";
-import { JwtPayload } from "../types/auth";
+import prisma from "../lib/prisma";
+import { User } from "@prisma/client";
 
 const opts: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromExtractors([
@@ -16,9 +17,16 @@ const opts: StrategyOptions = {
 };
 
 passport.use(
-  new JwtStrategy(opts, (jwtPayload: JwtPayload, done) => {
-    // a fetch is needed to get user data
-    return done(null, jwtPayload);
+  new JwtStrategy(opts, async (jwtPayload, done) => {
+    const user: User | null = await prisma.user.findUnique({
+      where: { id: jwtPayload.sub },
+    });
+
+    if (!user) {
+      return done(null, false);
+    }
+
+    return done(null, user);
   })
 );
 

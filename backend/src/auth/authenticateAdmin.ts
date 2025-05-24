@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { JwtPayload } from "../types/auth";
+import { User } from "@prisma/client";
 
 const authenticateAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user as JwtPayload | undefined;
+  const user = req.user as User;
   if (!user) {
     res
       .status(401)
