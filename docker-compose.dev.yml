@@ -10,6 +10,8 @@ services:
       - db
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/messdb
+    env_file:
+      - .env
 
   frontend:
     build: ./frontend
@@ -23,7 +25,7 @@ services:
 
   db:
     image: postgres:15
-    ports: 
+    ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
