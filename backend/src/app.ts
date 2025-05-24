@@ -17,7 +17,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(passport.initialize());
 
-// every API request must pass authentication
+// every API request MUST pass authentication
 app.use("/api", passport.authenticate("jwt", { session: false }));
 
 app.listen(PORT, () => {
