@@ -6,6 +6,7 @@
     "dev": "nodemon"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
@@ -22,6 +23,7 @@
     "@prisma/client": "6.5.x",
     "@zenstackhq/runtime": "2.13.3",
     "@zenstackhq/server": "^2.15.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

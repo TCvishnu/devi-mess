@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 
-// do not use this client
+// only use it for /register and /login
 const prisma = new PrismaClient();
 export default prisma;
