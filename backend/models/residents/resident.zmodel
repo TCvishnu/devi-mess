@@ -1,0 +1,22 @@
+import '../base/base'
+import "../user/user"
+
+model Resident extends Base {
+    user     User     @relation(fields: [userId], references: [id])
+    userId   String   @unique()
+
+    building Building
+    floor    Floor
+
+    @@allow('all', this.userId == auth().id || auth().role == "ADMIN")
+}
+
+enum Building {
+    DEVI_HOUSE
+    ROCKLAND_ARCADE
+}
+
+enum Floor {
+    TOP
+    GROUND
+}
