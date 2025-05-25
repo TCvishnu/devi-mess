@@ -1,17 +1,21 @@
 require("dotenv").config();
 
-import express, { Request, Response } from "express";
-
+import express from "express";
+import { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import passport from "./auth/passport";
+import { useZenstackClient } from "./middlewares/useZenstackClient";
 import prisma from "./lib/prisma";
+
+// router imports
+import { router as messcutsRouter } from "./routes/messcuts.routes";
 
 const app = express();
 const PORT = 3000;
-const SALT_ROUNDS = 10;
+const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
 // middlewares
 app.use(cors());
@@ -21,46 +25,27 @@ app.use(passport.initialize());
 
 // every API request MUST pass authentication
 app.use("/api", passport.authenticate("jwt", { session: false }));
+app.use("/api", useZenstackClient);
 
-// ignore these 2 requests: kept just for testing
-app.post("/register", async (req: Request, res: Response) => {
-  const user = req.body;
+// routes
+app.use("/api/user", messcutsRouter);
 
-  try {
-    const existingUser = await prisma.user.findUnique({
-      where: { phoneNumber: user.phoneNumber },
-    });
-
-    if (existingUser) {
-      res.status(400).json({ error: "Phone number already registered" });
-      return;
-    }
-
-    const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
-    user.password = hashedPassword;
-
-    const newUser = await prisma.user.create({ data: user });
-
-    res
-      .status(201)
-      .json({ message: "User created successfully", user: newUser });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create user" });
-  }
-});
-
-app.get("/user", async (req: Request, res: Response) => {
-  const { phoneNumber } = req.body;
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: { phoneNumber },
-    });
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user" });
-  }
+// unwanted route - keep it for cookie signing
+app.get("/set-cookie", (req: Request, res: Response) => {
+  const payload = {
+    id: "cmb3fv9p00000bn992m1cmfgq",
+    role: "ADMIN",
+  };
+  const token = jwt.sign(payload, JWT_SECRET, {
+    expiresIn: "7d",
+  });
+  res.cookie("authToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+  });
+  res.status(200).json({ message: "JWT cookie set successfully" });
 });
 
 app.listen(PORT, () => {
