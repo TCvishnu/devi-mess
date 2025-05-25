@@ -7,8 +7,7 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 
 import passport from "./auth/passport";
-import { useZenstackClient } from "./middlewares/useZenstackClient";
-import prisma from "./lib/prisma";
+import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 
 // router imports
 import { router as messcutsRouter } from "./routes/messcuts.routes";

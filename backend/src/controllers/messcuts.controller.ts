@@ -25,7 +25,7 @@ const createMany = async (req: Request, res: Response) => {
 };
 
 const readMonthlyMessCuts = async (req: Request, res: Response) => {
-  let { month, year } = req.query as { month: string; year: string };
+  let { month, year } = req.validatedQuery as { month: string; year: string };
 
   const { userID } = req.params;
   try {
