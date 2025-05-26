@@ -16,6 +16,7 @@ import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 // router imports
 import { messCutsRouter } from "./routes/messcuts.routes";
 import { userRouter } from "./routes/user.routes";
+import { verifyUserID } from "./middlewares/verifyUserID.middleware";
 
 const app = express();
 const PORT = 3000;
@@ -36,13 +37,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
 
-// every API request MUST pass authentication
+// API middlewares
 app.use("/api", passport.authenticate("jwt", { session: false }));
 app.use("/api", useZenstackClient);
 app.use("/api/user", userAdminVerified);
 
 // routes
-app.use("/api/user/:userID/messcuts", messCutsRouter);
+app.use("/api/user/:userID/messcuts", verifyUserID, messCutsRouter);
 app.use("/api/user", userRouter);
 
 // unwanted route - keep it for cookie signing
