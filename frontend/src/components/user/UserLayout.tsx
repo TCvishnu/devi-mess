@@ -5,11 +5,7 @@ import NavBar from "./NavBar"
 import { useAuthContext } from "@contexts/AuthContext"
 
 const UserLayout: FC = () => {
-	// const [fullName] = useState<string>("Dummy")
-
 	const { user } = useAuthContext()
-
-	console.log(user?.hasOnboarded, "FROM USER LAYOUT")
 
 	return (
 		<div className="w-screen h-screen flex flex-col p-4 bg-primary">
@@ -33,7 +29,7 @@ const UserLayout: FC = () => {
 								<Outlet />
 							</>
 						) : (
-							<div>Please wait for admin verification</div> // replace with a page or component
+							<Navigate to="/waiting-for-verification" />
 						)
 					) : (
 						<Navigate to={`/complete-profile`} />

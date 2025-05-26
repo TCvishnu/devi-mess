@@ -43,6 +43,9 @@ const LoginPage = () => {
 		}
 	}
 
+	// add a auto login feature at the end of development.
+	// Logging from cookie
+
 	return (
 		<div className=" w-full px-6 py-10 h-full flex flex-col justify-around gap-60">
 			<BackgroundLayer />

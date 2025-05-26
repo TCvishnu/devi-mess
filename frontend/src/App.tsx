@@ -11,6 +11,7 @@ import AuthProvider from "./contexts/AuthContext"
 import AdminLayout from "./pages/admin/AdminLayout"
 
 import UserRoutesWrapper from "./pages/UserRoutesWrapper"
+import WaitingForAdminVerification from "./pages/user/WaitForAdminVerification"
 
 function App() {
 	return (
@@ -26,6 +27,12 @@ function App() {
 							<Route path="settings" element={<UserSettings />} />
 							<Route path="fees" element={<UserFees />} />
 						</Route>
+
+						<Route
+							path="/waiting-for-verification"
+							element={<WaitingForAdminVerification />}
+						/>
+
 						<Route
 							path="/complete-profile"
 							element={<ProfileCompletePage />}
