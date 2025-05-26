@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 const PageNotFound: FC = () => {
   return (
-    <div className="flex h-screen flex-col items-center justify-center bg-gray-100 text-gray-800 px-6 relative">
+    <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-100 text-gray-800 px-6 relative overflow-x-hidden">
       <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
       <p className="text-xl text-center max-w-md mb-6">
         Sorry, the page you are looking for could not be found.
