@@ -1,5 +1,6 @@
 import { User } from "@prisma/client"
-import prisma from "../lib/prisma"
+import prisma from "@lib/prisma"
+import getPrisma from "@lib/getPrisma"
 
 const create = async (user: User) => {
 	return await prisma.user.create({
@@ -12,6 +13,19 @@ const findById = async (id: string) => {
 		where: {
 			id,
 		},
+	})
+}
+
+const findByIdAndUpdate = async (
+	db: ReturnType<typeof getPrisma>,
+	id: string,
+	updatedData: Partial<User>
+) => {
+	return await db.user.update({
+		where: {
+			id,
+		},
+		data: updatedData,
 	})
 }
 
@@ -35,4 +49,5 @@ export default {
 	create,
 	findById,
 	findByPhoneNumber,
+	findByIdAndUpdate,
 }
