@@ -9,3 +9,5 @@ import {
 export const userRouter = Router();
 
 userRouter.get("/", userController.getUserWithoutPassword);
+
+userRouter.get("/full-details", userController.getFullUserDetails);
