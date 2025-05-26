@@ -81,10 +81,7 @@ const RegisterPage = () => {
 					<span>already have an account?</span>
 					<span>
 						click here to
-						<Link
-							to="/login"
-							className=" ml-1 underline text-gray-800"
-						>
+						<Link to="/" className=" ml-1 underline text-gray-800">
 							login
 						</Link>
 					</span>
