@@ -41,6 +41,25 @@
       transform: translateX(100%);
     }
   }
+
+  @keyframes moving-line {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-250vw);
+      opacity: 0.2;
+    }
+  }
+}
+
+.animate-moving-line {
+  animation: moving-line 8s linear infinite;
+}
+.animate-moving-line2 {
+  animation: moving-line 8s linear infinite;
+  animation-delay: 3s;
 }
 
 .shapedividers {

@@ -10,6 +10,8 @@ import ProfileCompletePage from "./pages/user/ProfileCompletePage";
 import AuthProvider from "./context/AuthContext";
 import AdminLayout from "./pages/admin/AdminLayout";
 
+import PageNotFound from "./pages/PageNotFound";
+
 function App() {
   return (
     <AuthProvider>
@@ -24,6 +26,8 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/complete-profile" element={<ProfileCompletePage />} />
           <Route path="/admin" element={<AdminLayout />} />
+
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
     </AuthProvider>
