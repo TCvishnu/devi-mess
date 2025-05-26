@@ -92,7 +92,7 @@ const login = async (req: Request, res: Response) => {
 		res.cookie("accessToken", accessToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "prod",
-			sameSite: process.env.NODE_ENV === "prod" ? "strict" : "none",
+			sameSite: process.env.NODE_ENV === "prod" ? "strict" : "lax",
 			maxAge: ACCESS_TOKEN_EXPIRE_TIME,
 		})
 

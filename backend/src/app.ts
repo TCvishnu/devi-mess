@@ -20,8 +20,18 @@ declare global {
 	}
 }
 
+const NODE_ENV = process.env.NODE_ENV
+
 // middlewares
-app.use(cors())
+app.use(
+	cors({
+		origin:
+			NODE_ENV === "prod"
+				? ["production urls"]
+				: ["http://localhost:5173"],
+		credentials: true,
+	})
+)
 app.use(cookieParser())
 app.use(express.json())
 app.use(passport.initialize())
