@@ -4,7 +4,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import LoginForm from "../../components/auth/form/LoginForm"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
 import { login } from "@services/authService"
-import { useAuthContext } from "../../context/AuthContext"
+import { useAuthContext } from "../../contexts/AuthContext"
 import { LoginFormData } from "@type/auth"
 
 const LoginPage = () => {

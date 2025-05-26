@@ -4,7 +4,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm"
 import { ProfileCompleteFormData } from "@type/user"
 import { saveProfile } from "@services/userService"
-import { useAuthContext } from "../../context/AuthContext"
+import { useAuthContext } from "../../contexts/AuthContext"
 
 const ProfileCompletePage = () => {
 	const navigate = useNavigate()
