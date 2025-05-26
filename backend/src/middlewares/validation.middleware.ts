@@ -28,14 +28,6 @@ export const validateAndTransformRequest = (request: AnyYupSchema) => {
   };
 };
 
-declare global {
-  namespace Express {
-    interface Request {
-      validatedQuery?: Record<string, Object>;
-    }
-  }
-}
-
 export const validateQueryAndTransformRequest = (request: AnyYupSchema) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {

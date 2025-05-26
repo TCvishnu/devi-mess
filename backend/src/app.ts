@@ -7,14 +7,28 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 
 import passport from "./auth/passport";
+import getPrisma from "./lib/getPrisma";
+
+// middleware imports
+import { userAdminVerified } from "./middlewares/userAdminVerified.middleware";
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 
 // router imports
-import { router as messcutsRouter } from "./routes/messcuts.routes";
+import { messCutsRouter } from "./routes/messcuts.routes";
+import { userRouter } from "./routes/user.routes";
 
 const app = express();
 const PORT = 3000;
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
+
+declare global {
+  namespace Express {
+    interface Request {
+      db: ReturnType<typeof getPrisma>;
+      validatedQuery?: Record<string, Object>;
+    }
+  }
+}
 
 // middlewares
 app.use(cors());
@@ -25,9 +39,11 @@ app.use(passport.initialize());
 // every API request MUST pass authentication
 app.use("/api", passport.authenticate("jwt", { session: false }));
 app.use("/api", useZenstackClient);
+app.use("/api/user", userAdminVerified);
 
 // routes
-app.use("/api/user", messcutsRouter);
+app.use("/api/user", userRouter);
+app.use("/api/user/:userID/messcuts", messCutsRouter);
 
 // unwanted route - keep it for cookie signing
 app.get("/set-cookie", (req: Request, res: Response) => {

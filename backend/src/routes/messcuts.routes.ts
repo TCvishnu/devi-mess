@@ -9,16 +9,16 @@ import {
   monthYearQueryMessCutsSchema,
 } from "../validations/messcuts.yup";
 
-export const router = Router();
+export const messCutsRouter = Router();
 
-router.post(
-  "/:userID/messcuts",
+messCutsRouter.post(
+  "/",
   validateAndTransformRequest(createManyMessCutsSchema),
   messcutsController.createMany
 );
 
-router.get(
-  "/:userID/messcuts",
+messCutsRouter.get(
+  "/",
   validateQueryAndTransformRequest(monthYearQueryMessCutsSchema),
   messcutsController.readMonthlyMessCuts
 );
