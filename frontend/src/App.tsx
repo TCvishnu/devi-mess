@@ -15,17 +15,19 @@ function App() {
 		<AuthProvider>
 			<Router>
 				<Routes>
+					<Route path="/" element={<LoginPage />} />
+					<Route path="/register" element={<RegisterPage />} />
+
 					<Route path="/user/:userID" element={<UserLayout />}>
 						<Route index element={<UserDashboard />} />
 						<Route path="settings" element={<UserSettings />} />
 						<Route path="fees" element={<UserFees />} />
+						<Route
+							path="complete-profile"
+							element={<ProfileCompletePage />}
+						/>
 					</Route>
-					<Route path="/" element={<LoginPage />} />
-					<Route path="/register" element={<RegisterPage />} />
-					<Route
-						path="/complete-profile"
-						element={<ProfileCompletePage />}
-					/>
+
 					<Route path="/admin" element={<AdminLayout />} />
 				</Routes>
 			</Router>
