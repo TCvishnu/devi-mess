@@ -55,11 +55,11 @@
 }
 
 .animate-moving-line {
-  animation: moving-line 8s linear infinite;
+  animation: moving-line 10s linear infinite;
 }
 .animate-moving-line2 {
-  animation: moving-line 8s linear infinite;
-  animation-delay: 3s;
+  animation: moving-line 10s linear infinite;
+  animation-delay: 5s;
 }
 
 .shapedividers {

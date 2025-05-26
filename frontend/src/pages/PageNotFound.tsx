@@ -5,56 +5,56 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 const PageNotFound: FC = () => {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-100 text-gray-800 px-6 relative overflow-x-hidden">
-      <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
-      <p className="text-xl text-center max-w-md mb-6">
-        Sorry, the page you are looking for could not be found.
+      <h1 className="text-7xl font-extrabold text-primary mb-3">404!</h1>
+      <p className="text-2xl text-center max-w-lg mb-2 font-semibold text-primary">
+        Oops! Ee page illa tto
+      </p>
+      <p className="text-base text-center max-w-md mb-6 text-gray-700">
+        Santhoshettan ee page aakan paranjilarn
       </p>
       <Link
-        //dynamic routing based on user role
         to="/user/1"
-        className="bg-primary text-white px-5 py-2 rounded-md  "
+        className="bg-primary text-white px-6 py-3 rounded-full shadow-md hover:scale-105 transition-transform duration-300"
       >
-        Visit Dashboard
+        - Back to Dashboard -
       </Link>
 
-      <div className="absolute flex items-center gap-1 bottom-1/6 text-primary z-10">
-        <div className="rounded-full size-[3px] bg-primary animate-ping" />
-        <div className="rounded-full size-[6px] bg-primary animate-ping delay-500" />
-        <div className="rounded-full size-[10px] bg-primary animate-ping delay-1000" />
-        <Icon
-          icon="heroicons:paper-airplane-20-solid"
-          className="size-16 text-primary"
-        />
+      <div className="absolute flex items-center gap-2 bottom-20 text-primary z-10 ">
+        <div className="rounded-full size-1 bg-primary animate-ping" />
+        <div className="rounded-full size-2 bg-primary animate-ping delay-75" />
+        <div className="rounded-full size-3 bg-primary animate-ping delay-300" />
+        <Icon icon="fe:paper-plane" className=" size-10 text0-primary" />
       </div>
-      {Array.from({ length: 20 }).map((_, i) => {
-        const right = Math.random() * 90 - 120;
-        const bottom = Math.floor(10 + Math.random() * 20);
+
+      {Array.from({ length: 15 }).map((_, i) => {
+        const left = 100 + Math.random() * 100;
+        const top = Math.random() * 100;
         const width = 1 + Math.random() * 2;
 
         return (
           <div
-            key={i}
-            className="absolute h-[2px] bg-primary z-0 animate-moving-line"
+            key={`sparkle-${i}`}
+            className="absolute h-[2px] bg-primary opacity-30 animate-moving-line z-0"
             style={{
-              right: `${right}%`,
-              bottom: `${bottom}%`,
+              left: `${left}%`,
+              top: `${top}%`,
               width: `${width}rem`,
             }}
           />
         );
       })}
-      {Array.from({ length: 20 }).map((_, i) => {
-        const right = Math.random() * 90 - 180;
-        const bottom = Math.floor(10 + Math.random() * 20);
+      {Array.from({ length: 15 }).map((_, i) => {
+        const left = 100 + Math.random() * 100;
+        const top = Math.random() * 100;
         const width = 1 + Math.random() * 2;
 
         return (
           <div
-            key={i}
-            className="absolute h-[2px] bg-primary z-0 animate-moving-line2"
+            key={`sparkle-${i + 15}`}
+            className="absolute h-[2px] bg-primary opacity-30 animate-moving-line2 z-0"
             style={{
-              right: `${right}%`,
-              bottom: `${bottom}%`,
+              left: `${left}%`,
+              top: `${top}%`,
               width: `${width}rem`,
             }}
           />
