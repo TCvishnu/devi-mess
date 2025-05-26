@@ -6,10 +6,10 @@ model User extends Base {
   name            String
   phoneNumber     String    @unique()
   password        String    @password()
-  gender          Gender
-  mealType        MealType
-  role            UserRole
-  isVeg           Boolean
+  gender          Gender?
+  mealType        MealType?
+  role            UserRole?
+  isVeg           Boolean?
   messcuts        Messcut[]
   residentialData Resident?
 
