@@ -10,6 +10,8 @@ import ProfileCompletePage from "./pages/user/ProfileCompletePage"
 import AuthProvider from "./contexts/AuthContext"
 import AdminLayout from "./pages/admin/AdminLayout"
 
+import UserRoutesWrapper from "./pages/UserRoutesWrapper"
+
 function App() {
 	return (
 		<AuthProvider>
@@ -18,12 +20,14 @@ function App() {
 					<Route path="/" element={<LoginPage />} />
 					<Route path="/register" element={<RegisterPage />} />
 
-					<Route path="/user/:userID" element={<UserLayout />}>
-						<Route index element={<UserDashboard />} />
-						<Route path="settings" element={<UserSettings />} />
-						<Route path="fees" element={<UserFees />} />
+					<Route element={<UserRoutesWrapper />}>
+						<Route path="/user/:userID" element={<UserLayout />}>
+							<Route index element={<UserDashboard />} />
+							<Route path="settings" element={<UserSettings />} />
+							<Route path="fees" element={<UserFees />} />
+						</Route>
 						<Route
-							path="complete-profile"
+							path="/complete-profile"
 							element={<ProfileCompletePage />}
 						/>
 					</Route>
