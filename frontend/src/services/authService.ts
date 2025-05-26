@@ -11,11 +11,13 @@ import { handleError } from "./handlerService"
 type LoginResponse = {
 	status: boolean
 	data?: UserDetails
+	message?: string
 }
 
 type RegisterResponse = {
 	status: boolean
 	data?: UserDetails
+	message?: string
 }
 
 export const login = async (data: LoginFormData): Promise<LoginResponse> => {
@@ -30,17 +32,13 @@ export const login = async (data: LoginFormData): Promise<LoginResponse> => {
 
 		if (!response) throw new Error("Network Error")
 
-		const responseData = response.data
-
-		return {
-			status: true,
-			data: responseData,
-		}
+		return response.data
 	} catch (err: unknown) {
 		if (err instanceof Error) handleError(err.message)
 
 		return {
 			status: false,
+			message: "An error occured. Please try again later",
 		}
 	}
 }
@@ -49,27 +47,23 @@ export const register = async (
 	data: RegistrationDetails
 ): Promise<RegisterResponse> => {
 	try {
-		const response = await fetchApi("/api/auth/login", {
+		const response = await fetchApi("/api/auth/register", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(data),
+			body: JSON.stringify({ ...data, name: data.fullName }),
 		})
 
 		if (!response) throw new Error("Network Error")
 
-		const responseData = response.data
-
-		return {
-			status: true,
-			data: responseData,
-		}
+		return response.data
 	} catch (err: unknown) {
 		if (err instanceof Error) handleError(err.message)
 
 		return {
 			status: false,
+			message: "An error occured. Please try again later",
 		}
 	}
 }
@@ -119,6 +113,7 @@ export const verifyOtp = async (phoneNumber: string, otp: string) => {
 
 		return {
 			status: false,
+			message: "An error occured. Please try again later",
 		}
 	}
 }

@@ -3,6 +3,7 @@ import PhoneNumberField from "@form/PhoneNumberField"
 import PasswordField from "@form/PasswordField"
 import Button from "../../../common/components/button/Button"
 import { LoginFormData, LoginFormDataError } from "@type/auth"
+import { Icon } from "@iconify-icon/react"
 
 type LoginFormProps = {
 	onSubmit: (
@@ -10,9 +11,14 @@ type LoginFormProps = {
 		formData: LoginFormData
 	) => void
 	disable?: boolean
+	pending?: boolean
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, disable = false }) => {
+const LoginForm: React.FC<LoginFormProps> = ({
+	onSubmit,
+	disable = false,
+	pending = false,
+}) => {
 	const [formData, setFormData] = useState<LoginFormData>({
 		phoneNumber: "",
 		password: "",
@@ -86,8 +92,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, disable = false }) => {
 				isError={fieldErrors.password ? true : false}
 				errorMessage={fieldErrors.password}
 			/>
-			<Button className=" mt-4" disabled={disable}>
-				Login
+			<Button
+				className=" mt-4 flex justify-center items-center"
+				disabled={disable}
+			>
+				{pending ? (
+					<Icon width={24} color="white" icon="eos-icons:loading" />
+				) : (
+					"Login"
+				)}
 			</Button>
 		</form>
 	)

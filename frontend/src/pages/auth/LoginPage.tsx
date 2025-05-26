@@ -13,25 +13,32 @@ const LoginPage = () => {
 	const { login: updateUserState } = useAuthContext()
 
 	const [pending, setPending] = useState<boolean>(false)
+	const [errorMessage, setErrorMessage] = useState<string | undefined>("")
 
 	const handleSubmit = async (
 		event: FormEvent<HTMLFormElement>,
 		formData: LoginFormData
 	) => {
 		try {
-			const { status, data } = await login(formData)
+			setPending(true)
+			const { status, data, message } = await login(formData)
 
 			console.log(status, data, formData, "FROM LOGIN")
 
 			if (status && data) {
 				updateUserState(data)
-			}
+				setErrorMessage("")
 
-			if (!data?.hasOnBoarded) {
-				navigate("/profile-complete")
+				if (!data.hasOnBoarded) {
+					navigate("/complete-profile")
+				}
+			} else {
+				setErrorMessage(message)
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
+		} finally {
+			setPending(false)
 		}
 	}
 
@@ -58,7 +65,19 @@ const LoginPage = () => {
 					<h1>To Your Account</h1>
 				</div>
 
-				<LoginForm disable={pending} onSubmit={handleSubmit} />
+				<div>
+					{errorMessage && (
+						<span className=" text-red-600 font-medium opacity-50 ">
+							{errorMessage}
+						</span>
+					)}
+					<LoginForm
+						disable={pending}
+						onSubmit={handleSubmit}
+						pending={pending}
+					/>
+				</div>
+
 				<div className=" text-center">
 					<span className=" text-sm font-semibold text-gray-400">
 						new here? click here to{" "}

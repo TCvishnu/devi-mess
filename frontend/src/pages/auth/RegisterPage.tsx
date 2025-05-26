@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import RegisterForm from "../../components/auth/form/RegisterForm"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
@@ -8,6 +8,8 @@ import { RegisterFormData, RegistrationDetails } from "@type/auth"
 import { register } from "@services/authService"
 
 const RegisterPage = () => {
+	const navigate = useNavigate()
+
 	const [registrationDetails, setRegistrationDetails] =
 		useState<RegistrationDetails>({
 			password: "",
@@ -16,25 +18,44 @@ const RegisterPage = () => {
 			otp: "",
 		})
 	const [showOtpWindow, setShowOtpWindow] = useState<boolean>(false)
+
 	const [pending, setPending] = useState<boolean>(false)
+	const [errorMessage, setErrorMessage] = useState<string | undefined>("")
 
 	const triggerShowOtpWindow = () => {
 		setShowOtpWindow((prev) => !prev)
 	}
 
-	const handleSubmit = (
+	const handleSubmit = async (
 		event: FormEvent<HTMLFormElement>,
 		formData: RegisterFormData
 	) => {
 		try {
+			setPending(true)
 			setRegistrationDetails({ ...formData, otp: "" })
-			setShowOtpWindow(true)
-			console.log(formData, "FROM LOGIN")
+
+			const { status, data, message } = await register({
+				...formData,
+				otp: "",
+			})
+
+			// setShowOtpWindow(true)
+
+			if (status && data) {
+				setErrorMessage("")
+
+				navigate("/")
+			} else {
+				setErrorMessage(message)
+			}
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
+		} finally {
+			setPending(false)
 		}
 	}
 
+	// use otp verification before deploying
 	const handleOtpSuccess = async (otp: string) => {
 		try {
 			const { status, data } = await register({
@@ -76,7 +97,18 @@ const RegisterPage = () => {
 					<h1>An Account</h1>
 				</div>
 
-				<RegisterForm disable={pending} onSubmit={handleSubmit} />
+				<div>
+					{errorMessage && (
+						<span className=" text-red-600 font-medium opacity-50 ">
+							{errorMessage}
+						</span>
+					)}
+					<RegisterForm
+						disable={pending}
+						onSubmit={handleSubmit}
+						pending={pending}
+					/>
+				</div>
 				<div className=" text-sm font-semibold text-gray-400 text-center flex flex-col">
 					<span>already have an account?</span>
 					<span>
