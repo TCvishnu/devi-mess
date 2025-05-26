@@ -77,4 +77,18 @@ const readMonthlyMessCuts = async (
   return monthlyMesscuts;
 };
 
-export default { createMany, readMonthlyMessCuts };
+const deleteMessCuts = async (
+  db: ReturnType<typeof getPrisma>,
+  cutIDs: string[],
+  userID: string
+) => {
+  return await db.messcut.deleteMany({
+    where: {
+      id: {
+        in: cutIDs,
+      },
+      userId: userID,
+    },
+  });
+};
+export default { createMany, readMonthlyMessCuts, deleteMessCuts };

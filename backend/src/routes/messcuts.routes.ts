@@ -7,9 +7,10 @@ import {
 import {
   createManyMessCutsSchema,
   monthYearQueryMessCutsSchema,
+  deleteMessCutsSchema,
 } from "../validations/messcuts.yup";
 
-export const messCutsRouter = Router();
+export const messCutsRouter = Router({ mergeParams: true });
 
 messCutsRouter.post(
   "/",
@@ -21,4 +22,10 @@ messCutsRouter.get(
   "/",
   validateQueryAndTransformRequest(monthYearQueryMessCutsSchema),
   messcutsController.readMonthlyMessCuts
+);
+
+messCutsRouter.delete(
+  "/",
+  validateAndTransformRequest(deleteMessCutsSchema),
+  messcutsController.deleteMessCuts
 );

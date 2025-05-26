@@ -39,11 +39,19 @@ app.use(passport.initialize());
 // every API request MUST pass authentication
 app.use("/api", passport.authenticate("jwt", { session: false }));
 app.use("/api", useZenstackClient);
-app.use("/api/user", userAdminVerified);
 
 // routes
 app.use("/api/user/:userID/messcuts", messCutsRouter);
-app.use("/api/user", userRouter);
+app.use(
+  "/api/user",
+  (req, res, next) => {
+    if (req.method === "GET" && req.path === "/") {
+      return next(); // this is to allow GET /api/user without verification
+    }
+    return userAdminVerified(req, res, next);
+  },
+  userRouter
+);
 
 // unwanted route - keep it for cookie signing
 app.get("/set-cookie", (req: Request, res: Response) => {

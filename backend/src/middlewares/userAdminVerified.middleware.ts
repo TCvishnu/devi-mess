@@ -7,7 +7,6 @@ export const userAdminVerified = (
   next: NextFunction
 ) => {
   const user = req.user as User;
-
   if (!user.adminVerified) {
     res.status(403).json({ error: "Forbidden: admin verification required." });
     return;
