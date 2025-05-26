@@ -8,6 +8,21 @@ const create = async (user: User) => {
 	})
 }
 
+const getFullUserDetails = async (
+	db: ReturnType<typeof getPrisma>,
+	userID: string
+) => {
+	const user = await db.user.findUnique({
+		where: { id: userID },
+		include: { residentialData: true },
+	})
+
+	if (!user) return null
+
+	const { password, ...rest } = user
+	return rest
+}
+
 const findById = async (id: string) => {
 	return await prisma.user.findUnique({
 		where: {
@@ -48,6 +63,7 @@ const findByPhoneNumber = async (phoneNumber: string) => {
 export default {
 	create,
 	findById,
+	getFullUserDetails,
 	findByPhoneNumber,
 	findByIdAndUpdate,
 }

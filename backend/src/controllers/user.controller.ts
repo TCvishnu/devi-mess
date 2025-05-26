@@ -7,8 +7,17 @@ import residentService from "@services/resident.service"
 
 const getCurrentUser = async (req: Request, res: Response) => {
 	try {
+		const prisma = getPrisma(req)
+
+		const residentialData = await residentService.getDetailsByUserId(
+			prisma,
+			(req.user as User).id
+		)
 		res.status(200).json({
-			data: req.user,
+			data: {
+				...req.user,
+				residentialData,
+			},
 		})
 	} catch (err) {
 		handleError(
@@ -24,7 +33,7 @@ const updateOnboardDetails = async (req: Request, res: Response) => {
 	try {
 		const db = getPrisma(req) // replace with request method
 
-		const { residentType, ...profileDetails } = req.body
+		const { residentialData, ...profileDetails } = req.body
 
 		const updatedUser = await userServices.findByIdAndUpdate(
 			db,
@@ -32,13 +41,15 @@ const updateOnboardDetails = async (req: Request, res: Response) => {
 			{ ...profileDetails, hasOnboarded: true }
 		)
 
-		if (residentType) {
-			const newResidentialData = residentType as Pick<
+		let savedResidentialData: Resident | null = null
+
+		if (residentialData) {
+			const newResidentialData = residentialData as Pick<
 				Resident,
 				"floor" | "building"
 			>
 
-			await residentService.create(db, {
+			savedResidentialData = await residentService.create(db, {
 				userId: updatedUser.id,
 				floor: newResidentialData.floor,
 				building: newResidentialData.building,
@@ -48,7 +59,7 @@ const updateOnboardDetails = async (req: Request, res: Response) => {
 		const { password, ...safeUser } = updatedUser
 
 		res.status(200).json({
-			data: safeUser,
+			data: { ...safeUser, residentialData: savedResidentialData },
 		})
 	} catch (err) {
 		handleError(

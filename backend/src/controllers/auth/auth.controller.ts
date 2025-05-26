@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { User } from "@prisma/client"
+import { Resident, User } from "@prisma/client"
 
 import userServices from "@services/user.service"
 import { compareHashedPassword, hashPassword } from "@utils/bcrypt.util"
@@ -10,14 +10,20 @@ import {
 import { generateToken } from "@utils/jwt.util"
 
 import { handleError } from "@controllers/utils/errorHandler.util"
+import residentService from "@services/resident.service"
 
-type RegisterBody = Pick<User, "name" | "phoneNumber" | "password"> & {
+type RegisterBody = User & {
 	otpVerifiedToken: string
-} // use this as user type in register after making optional fields in user schema
+}
 
 const register = async (req: Request, res: Response) => {
 	try {
-		const user: User = req.body
+		// verify this otpVerifiedToken then register the user.
+		// This token should contains phoneNumber and timestamp as payloads
+		// Extract the timestamp and verify with whether it expired or not.
+		// Then, extract the phoneNumber and verify with the entered phoneNumber.
+
+		const { otpVerifiedToken, ...user } = req.body as RegisterBody
 
 		const result: User | null = await userServices.findByPhoneNumber(
 			user.phoneNumber
@@ -33,7 +39,7 @@ const register = async (req: Request, res: Response) => {
 		const newUser = await userServices.create({
 			...user,
 			password: hashedPassword,
-		}) // Change the required fields to optional in schema for solving this type issue
+		})
 
 		const { password, ...safeUser } = newUser
 
@@ -73,6 +79,12 @@ const login = async (req: Request, res: Response) => {
 			return
 		}
 
+		let residentialData: Resident | null = null
+
+		if (result.hasOnboarded) {
+			residentialData = await residentService.findByUserId(result.id)
+		}
+
 		const accessToken = generateToken(
 			{
 				id: result.id,
@@ -107,7 +119,7 @@ const login = async (req: Request, res: Response) => {
 
 		res.status(200).json({
 			status: true,
-			data: safeUser,
+			data: { ...safeUser, residentialData },
 		})
 	} catch (err) {
 		handleError(

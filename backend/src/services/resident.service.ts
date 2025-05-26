@@ -12,6 +12,27 @@ const create = async (
 	})
 }
 
+const findByUserId = async (userId: string) => {
+	return await prisma.resident.findUnique({
+		where: {
+			userId,
+		},
+	})
+}
+
+const getDetailsByUserId = async (
+	db: ReturnType<typeof getPrisma>,
+	userId: string
+) => {
+	return await db.resident.findUnique({
+		where: {
+			userId,
+		},
+	})
+}
+
 export default {
 	create,
+	findByUserId,
+	getDetailsByUserId,
 }
