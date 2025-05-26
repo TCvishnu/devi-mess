@@ -3,7 +3,7 @@ import { handleError } from "../handlerService"
 
 const BACKEND_URL = getBackendBaseUrl()
 
-const fetchApi = async (url: string, options: RequestInit) => {
+const fetchApi = async (url: string, options?: RequestInit) => {
 	try {
 		const response = await fetch(BACKEND_URL + url, {
 			method: "GET",

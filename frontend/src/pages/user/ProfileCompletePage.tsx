@@ -9,27 +9,39 @@ import { useAuthContext } from "../../contexts/AuthContext"
 const ProfileCompletePage = () => {
 	const navigate = useNavigate()
 
-	const { updateUser } = useAuthContext()
+	const { user, updateUser } = useAuthContext()
 
 	const [pending, setPending] = useState<boolean>(false)
 	const [disable, setDisable] = useState<boolean>(false)
+
+	const [errorMessage, setErrorMessage] = useState<string | undefined>("")
 
 	const handleSubmit = async (
 		event: FormEvent,
 		formData: ProfileCompleteFormData
 	) => {
 		try {
-			console.log(formData)
+			setPending(true)
+			const { data, error } = await saveProfile({ ...formData })
 
-			const { data, error } = await saveProfile(formData)
-
-			if (!error) {
-				updateUser(formData)
-				navigate("/dashboard")
+			if (!error && data) {
+				updateUser({ ...formData, hasOnboarded: true })
+				navigate(`/user/${data.id}`)
+				setErrorMessage("")
+			} else {
+				setErrorMessage(error)
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
+
+			setErrorMessage("Something went wrong. Please try again later")
+		} finally {
+			setPending(false)
 		}
+	}
+
+	const handleGoBack = () => {
+		navigate("/")
 	}
 
 	return (
@@ -37,22 +49,32 @@ const ProfileCompletePage = () => {
 			<div className=" space-y-4">
 				<div className=" py-2 font-bold">
 					<Icon
+						onClick={handleGoBack}
 						icon="famicons:arrow-back"
 						width={24}
 						className=" text-gray-400"
 					/>
 					<h2 className=" mt-10 text-2xl sm:text-2xl">
-						Welcome Back, Akash Kumar R
+						Welcome Back, {user?.name || ""}
 					</h2>
 					<p className=" mt-6 text-base sm:text-lg opacity-40 ">
-						You're one step away from unlocking your personalized
+						You're two steps away from unlocking your personalized
 						dashboard!
 					</p>
 				</div>
-				<ProfileCompleteForm
-					onSubmit={handleSubmit}
-					disable={pending || disable}
-				/>
+
+				<div>
+					{errorMessage && (
+						<span className=" text-red-600 font-medium opacity-50 ">
+							{errorMessage}
+						</span>
+					)}
+					<ProfileCompleteForm
+						onSubmit={handleSubmit}
+						disable={pending || disable}
+						pending={pending}
+					/>
+				</div>
 			</div>
 			<div className=" text-center font-bold opacity-60">
 				<span>Devi Mess</span>

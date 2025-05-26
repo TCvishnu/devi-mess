@@ -4,6 +4,7 @@ import { ProfileCompleteFormData } from "@type/user"
 import { Gender, MealType, UserRole } from "@type/enums"
 import SelectBox from "@form/Select"
 import CheckBox from "@form/Checkbox"
+import { Icon } from "@iconify/react"
 
 type ProfileCompleteFormProps = {
 	onSubmit: (
@@ -11,11 +12,13 @@ type ProfileCompleteFormProps = {
 		formData: ProfileCompleteFormData
 	) => void
 	disable?: boolean
+	pending?: boolean
 }
 
 const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 	onSubmit,
 	disable = false,
+	pending = false,
 }) => {
 	const [formData, setFormData] = useState<ProfileCompleteFormData>({
 		gender: Gender.Male,
@@ -23,8 +26,8 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 		role: UserRole.Mess,
 		isVeg: false,
 		residentType: {
-			floor: "Ground",
-			building: "Devi House",
+			floor: "GROUND",
+			building: "DEVI_HOUSE",
 		},
 	})
 
@@ -55,8 +58,8 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 			...prev,
 			residentType: {
 				...(prev.residentType || {
-					building: "Devi House",
-					floor: "Ground",
+					building: "DEVI_HOUSE",
+					floor: "GROUND",
 				}),
 				[name]: value,
 			},
@@ -131,10 +134,10 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						<SelectBox.Option value="">
 							Select a type
 						</SelectBox.Option>
-						<SelectBox.Option value="Devi house">
+						<SelectBox.Option value="DEVI_HOUSE">
 							Devi house
 						</SelectBox.Option>
-						<SelectBox.Option value="Rockland Arcade">
+						<SelectBox.Option value="ROCKLAND_ARCADE">
 							Rockland arcade
 						</SelectBox.Option>
 					</SelectBox.Select>
@@ -149,12 +152,12 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						<SelectBox.Option value="">
 							Select a floor
 						</SelectBox.Option>
-						<SelectBox.Option value="Ground">
+						<SelectBox.Option value="GROUND">
 							Ground floor
 						</SelectBox.Option>
 						{formData.residentType?.building ===
-							"Rockland Arcade" && (
-							<SelectBox.Option value="Top">
+							"ROCKLAND_ARCADE" && (
+							<SelectBox.Option value="TOP">
 								Top floor
 							</SelectBox.Option>
 						)}
@@ -169,8 +172,15 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				checked={formData.isVeg}
 			/>
 
-			<Button className=" mt-4" disabled={disable}>
-				Complete
+			<Button
+				className=" mt-4 flex justify-center items-center"
+				disabled={disable}
+			>
+				{pending ? (
+					<Icon width={24} color="white" icon="eos-icons:loading" />
+				) : (
+					"Complete"
+				)}
 			</Button>
 		</form>
 	)
