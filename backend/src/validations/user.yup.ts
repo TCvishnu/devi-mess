@@ -1,3 +1,4 @@
+import { Building, Floor, Gender, MealType, UserRole } from "@prisma/client"
 import * as yup from "yup"
 
 export const RegisterRequest = yup
@@ -20,5 +21,45 @@ export const LoginRequest = yup
 			.required("phoneNumber is required")
 			.length(10),
 		password: yup.string().required("password is required"),
+	})
+	.stripUnknown()
+
+export const ProfileCompleteRequest = yup
+	.object()
+	.shape({
+		gender: yup
+			.string()
+			.oneOf([Gender.FEMALE, Gender.MALE])
+			.required("gender is required"),
+		role: yup
+			.string()
+			.oneOf([UserRole.MESS, UserRole.RESIDENT])
+			.required("role is required"),
+
+		mealType: yup
+			.string()
+			.oneOf([
+				MealType.FULL,
+				MealType.MORNING,
+				MealType.EVENING,
+				MealType.AFTERNOON,
+			])
+			.required("mealType is required"),
+		isVeg: yup.boolean().required("isVeg is required"),
+		residentType: yup
+			.object()
+			.shape({
+				building: yup
+					.string()
+					.oneOf([Building.DEVI_HOUSE, Building.ROCKLAND_ARCADE])
+					.required(),
+				floor: yup.string().oneOf([Floor.GROUND, Floor.TOP]).required(),
+			})
+			.when("role", {
+				is: UserRole.RESIDENT,
+				then: (schema) =>
+					schema.required("residentialData is required"),
+				otherwise: (schema) => schema.strip(),
+			}),
 	})
 	.stripUnknown()
