@@ -42,8 +42,8 @@ app.use("/api", useZenstackClient);
 app.use("/api/user", userAdminVerified);
 
 // routes
-app.use("/api/user", userRouter);
 app.use("/api/user/:userID/messcuts", messCutsRouter);
+app.use("/api/user", userRouter);
 
 // unwanted route - keep it for cookie signing
 app.get("/set-cookie", (req: Request, res: Response) => {
