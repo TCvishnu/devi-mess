@@ -23,14 +23,15 @@ const LoginPage = () => {
 			setPending(true)
 			const { status, data, message } = await login(formData)
 
-			console.log(status, data, formData, "FROM LOGIN")
-
+			console.log(data?.hasOnboarded, "FROM LOGIN")
 			if (status && data) {
 				updateUserState(data)
 				setErrorMessage("")
 
-				if (!data.hasOnBoarded) {
-					navigate("/complete-profile")
+				if (!data.hasOnboarded) {
+					navigate(`/complete-profile`)
+				} else {
+					navigate(`/user/${data.id}`)
 				}
 			} else {
 				setErrorMessage(message)
