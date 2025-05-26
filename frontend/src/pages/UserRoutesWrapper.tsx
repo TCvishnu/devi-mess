@@ -11,6 +11,8 @@ const UserRoutesWrapper = () => {
 
 	const getCurrentUser = async () => {
 		try {
+			if (user) return
+
 			setPending(true)
 
 			const { data, error } = await fetchCurrentUser()
@@ -32,7 +34,7 @@ const UserRoutesWrapper = () => {
 		getCurrentUser()
 	}, [])
 
-	if (pending) return <div>Loading....</div>
+	if (pending) return <div>Loading....</div> // replace with a component showing loading status
 
 	// this ensures that it's children have user details
 	return <div className=" w-full h-auto">{user && <Outlet />}</div>
