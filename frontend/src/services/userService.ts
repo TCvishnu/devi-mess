@@ -38,7 +38,7 @@ export const saveProfile = async (
 		})
 
 		return {
-			data: response.data,
+			data: response.data.data,
 		}
 	} catch (err: unknown) {
 		if (err instanceof Error) handleError(err.message)

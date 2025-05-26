@@ -46,7 +46,7 @@ export const ProfileCompleteRequest = yup
 			])
 			.required("mealType is required"),
 		isVeg: yup.boolean().required("isVeg is required"),
-		residentType: yup
+		residentialData: yup
 			.object()
 			.shape({
 				building: yup

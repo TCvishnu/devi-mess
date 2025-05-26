@@ -9,7 +9,7 @@ export interface UserDetails {
 	role?: UserRole
 	isVeg?: boolean
 	messcuts?: Array<Object>
-	residentType?: ResidentialDataType
+	residentialData?: ResidentialDataType
 	hasOnboarded?: boolean
 	adminVerified?: boolean
 }
@@ -17,7 +17,7 @@ export interface UserDetails {
 export interface ProfileCompleteFormData
 	extends Pick<
 		UserDetails,
-		"gender" | "mealType" | "role" | "isVeg" | "residentType"
+		"gender" | "mealType" | "role" | "isVeg" | "residentialData"
 	> {}
 
 export type ProfileDataType = {

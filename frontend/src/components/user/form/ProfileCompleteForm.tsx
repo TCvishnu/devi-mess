@@ -25,7 +25,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 		mealType: MealType.Full,
 		role: UserRole.Mess,
 		isVeg: false,
-		residentType: {
+		residentialData: {
 			floor: "GROUND",
 			building: "DEVI_HOUSE",
 		},
@@ -46,7 +46,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 			residentType:
 				name === "role" && value === UserRole.Mess
 					? undefined
-					: prev.residentType,
+					: prev.residentialData,
 			[name]: name === "isVeg" ? checked : value,
 		}))
 	}
@@ -56,8 +56,8 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 
 		setFormData((prev) => ({
 			...prev,
-			residentType: {
-				...(prev.residentType || {
+			residentialData: {
+				...(prev.residentialData || {
 					building: "DEVI_HOUSE",
 					floor: "GROUND",
 				}),
@@ -128,7 +128,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						name="building"
 						label="Recident place"
 						onChange={handleResidentChange}
-						value={formData.residentType?.building}
+						value={formData.residentialData?.building}
 						required
 					>
 						<SelectBox.Option value="">
@@ -146,7 +146,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						name="floor"
 						label="Recident place"
 						onChange={handleResidentChange}
-						value={formData.residentType?.floor}
+						value={formData.residentialData?.floor}
 						required
 					>
 						<SelectBox.Option value="">
@@ -155,7 +155,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						<SelectBox.Option value="GROUND">
 							Ground floor
 						</SelectBox.Option>
-						{formData.residentType?.building ===
+						{formData.residentialData?.building ===
 							"ROCKLAND_ARCADE" && (
 							<SelectBox.Option value="TOP">
 								Top floor
