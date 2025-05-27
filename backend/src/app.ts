@@ -52,10 +52,10 @@ app.use("/", async (req, _, next) => {
 app.use("/api/auth", authRouter);
 app.use("/api", passport.authenticate("jwt", { session: false }));
 app.use("/api", useZenstackClient);
-app.use("/api/user", userAdminVerified);
+app.use("/api/verified-user/", userAdminVerified);
 
 // routes
-app.use("/api/user/:userID/messcuts", verifyUserID, messCutsRouter);
+app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);
 app.use("/api/user", userRouter);
 
 app.listen(PORT, () => {
