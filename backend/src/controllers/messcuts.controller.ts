@@ -17,21 +17,21 @@ const createMany = async (req: Request, res: Response) => {
       cutType
     );
 
-    res.status(201).json({ newMesscuts: result });
+    res.status(201).json({ result });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 const readMonthlyMessCuts = async (req: Request, res: Response) => {
-  let { month, year } = req.validatedQuery as { month: string; year: string };
+  let { month, year } = req.validatedQuery as { month: number; year: number };
 
   const { userID } = req.params;
   try {
     const result = await messcutsService.readMonthlyMessCuts(
       req.db,
-      parseInt(month),
-      parseInt(year),
+      month,
+      year,
       userID
     );
 

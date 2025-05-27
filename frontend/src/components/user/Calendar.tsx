@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import type { FC } from "react";
 
@@ -8,26 +8,31 @@ import { clsx } from "clsx";
 import PrimaryButton from "./PrimaryButton";
 import CalendarDateButton from "./CalendarDateButton";
 import MealTypeButton from "./MealTypeButton";
-import { mealTypes, type MealType } from "@constants/mealTypes";
+import { mealTypes } from "@constants/mealTypes";
+import { MealType } from "@type/enums";
+
+//api endpoints
+import { readMonthlyMessCuts, createMesscuts } from "@services/messcutService";
+
+import { useAuthContext } from "@contexts/AuthContext";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar: FC = () => {
+  const { user } = useAuthContext();
+
   const [currentMonthDisplayed, setCurrentMonthDisplayed] = useState<Dayjs>(
     dayjs()
   );
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
-  const [selectedCutType, setSelectedCutType] = useState<MealType>("FULL");
+  const [selectedCutType, setSelectedCutType] = useState<MealType>(
+    MealType.Full
+  );
   const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
   ]);
-  const [messCuts, setMessCuts] = useState<Dayjs[]>([
-    dayjs("2025-04-10"),
-    dayjs("2025-04-11"),
-    dayjs("2025-04-21"),
-    dayjs("2025-05-24"),
-  ]);
+  const [messCuts, setMessCuts] = useState<Dayjs[]>([]);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
@@ -86,7 +91,7 @@ const Calendar: FC = () => {
   const handleNewCutsCancel: () => void = () => {
     setIsSelectingCuts(false);
     setNewCutRange([null, null]);
-    setSelectedCutType("FULL");
+    setSelectedCutType(MealType.Full);
   };
 
   const getDayClassNames = (
@@ -158,6 +163,37 @@ const Calendar: FC = () => {
     });
   };
 
+  const handleConfirmNewCuts = async () => {
+    console.log(newCutRange, selectedCutType);
+    if (!newCutRange[0] && !newCutRange[1]) {
+      handleNewCutsCancel();
+      return;
+    }
+    if (!user) return;
+    const cuts = await createMesscuts(
+      user?.id as string,
+      newCutRange,
+      selectedCutType
+    );
+
+    handleNewCutsCancel();
+  };
+
+  useEffect(() => {
+    const fetchMonthlyMessCuts = async () => {
+      if (!user) return;
+      const result = await readMonthlyMessCuts(
+        user?.id as string,
+        currentMonthDisplayed.month(),
+        currentMonthDisplayed.year()
+      );
+      if (result.status === 200) {
+      }
+    };
+
+    fetchMonthlyMessCuts();
+  }, [currentMonthDisplayed]);
+
   return (
     <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col ">
       <div className="w-full flex justify-between border-b-2 border-gray-600 py-2 mb-6">
@@ -209,9 +245,13 @@ const Calendar: FC = () => {
       </div>
 
       <div className="w-full flex justify-between items-end gap-4 text-sm font-semibold text-white">
-        <PrimaryButton onClick={toggleSelectingCuts}>
-          {isSelectingCuts ? "Confirm Cuts" : "Add Cuts"}
-        </PrimaryButton>
+        {isSelectingCuts ? (
+          <PrimaryButton onClick={handleConfirmNewCuts}>
+            Confirm Cuts
+          </PrimaryButton>
+        ) : (
+          <PrimaryButton onClick={toggleSelectingCuts}>Add Cuts</PrimaryButton>
+        )}
         {isSelectingCuts ? (
           <PrimaryButton onClick={handleNewCutsCancel}>Cancel</PrimaryButton>
         ) : (
