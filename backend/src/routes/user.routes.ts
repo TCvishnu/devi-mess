@@ -1,13 +1,18 @@
 import { Router } from "express";
-import userController from "../controllers/user.controller";
 
-import {
-  validateAndTransformRequest,
-  validateQueryAndTransformRequest,
-} from "../middlewares/validation.middleware";
+import userController from "@controllers/user.controller";
 
-export const userRouter = Router();
+import { validateAndTransformRequest } from "@middlewares/validation.middleware";
+import { ProfileCompleteRequest } from "@validations/user.yup";
 
-userRouter.get("/", userController.getUserWithoutPassword);
+const router = Router();
 
-userRouter.get("/full-details", userController.getFullUserDetails);
+router.get("/get-current-user", userController.getCurrentUser);
+
+router.post(
+  "/complete-profile",
+  validateAndTransformRequest(ProfileCompleteRequest),
+  userController.updateOnboardDetails
+);
+
+export default router;

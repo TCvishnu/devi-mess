@@ -4,18 +4,21 @@ import PasswordField from "@form/PasswordField"
 import Input from "@form/Input"
 import Button from "../../../common/components/button/Button"
 import { RegisterFormData, RegisterFormDataError } from "@type/auth"
+import { Icon } from "@iconify/react"
 
-type LoginFormProps = {
+type RegisterFormProps = {
 	onSubmit: (
 		event: FormEvent<HTMLFormElement>,
 		formData: RegisterFormData
 	) => void
 	disable?: boolean
+	pending?: boolean
 }
 
-const RegisterForm: React.FC<LoginFormProps> = ({
+const RegisterForm: React.FC<RegisterFormProps> = ({
 	onSubmit,
 	disable = false,
+	pending = false,
 }) => {
 	const [formData, setFormData] = useState<RegisterFormData>({
 		fullName: "",
@@ -124,8 +127,15 @@ const RegisterForm: React.FC<LoginFormProps> = ({
 				errorMessage={fieldErrors.confirmPassword}
 				required
 			/>
-			<Button className=" mt-4" disabled={disable}>
-				Register
+			<Button
+				className=" mt-4 flex justify-center items-center"
+				disabled={disable}
+			>
+				{pending ? (
+					<Icon width={24} color="white" icon="eos-icons:loading" />
+				) : (
+					"Register"
+				)}
 			</Button>
 		</form>
 	)

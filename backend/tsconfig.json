@@ -6,8 +6,18 @@
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@services/*": ["services/*"],
+      "@controllers/*": ["controllers/*"],
+      "@routes/*": ["routes/*"],
+      "@utils/*": ["utils/*"],
+      "@lib/*": ["lib/*"],
+      "@validations/*": ["validations/*"],
+      "@middlewares/*": ["middlewares/*"]
+    }
   },
-  "include": ["src", "src/types/*"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,9 +1,11 @@
 import { User } from "@prisma/client";
-import getPrisma from "../lib/getPrisma";
+import prisma from "@lib/prisma";
+import getPrisma from "@lib/getPrisma";
 
-const getUserWithoutPassword = async (currentUser: User) => {
-  const { password, ...user } = currentUser;
-  return user;
+const create = async (user: User) => {
+  return await prisma.user.create({
+    data: user,
+  });
 };
 
 const getFullUserDetails = async (
@@ -21,4 +23,47 @@ const getFullUserDetails = async (
   return rest;
 };
 
-export default { getUserWithoutPassword, getFullUserDetails };
+const findById = async (id: string) => {
+  return await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+const findByIdAndUpdate = async (
+  db: ReturnType<typeof getPrisma>,
+  id: string,
+  updatedData: Partial<User>
+) => {
+  return await db.user.update({
+    where: {
+      id,
+    },
+    data: updatedData,
+  });
+};
+
+const findByPhoneNumber = async (phoneNumber: string) => {
+  return await prisma.user.findUnique({
+    where: {
+      phoneNumber,
+    },
+  });
+};
+
+// const findBy = async (id: string): Promise<User | null> => {
+// 	return await prisma.user.findUnique({
+// 		where: {
+// 			id,
+// 		},
+// 	})
+// }
+
+export default {
+  create,
+  findById,
+  getFullUserDetails,
+  findByPhoneNumber,
+  findByIdAndUpdate,
+};

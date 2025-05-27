@@ -4,7 +4,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs"
 import LoginForm from "../../components/auth/form/LoginForm"
 import BackgroundLayer from "../../components/auth/BackgroundLayer"
 import { login } from "@services/authService"
-import { useAuthContext } from "../../context/AuthContext"
+import { useAuthContext } from "../../contexts/AuthContext"
 import { LoginFormData } from "@type/auth"
 
 const LoginPage = () => {
@@ -13,27 +13,38 @@ const LoginPage = () => {
 	const { login: updateUserState } = useAuthContext()
 
 	const [pending, setPending] = useState<boolean>(false)
+	const [errorMessage, setErrorMessage] = useState<string | undefined>("")
 
 	const handleSubmit = async (
 		event: FormEvent<HTMLFormElement>,
 		formData: LoginFormData
 	) => {
 		try {
-			const { status, data } = await login(formData)
+			setPending(true)
+			const { status, data, message } = await login(formData)
 
-			console.log(status, data, formData, "FROM LOGIN")
-
+			console.log(data?.hasOnboarded, "FROM LOGIN")
 			if (status && data) {
 				updateUserState(data)
-			}
+				setErrorMessage("")
 
-			if (!data?.hasOnBoarded) {
-				navigate("/profile-complete")
+				if (!data.hasOnboarded) {
+					navigate(`/complete-profile`)
+				} else {
+					navigate(`/user/${data.id}`)
+				}
+			} else {
+				setErrorMessage(message)
 			}
 		} catch (err: unknown) {
 			if (err instanceof Error) console.log(err.message)
+		} finally {
+			setPending(false)
 		}
 	}
+
+	// add a auto login feature at the end of development.
+	// Logging from cookie
 
 	return (
 		<div className=" w-full px-6 py-10 h-full flex flex-col justify-around gap-60">
@@ -58,7 +69,19 @@ const LoginPage = () => {
 					<h1>To Your Account</h1>
 				</div>
 
-				<LoginForm disable={pending} onSubmit={handleSubmit} />
+				<div>
+					{errorMessage && (
+						<span className=" text-red-600 font-medium opacity-50 ">
+							{errorMessage}
+						</span>
+					)}
+					<LoginForm
+						disable={pending}
+						onSubmit={handleSubmit}
+						pending={pending}
+					/>
+				</div>
+
 				<div className=" text-center">
 					<span className=" text-sm font-semibold text-gray-400">
 						new here? click here to{" "}

@@ -7,8 +7,11 @@ import UserFees from "./pages/UserFees";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProfileCompletePage from "./pages/user/ProfileCompletePage";
-import AuthProvider from "./context/AuthContext";
+import AuthProvider from "./contexts/AuthContext";
 import AdminLayout from "./pages/admin/AdminLayout";
+
+import UserRoutesWrapper from "./pages/UserRoutesWrapper";
+import WaitingForAdminVerification from "./pages/user/WaitForAdminVerification";
 
 import PageNotFound from "./pages/PageNotFound";
 
@@ -17,16 +20,25 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/user/:userID" element={<UserLayout />}>
-            <Route index element={<UserDashboard />} />
-            <Route path="settings" element={<UserSettings />} />
-            <Route path="fees" element={<UserFees />} />
-          </Route>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/complete-profile" element={<ProfileCompletePage />} />
-          <Route path="/admin" element={<AdminLayout />} />
 
+          <Route element={<UserRoutesWrapper />}>
+            <Route path="/user/:userID" element={<UserLayout />}>
+              <Route index element={<UserDashboard />} />
+              <Route path="settings" element={<UserSettings />} />
+              <Route path="fees" element={<UserFees />} />
+            </Route>
+
+            <Route
+              path="/waiting-for-verification"
+              element={<WaitingForAdminVerification />}
+            />
+
+            <Route path="/complete-profile" element={<ProfileCompletePage />} />
+          </Route>
+
+          <Route path="/admin" element={<AdminLayout />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
