@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import UserLayout from "./components/user/UserLayout";
-import UserDashboard from "./pages/UserDashboard";
-import UserSettings from "./pages/UserSettings";
-import UserFees from "./pages/UserFees";
+import UserDashboard from "./pages/verified-user/UserDashboard";
+import UserSettings from "./pages/verified-user/UserSettings";
+import UserFees from "./pages/verified-user/UserFees";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProfileCompletePage from "./pages/user/ProfileCompletePage";

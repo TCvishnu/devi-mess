@@ -2,11 +2,11 @@ import { useState, type FC, type ChangeEvent } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-import Input from "../common/components/form/Input";
-import PhoneNumberField from "../common/components/form/PhoneNumberField";
-import type { ProfileDataType, ResidentialDataType } from "../types/user";
+import Input from "../../common/components/form/Input";
+import PhoneNumberField from "../../common/components/form/PhoneNumberField";
+import type { ProfileDataType, ResidentialDataType } from "../../types/user";
 import { mealTypes } from "@constants/mealTypes";
-import Button from "../common/components/button/Button";
+import Button from "../../common/components/button/Button";
 
 const UserSettings: FC = () => {
   const [profileData, setProfileData] = useState<ProfileDataType>({
