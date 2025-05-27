@@ -43,7 +43,10 @@ export const createMesscuts = async (
     });
 
     console.log(response);
-    return response;
+    return {
+      status: response.status,
+      data: response.data.result,
+    };
   } catch (error) {
     if (error instanceof Error) handleError(error.message);
 

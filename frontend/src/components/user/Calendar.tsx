@@ -10,6 +10,8 @@ import CalendarDateButton from "./CalendarDateButton";
 import MealTypeButton from "./MealTypeButton";
 import { mealTypes } from "@constants/mealTypes";
 import { MealType } from "@type/enums";
+import { Messcut } from "@type/user";
+import { DisplayingCutType } from "@type/messcuts";
 
 //api endpoints
 import { readMonthlyMessCuts, createMesscuts } from "@services/messcutService";
@@ -32,7 +34,7 @@ const Calendar: FC = () => {
     null,
     null,
   ]);
-  const [messCuts, setMessCuts] = useState<Dayjs[]>([]);
+  const [messCuts, setMessCuts] = useState<DisplayingCutType[]>([]);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
@@ -104,9 +106,9 @@ const Calendar: FC = () => {
       dayIsWithinMonthDates ? "text-gray-800" : "bg-white",
       isToday ? "text-primary font-black" : "font-medium",
       isInNewCutRange &&
-        !messCuts.some((cut) => cut.isSame(day, "day")) &&
+        !messCuts.some((cut) => cut.date.isSame(day, "day")) &&
         "border-2 border-primary",
-      messCuts.some((cut) => cut.isSame(day, "day"))
+      messCuts.some((cut) => cut.date.isSame(day, "day"))
         ? "border-2 border-primary line-through decoration-primary"
         : "bg-gray-50"
     );
@@ -143,7 +145,7 @@ const Calendar: FC = () => {
         isSelectingCuts && // while selecting cuts
         (date.isBefore(today, "day") || // dates before today not allowed
           (date.isSame(today, "day") && dayjs().hour() >= 6) || // cut today after today 6am not allowed
-          messCuts.some((cut) => cut.isSame(date, "day"))); // already the cut is there
+          messCuts.some((cut) => cut.date.isSame(date, "day"))); // already the cut is there
 
       return (
         <CalendarDateButton
@@ -164,17 +166,28 @@ const Calendar: FC = () => {
   };
 
   const handleConfirmNewCuts = async () => {
-    console.log(newCutRange, selectedCutType);
     if (!newCutRange[0] && !newCutRange[1]) {
       handleNewCutsCancel();
       return;
     }
     if (!user) return;
-    const cuts = await createMesscuts(
+    const result = await createMesscuts(
       user?.id as string,
       newCutRange,
       selectedCutType
     );
+    if (result.status !== 201) {
+      return;
+    }
+
+    setMessCuts((prev) => [
+      ...prev,
+      ...result.data.map((cutDate: Messcut) => ({
+        id: cutDate.id,
+        cutType: cutDate.cutType,
+        date: dayjs(cutDate.date),
+      })),
+    ]);
 
     handleNewCutsCancel();
   };
@@ -188,6 +201,13 @@ const Calendar: FC = () => {
         currentMonthDisplayed.year()
       );
       if (result.status === 200) {
+        setMessCuts(
+          result.data.map((cutDate: Messcut) => ({
+            id: cutDate.id,
+            cutType: cutDate.cutType,
+            date: dayjs(cutDate.date),
+          }))
+        );
       }
     };
 
