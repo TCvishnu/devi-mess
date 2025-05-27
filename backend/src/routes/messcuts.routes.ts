@@ -10,7 +10,7 @@ import {
   deleteMessCutsSchema,
 } from "../validations/messcuts.yup";
 
-export const messCutsRouter = Router({ mergeParams: true });
+const messCutsRouter = Router({ mergeParams: true });
 
 messCutsRouter.post(
   "/",
@@ -29,3 +29,5 @@ messCutsRouter.delete(
   validateAndTransformRequest(deleteMessCutsSchema),
   messcutsController.deleteMessCuts
 );
+
+export default messCutsRouter;

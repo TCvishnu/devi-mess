@@ -11,12 +11,13 @@ import getPrisma from "./lib/getPrisma";
 // middleware imports
 import { userAdminVerified } from "./middlewares/userAdminVerified.middleware";
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
+import { verifyUserID } from "@middlewares/verifyUserID.middleware";
 
 // router imports
-import { messCutsRouter } from "@routes/messcuts.routes";
+import messCutsRouter from "@routes/messcuts.routes";
 import authRouter from "@routes/auth/routes/auth.routes";
 import userRouter from "@routes/user.routes";
-import { verifyUserID } from "@middlewares/verifyUserID.middleware";
+import verifiedUserRouter from "@routes/verifieduser.routes";
 
 const app = express();
 const PORT = 3000;
@@ -57,6 +58,7 @@ app.use("/api/verified-user/", userAdminVerified);
 // routes
 app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);
 app.use("/api/user", userRouter);
+app.use("/api/verified-users", verifiedUserRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);

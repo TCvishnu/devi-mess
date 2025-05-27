@@ -1,25 +1,29 @@
-import { useState, type FC, type ChangeEvent } from "react";
+import { useState, useEffect, type FC, type ChangeEvent } from "react";
 import { Icon } from "@iconify/react";
+
+import { updateNameAndFoodPreference } from "@services/verifiedUserService";
 
 import Input from "../../common/components/form/Input";
 import PhoneNumberField from "../../common/components/form/PhoneNumberField";
 import Button from "../../common/components/button/Button";
 import { mealTypes } from "@constants/mealTypes";
 
-import type { ProfileDataType, ResidentialDataType } from "../../types/user";
+import type { ProfileDataType } from "../../types/user";
+import { useAuthContext } from "@contexts/AuthContext";
+import { Gender, MealType } from "@type/enums";
 
 const UserSettings: FC = () => {
-  const [profileData, setProfileData] = useState<ProfileDataType>({
-    fullName: "Dummy",
-    gender: "MALE",
-    isVeg: true,
-    phoneNumber: "9080706050",
-    mealType: "FULL",
-  });
+  const { user, updateUser } = useAuthContext();
+  if (!user) {
+    return <></>; // type safety
+  }
 
-  const [residentialData] = useState<ResidentialDataType | null>({
-    building: "Rockland Arcade",
-    floor: "Top",
+  const [profileData, setProfileData] = useState<ProfileDataType>({
+    fullName: user.name ?? "",
+    gender: user.gender ?? Gender.Male,
+    isVeg: user.isVeg ?? false,
+    phoneNumber: user.phoneNumber ?? "",
+    mealType: user.mealType ?? MealType.Full,
   });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +39,30 @@ const UserSettings: FC = () => {
     (mealType) => mealType.mealType === profileData.mealType
   );
 
+  const handleSaveProfile = async () => {
+    if (!user.id) return;
+
+    const result = await updateNameAndFoodPreference(
+      user.id,
+      profileData.fullName,
+      profileData.isVeg
+    );
+    if (result.status === 200) {
+      // a message to user as well
+      updateUser({
+        name: profileData.fullName,
+        isVeg: profileData.isVeg,
+      });
+    }
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto py-6 space-y-8 px-2">
       <header className="text-center">
         <h1 className="text-2xl font-bold text-primary">User Settings</h1>
-        <p className="text-gray-500">Manage your profile and preferences</p>
+        <p className="text-gray-500 font-medium">
+          Manage your profile and preferences
+        </p>
       </header>
 
       <div className="bg-white rounded-2xl space-y-4">
@@ -84,6 +107,11 @@ const UserSettings: FC = () => {
         <Button
           className="w-full mt-4 text-white font-semibold h-12"
           radiusSize="sm"
+          onClick={handleSaveProfile}
+          disabled={
+            user.isVeg === profileData.isVeg &&
+            user.name === profileData.fullName
+          }
         >
           Save Profile
         </Button>
@@ -100,6 +128,7 @@ const UserSettings: FC = () => {
         <Button
           className="w-full text-white font-semibold h-12"
           radiusSize="sm"
+          disabled={user.phoneNumber === profileData.phoneNumber}
         >
           Change Phone Number
         </Button>
@@ -136,7 +165,7 @@ const UserSettings: FC = () => {
         </div>
       </div>
 
-      {residentialData && (
+      {user.residentialData && (
         <div className="bg-white rounded-2xl py-6 space-y-6">
           <h2 className="text-lg font-semibold text-primary text-center">
             Stay Details
@@ -151,7 +180,7 @@ const UserSettings: FC = () => {
                 Building
               </span>
               <span className="text-lg font-semibold text-primary text-center">
-                {residentialData.building}
+                {user.residentialData.building}
               </span>
             </div>
             <div className="flex flex-col items-center">
@@ -163,7 +192,7 @@ const UserSettings: FC = () => {
                 Floor
               </span>
               <span className="text-lg font-semibold text-primary">
-                {residentialData.floor} Floor
+                {user.residentialData.floor} Floor
               </span>
             </div>
           </div>
