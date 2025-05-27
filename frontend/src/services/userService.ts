@@ -7,25 +7,44 @@ type UpdateProfileReturn = {
 	error?: string
 }
 
-export const saveProfile = async (
-	formData: Partial<UserDetails>
-): Promise<UpdateProfileReturn> => {
-	try {
-		const response = await fetchApi("/api/user/update", {
-			method: "POST",
-			body: JSON.stringify(formData),
-		})
+type CurrentUserReturn = {
+	data?: UserDetails
+	error?: string
+}
 
-		const data = response.data
+export const fetchCurrentUser = async (): Promise<CurrentUserReturn> => {
+	try {
+		const response = await fetchApi("/api/user/get-current-user")
 
 		return {
-			data,
+			data: response.data.data,
 		}
 	} catch (err: unknown) {
 		if (err instanceof Error) handleError(err.message)
 
 		return {
 			error: "Failed to update user details",
+		}
+	}
+}
+
+export const saveProfile = async (
+	formData: Partial<UserDetails>
+): Promise<UpdateProfileReturn> => {
+	try {
+		const response = await fetchApi("/api/user/complete-profile", {
+			method: "POST",
+			body: JSON.stringify(formData),
+		})
+
+		return {
+			data: response.data.data,
+		}
+	} catch (err: unknown) {
+		if (err instanceof Error) handleError(err.message)
+
+		return {
+			error: "Failed to update profile details. Please try again later",
 		}
 	}
 }

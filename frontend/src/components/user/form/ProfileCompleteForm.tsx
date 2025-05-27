@@ -4,6 +4,7 @@ import { ProfileCompleteFormData } from "@type/user"
 import { Gender, MealType, UserRole } from "@type/enums"
 import SelectBox from "@form/Select"
 import CheckBox from "@form/Checkbox"
+import { Icon } from "@iconify/react"
 
 type ProfileCompleteFormProps = {
 	onSubmit: (
@@ -11,20 +12,22 @@ type ProfileCompleteFormProps = {
 		formData: ProfileCompleteFormData
 	) => void
 	disable?: boolean
+	pending?: boolean
 }
 
 const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 	onSubmit,
 	disable = false,
+	pending = false,
 }) => {
 	const [formData, setFormData] = useState<ProfileCompleteFormData>({
 		gender: Gender.Male,
 		mealType: MealType.Full,
 		role: UserRole.Mess,
 		isVeg: false,
-		residentType: {
-			floor: "Ground",
-			building: "Devi House",
+		residentialData: {
+			floor: "GROUND",
+			building: "DEVI_HOUSE",
 		},
 	})
 
@@ -43,7 +46,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 			residentType:
 				name === "role" && value === UserRole.Mess
 					? undefined
-					: prev.residentType,
+					: prev.residentialData,
 			[name]: name === "isVeg" ? checked : value,
 		}))
 	}
@@ -53,10 +56,10 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 
 		setFormData((prev) => ({
 			...prev,
-			residentType: {
-				...(prev.residentType || {
-					building: "Devi House",
-					floor: "Ground",
+			residentialData: {
+				...(prev.residentialData || {
+					building: "DEVI_HOUSE",
+					floor: "GROUND",
 				}),
 				[name]: value,
 			},
@@ -125,16 +128,16 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						name="building"
 						label="Recident place"
 						onChange={handleResidentChange}
-						value={formData.residentType?.building}
+						value={formData.residentialData?.building}
 						required
 					>
 						<SelectBox.Option value="">
 							Select a type
 						</SelectBox.Option>
-						<SelectBox.Option value="Devi house">
+						<SelectBox.Option value="DEVI_HOUSE">
 							Devi house
 						</SelectBox.Option>
-						<SelectBox.Option value="Rockland Arcade">
+						<SelectBox.Option value="ROCKLAND_ARCADE">
 							Rockland arcade
 						</SelectBox.Option>
 					</SelectBox.Select>
@@ -143,18 +146,18 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						name="floor"
 						label="Recident place"
 						onChange={handleResidentChange}
-						value={formData.residentType?.floor}
+						value={formData.residentialData?.floor}
 						required
 					>
 						<SelectBox.Option value="">
 							Select a floor
 						</SelectBox.Option>
-						<SelectBox.Option value="Ground">
+						<SelectBox.Option value="GROUND">
 							Ground floor
 						</SelectBox.Option>
-						{formData.residentType?.building ===
-							"Rockland Arcade" && (
-							<SelectBox.Option value="Top">
+						{formData.residentialData?.building ===
+							"ROCKLAND_ARCADE" && (
+							<SelectBox.Option value="TOP">
 								Top floor
 							</SelectBox.Option>
 						)}
@@ -169,8 +172,15 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				checked={formData.isVeg}
 			/>
 
-			<Button className=" mt-4" disabled={disable}>
-				Complete
+			<Button
+				className=" mt-4 flex justify-center items-center"
+				disabled={disable}
+			>
+				{pending ? (
+					<Icon width={24} color="white" icon="eos-icons:loading" />
+				) : (
+					"Complete"
+				)}
 			</Button>
 		</form>
 	)

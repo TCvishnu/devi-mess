@@ -1,7 +1,7 @@
 {
-  "watch": ["src"],
-  "ext": "ts",
-  "ignore": ["dist"],
-  "exec": "ts-node src/app.ts",
-  "legacyWatch": true
+	"watch": ["src"],
+	"ext": "ts",
+	"ignore": ["dist"],
+	"exec": "ts-node -r tsconfig-paths/register src/app.ts",
+	"legacyWatch": true
 }
