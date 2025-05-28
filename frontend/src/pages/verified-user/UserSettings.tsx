@@ -26,6 +26,8 @@ const UserSettings: FC = () => {
     mealType: user.mealType ?? MealType.Full,
   });
 
+  const [errorInName, setErrorInName] = useState<boolean>(false);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setProfileData((prev) => ({ ...prev, [name]: value }));
@@ -39,18 +41,33 @@ const UserSettings: FC = () => {
     (mealType) => mealType.mealType === profileData.mealType
   );
 
+  const validateName: () => boolean = () => {
+    if (profileData.fullName.trim().length === 0) {
+      setErrorInName(true);
+      return false;
+    }
+    setErrorInName(false);
+    return true;
+  };
+
   const handleSaveProfile = async () => {
     if (!user.id) return;
 
+    if (!validateName()) return;
+
     const result = await updateNameAndFoodPreference(
       user.id,
-      profileData.fullName,
+      profileData.fullName.trim(),
       profileData.isVeg
     );
     if (result.status === 200) {
       // a message to user as well
+      setProfileData((prev) => ({
+        ...prev,
+        fullName: prev.fullName.trim(),
+      }));
       updateUser({
-        name: profileData.fullName,
+        name: profileData.fullName.trim(),
         isVeg: profileData.isVeg,
       });
     }
@@ -72,6 +89,8 @@ const UserSettings: FC = () => {
           name="fullName"
           value={profileData.fullName}
           onChange={handleChange}
+          isError={errorInName}
+          errorMessage="Your name cannot be blank"
         />
 
         <div className="space-y-2">
