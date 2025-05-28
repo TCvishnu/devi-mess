@@ -35,31 +35,15 @@ const updateOnboardDetails = async (req: Request, res: Response) => {
 
 		const { residentialData, ...profileDetails } = req.body
 
-		const updatedUser = await userServices.findByIdAndUpdate(
+		const updatedUser = await userServices.updateOnBoardDetails(
 			db,
 			(req.user as User).id,
-			{ ...profileDetails, hasOnboarded: true }
+			profileDetails,
+			residentialData
 		)
 
-		let savedResidentialData: Resident | null = null
-
-		if (residentialData) {
-			const newResidentialData = residentialData as Pick<
-				Resident,
-				"floor" | "building"
-			>
-
-			savedResidentialData = await residentService.create(db, {
-				userId: updatedUser.id,
-				floor: newResidentialData.floor,
-				building: newResidentialData.building,
-			})
-		}
-
-		const { password, ...safeUser } = updatedUser
-
 		res.status(200).json({
-			data: { ...safeUser, residentialData: savedResidentialData },
+			data: updatedUser,
 		})
 	} catch (err) {
 		handleError(
