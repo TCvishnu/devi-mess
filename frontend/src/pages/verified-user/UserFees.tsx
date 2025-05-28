@@ -1,9 +1,10 @@
 import { FC, useState } from "react";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { MealType } from "@constants/mealTypes";
-import { ResidentFeesType, UserRole } from "types/user";
+import { MealType, UserRole } from "@type/enums";
+import { ResidentFeesType } from "@type/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useAuthContext } from "@contexts/AuthContext";
 
 type MessCut = {
   date: Dayjs;
@@ -24,7 +25,11 @@ const cutToCostMap = {
 };
 
 const UserFees: FC = () => {
-  const userRole: UserRole = "RESIDENT";
+  const { user } = useAuthContext();
+
+  const userRole: UserRole = user?.role || UserRole.Admin;
+
+  //ignore type issues; to be removed
   const AprMessCuts: MessCut[] = [
     { date: dayjs("2025-03-10"), cutType: "FULL" },
     { date: dayjs("2025-03-11"), cutType: "MORNING" },
@@ -114,7 +119,7 @@ const UserFees: FC = () => {
         </div>
       </div>
 
-      {userRole === "RESIDENT" && (
+      {userRole === UserRole.Resident && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"

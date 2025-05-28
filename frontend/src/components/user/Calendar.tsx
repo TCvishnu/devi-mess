@@ -1,33 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import type { FC } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { clsx } from "clsx";
+import { toTitleCase } from "@utils/stringUtils";
 
 import PrimaryButton from "./PrimaryButton";
 import CalendarDateButton from "./CalendarDateButton";
 import MealTypeButton from "./MealTypeButton";
-import { mealTypes, type MealType } from "@constants/mealTypes";
+import { mealTypes } from "@constants/mealTypes";
+import { MealType } from "@type/enums";
+import { Messcut } from "@type/user";
+import { DisplayingCutType } from "@type/messcuts";
+
+//api endpoints
+import {
+  readMonthlyMessCuts,
+  createMesscuts,
+  deleteMessCuts,
+} from "@services/messcutService";
+
+import { useAuthContext } from "@contexts/AuthContext";
+import useTimer from "@hooks/useTimer";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+type CutID = string;
+
 const Calendar: FC = () => {
+  const { user } = useAuthContext();
+
   const [currentMonthDisplayed, setCurrentMonthDisplayed] = useState<Dayjs>(
     dayjs()
   );
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
-  const [selectedCutType, setSelectedCutType] = useState<MealType>("FULL");
+  const [isRemovingCuts, setIsRemovingCuts] = useState<boolean>(false);
+  const [selectedCutType, setSelectedCutType] = useState<MealType>(
+    MealType.Full
+  );
   const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
   ]);
-  const [messCuts, setMessCuts] = useState<Dayjs[]>([
-    dayjs("2025-04-10"),
-    dayjs("2025-04-11"),
-    dayjs("2025-04-21"),
-    dayjs("2025-05-24"),
-  ]);
+  const [messCuts, setMessCuts] = useState<DisplayingCutType[]>([]);
+
+  useEffect(() => console.log(messCuts), [messCuts]);
+
+  const [cutsToRemove, setCutsToRemove] = useState<Set<CutID>>(new Set());
+
+  const [popupInfo, setPopupInfo] = useState<{
+    day: Dayjs;
+    cutType: string;
+    position: { top: number; left: number };
+  } | null>(null);
+  const { resetTimer } = useTimer(2, () => setPopupInfo(null));
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
@@ -42,28 +69,41 @@ const Calendar: FC = () => {
   const nextMonth: () => void = () =>
     setCurrentMonthDisplayed(currentMonthDisplayed.add(1, "month"));
 
-  const toggleSelectingCuts: () => void = () => {
-    setIsSelectingCuts((prev) => !prev);
-    console.log(
-      newCutRange[0]?.year(),
-      newCutRange[0]?.month(),
-      newCutRange[0]?.date()
-    );
-    console.log(
-      newCutRange[1]?.year(),
-      newCutRange[1]?.month(),
-      newCutRange[1]?.date()
-    );
-    setNewCutRange([null, null]);
-  };
-
   const handleCutTypeChange = (cutType: MealType) => {
     setSelectedCutType(cutType);
   };
 
-  const handleButtonClick = (day: Dayjs) => {
-    if (!isSelectingCuts) return;
+  const handleButtonClick = (
+    day: Dayjs,
+    matchingCut: DisplayingCutType | undefined,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (isSelectingCuts) {
+      changeNewCutRange(day);
+      return;
+    }
 
+    if (!matchingCut) return;
+    if (isRemovingCuts) {
+      changeCutRemovalDays(matchingCut.id);
+      return;
+    }
+
+    // display cut type for user to see
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setPopupInfo({
+      day,
+      cutType: matchingCut.cutType,
+      position: {
+        top: rect.bottom + 4,
+        left: (rect.left + rect.right) / 2,
+      },
+    });
+
+    resetTimer();
+  };
+
+  const changeNewCutRange = (day: Dayjs) => {
     const [start, end] = newCutRange;
 
     if (start === null || (start !== null && end !== null)) {
@@ -83,26 +123,44 @@ const Calendar: FC = () => {
     }
   };
 
+  const changeCutRemovalDays = (cutID: CutID) => {
+    setCutsToRemove((prev) => {
+      const updatedSet = new Set(prev);
+      if (!updatedSet.has(cutID)) {
+        updatedSet.add(cutID);
+      } else {
+        updatedSet.delete(cutID);
+      }
+      return updatedSet;
+    });
+  };
+
   const handleNewCutsCancel: () => void = () => {
     setIsSelectingCuts(false);
     setNewCutRange([null, null]);
-    setSelectedCutType("FULL");
+    setSelectedCutType(MealType.Full);
   };
 
   const getDayClassNames = (
     day: Dayjs,
     dayIsWithinMonthDates: boolean,
     isToday: boolean,
-    isInNewCutRange: boolean
+    isInNewCutRange: boolean,
+    matchingCut: DisplayingCutType | undefined
   ) => {
+    const thisDayIsCutDay = messCuts.some((cut) => cut.date.isSame(day, "day"));
+    const selectedToRemove = matchingCut && cutsToRemove?.has(matchingCut?.id);
+
     return clsx(
       dayIsWithinMonthDates ? "text-gray-800" : "bg-white",
       isToday ? "text-primary font-black" : "font-medium",
       isInNewCutRange &&
-        !messCuts.some((cut) => cut.isSame(day, "day")) &&
+        !messCuts.some((cut) => cut.date.isSame(day, "day")) &&
         "border-2 border-primary",
-      messCuts.some((cut) => cut.isSame(day, "day"))
-        ? "border-2 border-primary line-through decoration-primary"
+      thisDayIsCutDay
+        ? selectedToRemove
+          ? "border-2 border-accent line-through decoration-accent"
+          : "border-2 border-primary line-through decoration-primary"
         : "bg-gray-50"
     );
   };
@@ -134,22 +192,30 @@ const Calendar: FC = () => {
         today.isSame(currentMonthDisplayed.date(day), "day");
       const isInNewCutRange = dayIsWithinMonthDates && isDayInNewCutRange(date);
 
-      const disabled =
+      const disableDuringNewCuts =
         isSelectingCuts && // while selecting cuts
         (date.isBefore(today, "day") || // dates before today not allowed
           (date.isSame(today, "day") && dayjs().hour() >= 6) || // cut today after today 6am not allowed
-          messCuts.some((cut) => cut.isSame(date, "day"))); // already the cut is there
+          messCuts.some((cut) => cut.date.isSame(date, "day"))); // already the cut is there
+
+      const disableDuringCutRemoval =
+        isRemovingCuts && // while removing existing cuts
+        (date.isBefore(today, "day") || // dates before today cut removal not allowed
+          messCuts.every((cut) => !cut.date.isSame(date, "day"))); // non cut dates disabled
+
+      const matchingCut = messCuts.find((cut) => cut.date.isSame(date, "day"));
 
       return (
         <CalendarDateButton
           key={i}
-          onClick={() => handleButtonClick(date)}
-          disabled={disabled}
+          onClick={(e) => handleButtonClick(date, matchingCut, e)}
+          disabled={disableDuringNewCuts || disableDuringCutRemoval}
           className={getDayClassNames(
             date,
             dayIsWithinMonthDates,
             isToday,
-            isInNewCutRange
+            isInNewCutRange,
+            matchingCut
           )}
         >
           {dayIsWithinMonthDates ? day : "-"}
@@ -158,8 +224,88 @@ const Calendar: FC = () => {
     });
   };
 
+  const handleConfirmNewCuts = async () => {
+    if (!newCutRange[0] && !newCutRange[1]) {
+      handleNewCutsCancel();
+      return;
+    }
+    if (!user) return;
+    const result = await createMesscuts(
+      user?.id as string,
+      newCutRange,
+      selectedCutType,
+      currentMonthDisplayed.month(),
+      currentMonthDisplayed.year()
+    );
+    if (result.status !== 201) {
+      handleNewCutsCancel();
+      return;
+    }
+    console.log("cjeck: ", result.data);
+    if (result.data.length === 1) {
+      const { id, cutType, date } = result.data[0];
+      setMessCuts((prev) => [...prev, { id, cutType, date: dayjs(date) }]);
+    } else {
+      setMessCuts(
+        result.data.map((cut: Messcut) => ({
+          id: cut.id,
+          cutType: cut.cutType,
+          date: dayjs(cut.date),
+        }))
+      );
+    }
+
+    handleNewCutsCancel();
+  };
+
+  const handleCutRemovalCancel = () => {
+    setCutsToRemove(new Set());
+    setIsRemovingCuts(false);
+  };
+
+  const handleRemoveCuts = async () => {
+    const cutIDs = Array.from(cutsToRemove);
+
+    if (!cutIDs.length) {
+      handleCutRemovalCancel();
+    }
+    if (!user || !user.id) return;
+    const result = await deleteMessCuts(user.id, cutIDs);
+
+    if (result.status === 200) {
+      const cutsLeft = messCuts.filter(
+        (cut: DisplayingCutType) => !cutsToRemove.has(cut.id)
+      );
+      setMessCuts(cutsLeft);
+    }
+    handleCutRemovalCancel();
+  };
+
+  useEffect(() => {
+    const fetchMonthlyMessCuts = async () => {
+      if (!user) return;
+      const result = await readMonthlyMessCuts(
+        user?.id as string,
+        currentMonthDisplayed.month(),
+        currentMonthDisplayed.year()
+      );
+      if (result.status === 200) {
+        setMessCuts(
+          result.data.map((cutDate: Messcut) => ({
+            id: cutDate.id,
+            cutType: cutDate.cutType,
+            date: dayjs(cutDate.date),
+          }))
+        );
+        // console.log(result.data.map((cutDate: Messcut) => cutDate.id));
+      }
+    };
+
+    fetchMonthlyMessCuts();
+  }, [currentMonthDisplayed]);
+
   return (
-    <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col ">
+    <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col relative">
       <div className="w-full flex justify-between border-b-2 border-gray-600 py-2 mb-6">
         <h2 className=" text-gray-600 font-semibold text-lg">
           Handle Messcuts
@@ -206,18 +352,64 @@ const Calendar: FC = () => {
               onClick={() => handleCutTypeChange(mealType)}
             />
           ))}
+        {isRemovingCuts && (
+          <p className="text-center w-full text-gray-400 font-medium">
+            Select Mess Cut dates to cancel
+          </p>
+        )}
       </div>
 
       <div className="w-full flex justify-between items-end gap-4 text-sm font-semibold text-white">
-        <PrimaryButton onClick={toggleSelectingCuts}>
-          {isSelectingCuts ? "Confirm Cuts" : "Add Cuts"}
-        </PrimaryButton>
-        {isSelectingCuts ? (
-          <PrimaryButton onClick={handleNewCutsCancel}>Cancel</PrimaryButton>
-        ) : (
-          <PrimaryButton>Remove Cuts</PrimaryButton>
+        {!isSelectingCuts && !isRemovingCuts && (
+          <>
+            <PrimaryButton onClick={() => setIsSelectingCuts(true)}>
+              Add Cuts
+            </PrimaryButton>
+            <PrimaryButton onClick={() => setIsRemovingCuts(true)}>
+              Remove Cuts
+            </PrimaryButton>
+          </>
+        )}
+
+        {isSelectingCuts && !isRemovingCuts && (
+          <>
+            <PrimaryButton onClick={handleConfirmNewCuts}>
+              Confirm Cuts
+            </PrimaryButton>
+            <PrimaryButton onClick={handleNewCutsCancel}>Cancel</PrimaryButton>
+          </>
+        )}
+        {!isSelectingCuts && isRemovingCuts && (
+          <>
+            <PrimaryButton onClick={handleRemoveCuts}>
+              Confirm Removal
+            </PrimaryButton>
+            <PrimaryButton onClick={handleCutRemovalCancel}>
+              Cancel
+            </PrimaryButton>
+          </>
         )}
       </div>
+      {popupInfo && (
+        <div
+          className="fixed z-50 font-bold text-black shadow-md"
+          style={{
+            top: popupInfo.position.top,
+            left: popupInfo.position.left,
+            transform: "translateX(-50%)",
+          }}
+        >
+          <div className="relative bg-primary text-xs text-white size-14 xs:size-16 rounded-md speech-bubble flex flex-col justify-center items-center">
+            <Icon icon="material-symbols:info-rounded" className="size-5" />
+            <span className="block truncate max-w-[120px]">
+              {popupInfo.cutType === MealType.Full
+                ? "Full Day"
+                : toTitleCase(popupInfo.cutType)}
+            </span>
+            <span>Cut</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,23 +1,23 @@
 {
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "CommonJS",
-		"outDir": "dist",
-		"rootDir": "src",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"baseUrl": "./src",
-		"paths": {
-			"@services/*": ["services/*"],
-			"@controllers/*": ["controllers/*"],
-			"@routes/*": ["routes/*"],
-			"@utils/*": ["utils/*"],
-			"@lib/*": ["lib/*"],
-			"@validations/*": ["validations/*"],
-			"@middlewares/*": ["middlewares/*"]
-		}
-	},
-	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@services/*": ["services/*"],
+      "@controllers/*": ["controllers/*"],
+      "@routes/*": ["routes/*"],
+      "@utils/*": ["utils/*"],
+      "@lib/*": ["lib/*"],
+      "@validations/*": ["validations/*"],
+      "@middlewares/*": ["middlewares/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

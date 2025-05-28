@@ -7,6 +7,8 @@ model Messcut extends Base {
   user    User     @relation(fields: [userId], references: [id])
   userId  String
 
+  @@unique([date, cutType, userId])
+
   @@allow('create', auth() != null && auth().id == userId)
   @@allow('read', auth().id == userId || auth().role == "ADMIN")
   @@allow('update,delete', auth().id == userId)
