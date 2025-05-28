@@ -1,4 +1,4 @@
-import Calendar from "../components/user/Calendar";
+import Calendar from "../../components/user/Calendar";
 import type { FC } from "react";
 
 const UserDashboard: FC = () => {
