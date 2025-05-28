@@ -4,6 +4,7 @@ import type { FC } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { clsx } from "clsx";
+import { toTitleCase } from "@utils/stringUtils";
 
 import PrimaryButton from "./PrimaryButton";
 import CalendarDateButton from "./CalendarDateButton";
@@ -17,6 +18,7 @@ import { DisplayingCutType } from "@type/messcuts";
 import { readMonthlyMessCuts, createMesscuts } from "@services/messcutService";
 
 import { useAuthContext } from "@contexts/AuthContext";
+import useTimer from "@hooks/useTimer";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -41,6 +43,13 @@ const Calendar: FC = () => {
 
   const [cutsToRemove, setCutsToRemove] = useState<Set<CutID>>(new Set());
 
+  const [popupInfo, setPopupInfo] = useState<{
+    day: Dayjs;
+    cutType: string;
+    position: { top: number; left: number };
+  } | null>(null);
+  const { resetTimer } = useTimer(2, () => setPopupInfo(null));
+
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
 
@@ -60,7 +69,8 @@ const Calendar: FC = () => {
 
   const handleButtonClick = (
     day: Dayjs,
-    matchingCut: DisplayingCutType | undefined
+    matchingCut: DisplayingCutType | undefined,
+    e: React.MouseEvent<HTMLButtonElement>
   ) => {
     if (isSelectingCuts) {
       changeNewCutRange(day);
@@ -74,7 +84,17 @@ const Calendar: FC = () => {
     }
 
     // display cut type for user to see
-    console.log(matchingCut.cutType);
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setPopupInfo({
+      day,
+      cutType: matchingCut.cutType,
+      position: {
+        top: rect.bottom + 4,
+        left: rect.left,
+      },
+    });
+
+    resetTimer();
   };
 
   const changeNewCutRange = (day: Dayjs) => {
@@ -182,7 +202,7 @@ const Calendar: FC = () => {
       return (
         <CalendarDateButton
           key={i}
-          onClick={() => handleButtonClick(date, matchingCut)}
+          onClick={(e) => handleButtonClick(date, matchingCut, e)}
           disabled={disableDuringNewCuts || disableDuringCutRemoval}
           className={getDayClassNames(
             date,
@@ -225,8 +245,6 @@ const Calendar: FC = () => {
     handleNewCutsCancel();
   };
 
-  // cut removals
-
   const handleCutRemovalCancel = () => {
     setCutsToRemove(new Set());
     setIsRemovingCuts(false);
@@ -256,7 +274,7 @@ const Calendar: FC = () => {
   }, [currentMonthDisplayed]);
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col ">
+    <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col relative">
       <div className="w-full flex justify-between border-b-2 border-gray-600 py-2 mb-6">
         <h2 className=" text-gray-600 font-semibold text-lg">
           Handle Messcuts
@@ -339,6 +357,24 @@ const Calendar: FC = () => {
           </>
         )}
       </div>
+      {popupInfo && (
+        <div
+          className="fixed z-50 text-xs font-bold text-black shadow-md"
+          style={{
+            top: popupInfo.position.top,
+            left: popupInfo.position.left,
+          }}
+        >
+          <div className="relative bg-accent text-white border border-primary px-2 py-1 rounded-md speech-bubble flex gap-1 items-center">
+            <Icon icon="material-symbols:info-rounded" className="size-3" />
+            <span className="block truncate max-w-[120px]">
+              {popupInfo.cutType === MealType.Full
+                ? "Full Day Cut"
+                : toTitleCase(popupInfo.cutType) + " Cut"}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
