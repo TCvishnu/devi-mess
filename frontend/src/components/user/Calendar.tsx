@@ -90,7 +90,7 @@ const Calendar: FC = () => {
       cutType: matchingCut.cutType,
       position: {
         top: rect.bottom + 4,
-        left: rect.left,
+        left: (rect.left + rect.right) / 2,
       },
     });
 
@@ -359,19 +359,21 @@ const Calendar: FC = () => {
       </div>
       {popupInfo && (
         <div
-          className="fixed z-50 text-xs font-bold text-black shadow-md"
+          className="fixed z-50 font-bold text-black shadow-md"
           style={{
             top: popupInfo.position.top,
             left: popupInfo.position.left,
+            transform: "translateX(-50%)",
           }}
         >
-          <div className="relative bg-accent text-white border border-primary px-2 py-1 rounded-md speech-bubble flex gap-1 items-center">
-            <Icon icon="material-symbols:info-rounded" className="size-3" />
+          <div className="relative bg-primary text-xs text-white size-14 xs:size-16 rounded-md speech-bubble flex flex-col justify-center items-center">
+            <Icon icon="material-symbols:info-rounded" className="size-5" />
             <span className="block truncate max-w-[120px]">
               {popupInfo.cutType === MealType.Full
-                ? "Full Day Cut"
-                : toTitleCase(popupInfo.cutType) + " Cut"}
+                ? "Full Day"
+                : toTitleCase(popupInfo.cutType)}
             </span>
+            <span>Cut</span>
           </div>
         </div>
       )}
