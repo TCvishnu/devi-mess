@@ -1,25 +1,27 @@
-import express from "express"
+import express from "express";
 
-import authControllers from "@controllers/auth/auth.controller"
+import authControllers from "@controllers/auth/auth.controller";
 
 //Middlewares
-import { validateAndTransformRequest } from "@middlewares/validation.middleware"
+import { validateAndTransformRequest } from "@middlewares/validation.middleware";
 
 //validation schemas
-import { LoginRequest, RegisterRequest } from "@validations/user.yup"
+import { LoginRequest, RegisterRequest } from "@validations/user.yup";
 
-const router = express.Router()
-
-router.post(
-	"/register",
-	validateAndTransformRequest(RegisterRequest),
-	authControllers.register
-)
+const router = express.Router();
 
 router.post(
-	"/login",
-	validateAndTransformRequest(LoginRequest),
-	authControllers.login
-)
+  "/register",
+  validateAndTransformRequest(RegisterRequest),
+  authControllers.register
+);
 
-export default router
+router.post(
+  "/login",
+  validateAndTransformRequest(LoginRequest),
+  authControllers.login
+);
+
+router.post("/logout", authControllers.logout);
+
+export default router;
