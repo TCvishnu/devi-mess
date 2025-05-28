@@ -1,6 +1,7 @@
-import { UserDetails } from "@type/user"
+import { ResidentialDataType, User, UserDetails } from "@type/user"
 import fetchApi from "./fetchConfig/fetchWrapper"
 import { handleError } from "./handlerService"
+import { data } from "react-router-dom"
 
 type UpdateProfileReturn = {
 	data?: Partial<UserDetails>
@@ -9,6 +10,28 @@ type UpdateProfileReturn = {
 
 type CurrentUserReturn = {
 	data?: UserDetails
+	error?: string
+}
+
+type VerificationRequestReturn = {
+	data?: {
+		pagination: {
+			limit: number
+			page: number
+			totalPages: number
+		}
+		result: UserDetails[]
+	}
+	error?: string
+}
+
+type MarkAsVerifiedReturn = {
+	status: boolean
+	error?: string
+}
+
+type ResidentFetchReturn = {
+	data?: ResidentialDataType
 	error?: string
 }
 
@@ -45,6 +68,82 @@ export const saveProfile = async (
 
 		return {
 			error: "Failed to update profile details. Please try again later",
+		}
+	}
+}
+
+export const fetchVerificationRequests = async (
+	page?: number,
+	limit?: number
+): Promise<VerificationRequestReturn> => {
+	try {
+		const urlParams = new URLSearchParams()
+
+		if (page !== undefined) {
+			urlParams.set("page", `${page || 1}`)
+		}
+
+		if (limit !== undefined) {
+			urlParams.set("limit", `${limit || 10}`)
+		}
+
+		const response = await fetchApi(`/api/user/not-verified-users`)
+
+		if (!response.data?.result?.length)
+			return {
+				error: "No users found",
+			}
+
+		return {
+			data: response.data,
+		}
+	} catch (err: unknown) {
+		if (err instanceof Error) handleError(err.message)
+
+		return {
+			error: "No pending verification requests",
+		}
+	}
+}
+
+export const updateVerificationStatus = async (
+	userId: string
+): Promise<MarkAsVerifiedReturn> => {
+	try {
+		await fetchApi(`/api/user/mark-verified/${userId}`, {
+			method: "POST",
+		})
+
+		return {
+			status: true,
+		}
+	} catch (err: unknown) {
+		if (err instanceof Error) handleError(err.message)
+
+		return {
+			status: false,
+			error: "Failed to fetch verification requests",
+		}
+	}
+}
+
+export const fetchResidentDetails = async (
+	userId: string
+): Promise<ResidentFetchReturn> => {
+	try {
+		const response = await fetchApi(`/api/user/resident/${userId}`, {
+			method: "GET",
+		})
+
+		if (!response.ok) throw new Error()
+		return {
+			data: response.data,
+		}
+	} catch (err: unknown) {
+		if (err instanceof Error) handleError(err.message)
+
+		return {
+			error: "Failed to fetch verification requests",
 		}
 	}
 }
