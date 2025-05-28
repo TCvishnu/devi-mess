@@ -234,6 +234,7 @@ const Calendar: FC = () => {
       selectedCutType
     );
     if (result.status !== 201) {
+      handleNewCutsCancel();
       return;
     }
 
@@ -268,7 +269,6 @@ const Calendar: FC = () => {
         (cut: DisplayingCutType) => !cutsToRemove.has(cut.id)
       );
       setMessCuts(cutsLeft);
-      setCutsToRemove(new Set());
     }
     handleCutRemovalCancel();
   };
