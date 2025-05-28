@@ -52,6 +52,38 @@ const findByPhoneNumber = async (phoneNumber: string) => {
 	})
 }
 
+const findNotVerifiedUsers = async (
+	db: ReturnType<typeof getPrisma>,
+	page: number,
+	limit: number
+) => {
+	const skip = (page - 1) * limit
+	const take = limit
+
+	const totalUsers = await db.user.count({
+		where: {
+			adminVerified: false,
+		},
+	})
+
+	const result = await db.user.findMany({
+		where: {
+			adminVerified: false,
+		},
+		skip,
+		take,
+	})
+
+	return {
+		pagination: {
+			currrentPage: page,
+			limit,
+			totalPages: Math.ceil(totalUsers / limit),
+		},
+		result,
+	}
+}
+
 // const findBy = async (id: string): Promise<User | null> => {
 // 	return await prisma.user.findUnique({
 // 		where: {
@@ -66,4 +98,5 @@ export default {
 	getFullUserDetails,
 	findByPhoneNumber,
 	findByIdAndUpdate,
+	findNotVerifiedUsers,
 }
