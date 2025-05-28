@@ -70,6 +70,22 @@ export const register = async (
 	}
 }
 
+export const logoutUser = async () => {
+	try {
+		const response = await fetchApi("/api/auth/logout", {
+			method: "POST",
+		})
+		return response.status
+	} catch (err: unknown) {
+		if (err instanceof Error) handleError(err.message)
+
+		return {
+			status: false,
+			message: "An error occured. Please try again later",
+		}
+	}
+}
+
 export const requestOtpVerification = async (phoneNumber: string) => {
 	try {
 		const response = await fetchApi("/api/otp/request", {

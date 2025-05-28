@@ -19,6 +19,7 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
 }) => {
   return (
     <button
+      disabled={mealType !== "FULL"}
       key={mealType}
       {...props}
       className={clsx(
@@ -32,7 +33,7 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
           selectedMealType === mealType
             ? "text-primary font-bold"
             : "text-gray-500 font-medium"
-        } text-xs `}
+        } text-[0.6rem] `}
       >
         {mealType}
       </span>
