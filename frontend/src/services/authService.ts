@@ -7,6 +7,7 @@ import { UserDetails } from "@type/user"
 
 import fetchApi from "./fetchConfig/fetchWrapper"
 import { handleError } from "./handlerService"
+import { getBackendBaseUrl } from "@utils/base"
 
 type LoginResponse = {
 	status: boolean
@@ -22,7 +23,7 @@ type RegisterResponse = {
 
 export const login = async (data: LoginFormData): Promise<LoginResponse> => {
 	try {
-		const response = await fetchApi("/api/auth/login", {
+		const response = await fetch(getBackendBaseUrl() + "/api/auth/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -31,8 +32,9 @@ export const login = async (data: LoginFormData): Promise<LoginResponse> => {
 		})
 
 		if (!response) throw new Error("Network Error")
+		const responseData = await response.json()
 
-		return response.data
+		return responseData
 	} catch (err: unknown) {
 		if (err instanceof Error) handleError(err.message)
 
