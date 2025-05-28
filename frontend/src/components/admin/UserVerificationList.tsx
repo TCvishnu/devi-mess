@@ -1,140 +1,15 @@
 import { FC, useEffect, useState } from "react"
-import type { User, UserDetails } from "@type/user"
+import type { UserDetails } from "@type/user"
 import { Icon } from "@iconify/react/dist/iconify.js"
 
 import { toTitleCase } from "@utils/stringUtils"
-import { Gender, MealType, UserRole } from "@type/enums"
+import { MealType } from "@type/enums"
 import {
 	fetchResidentDetails,
 	fetchVerificationRequests,
 	updateVerificationStatus,
 } from "@services/userService"
-// to be removed
-const dummyMessUsers: User[] = [
-	{
-		id: "user1",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Jishnu Menon",
-		phoneNumber: "9876543210",
-		password: "hashedpassword1",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Mess,
-		isVeg: false,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-	{
-		id: "user2",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Jishnu Menon",
-		phoneNumber: "9876543210",
-		password: "hashedpassword1",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Mess,
-		isVeg: false,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-	{
-		id: "user3",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Jishnu Menon",
-		phoneNumber: "9876543210",
-		password: "hashedpassword1",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Mess,
-		isVeg: false,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-	{
-		id: "user4",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Jishnu Menon",
-		phoneNumber: "9876543210",
-		password: "hashedpassword1",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Mess,
-		isVeg: false,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-]
-
-const dummyResidents: User[] = [
-	{
-		id: "resident1",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Ananya Iyer",
-		phoneNumber: "9876543210",
-		password: "hashedpassword1",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Resident,
-		isVeg: false,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-	{
-		id: "resident2",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Rohit Mehta",
-		phoneNumber: "9123456780",
-		password: "hashedpassword2",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Resident,
-		isVeg: true,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-	{
-		id: "resident3",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Sneha Deshpande",
-		phoneNumber: "9012345678",
-		password: "hashedpassword3",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Resident,
-		isVeg: true,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-	{
-		id: "resident4",
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		name: "Karthik Nair",
-		phoneNumber: "9988776655",
-		password: "hashedpassword4",
-		gender: Gender.Male,
-		mealType: MealType.Full,
-		role: UserRole.Resident,
-		isVeg: false,
-		hasOnboarded: true,
-		adminVerified: true,
-		messcuts: [],
-	},
-]
+import Button from "../../common/components/button/Button"
 
 const BuildingList = {
 	DEVI_HOUSE: {
@@ -157,7 +32,7 @@ const FloorList = {
 type DisplayResidentType = {
 	pagination: {
 		limit: number
-		page: number
+		currentPage: number
 		totalPages: number
 	}
 	result: UserDetails[]
@@ -165,20 +40,18 @@ type DisplayResidentType = {
 
 const UserVerificationList: FC = () => {
 	const [pending, setPending] = useState<boolean>(false)
+	const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null)
 
 	const [displayResidents, setDisplayResidents] =
 		useState<DisplayResidentType>({
 			pagination: {
 				limit: 10,
-				page: 0,
+				currentPage: 0,
 				totalPages: 10,
 			},
 			result: [],
 		})
-	const [magnifiedUsers, setMagnifiedUsers] = useState<Set<string>>(
-		new Set("user1")
-	)
-
+	const [magnifiedUsers, setMagnifiedUsers] = useState<Set<string>>(new Set())
 	const [errorMessage, setErrorMessage] = useState<string>("")
 
 	const toggleMagnifiedUsers = async (user: UserDetails) => {
@@ -226,30 +99,29 @@ const UserVerificationList: FC = () => {
 		})
 	}
 
-	const showResidents = () => {
-		setMagnifiedUsers(new Set())
+	const showConfirmDialog = (user: UserDetails) => {
+		setSelectedUser(user)
 	}
 
-	const showMessStudents = () => {
-		setMagnifiedUsers(new Set())
+	const hideConfirmDialog = () => {
+		setSelectedUser(null)
 	}
 
 	const getVerificationRequest = async () => {
 		try {
 			setPending(true)
 
+			console.log(displayResidents.pagination)
 			const { data, error } = await fetchVerificationRequests(
-				displayResidents?.pagination.page
-					? displayResidents.pagination.page + 1
-					: 1,
-				displayResidents?.pagination.limit || 10
+				displayResidents.pagination.currentPage + 1,
+				displayResidents.pagination.limit
 			)
 
 			if (!error && data) {
 				setErrorMessage("")
 				setDisplayResidents(data)
 			} else {
-				setErrorMessage("No pending verification request")
+				setErrorMessage("No more pending request")
 			}
 		} catch (err) {
 			console.log(err)
@@ -265,6 +137,7 @@ const UserVerificationList: FC = () => {
 			const { error } = await updateVerificationStatus(userId)
 
 			if (!error && displayResidents) {
+				hideConfirmDialog()
 				setDisplayResidents((prev) => ({
 					...prev,
 					result: prev.result.filter(
@@ -292,33 +165,6 @@ const UserVerificationList: FC = () => {
 				/>
 			</div>
 
-			<div className="flex w-full justify-between">
-				<button
-					className={`w-32 h-10 font-semibold text-sm rounded-xs xs:w-40 ${
-						displayResidents
-							? "bg-accent text-white"
-							: "border border-gray-400"
-					}`}
-					onClick={showResidents}
-				>
-					Residents
-				</button>
-				<button
-					className={`w-32 h-10 font-semibold text-sm rounded-xs xs:w-40 ${
-						!displayResidents
-							? "bg-accent text-white"
-							: "border border-gray-400"
-					}`}
-					onClick={showMessStudents}
-				>
-					Mess
-				</button>
-			</div>
-			{errorMessage && (
-				<span className=" text-center text-gray-400 font-semibold">
-					{errorMessage}
-				</span>
-			)}
 			<div className="overflow-y-auto">
 				<div className="w-full flex gap-2 flex-col">
 					{displayResidents.result.map((user, index) => (
@@ -357,7 +203,7 @@ const UserVerificationList: FC = () => {
 
 								<button
 									className=" px-2 bg-green-400 text-white font-semibold rounded-md"
-									onClick={() => markAsVerified(user.id)}
+									onClick={() => showConfirmDialog(user)}
 								>
 									Admit
 								</button>
@@ -405,10 +251,15 @@ const UserVerificationList: FC = () => {
 							)}
 						</div>
 					))}
-					<div className=" w-full flex justify-center">
+					{errorMessage && (
+						<span className=" text-center text-gray-400 font-semibold">
+							{errorMessage}
+						</span>
+					)}
+					<div className=" mt-4 w-full flex justify-center">
 						<button
 							onClick={getVerificationRequest}
-							className=" px-2 py-1 w-36 h-10 flex justify-center items-center
+							className=" px-2  w-32 h-8 text-sm flex justify-center items-center
 							 font-semibold bg-primary opacity-80 text-white disabled:opacity-60 rounded-md "
 							disabled={pending}
 						>
@@ -425,6 +276,38 @@ const UserVerificationList: FC = () => {
 					</div>
 				</div>
 			</div>
+
+			{selectedUser && (
+				<div className=" absolute px-4 inset-0 w-full h-full flex justify-center items-center bg-blur rounded-md ">
+					<div className="  w-full max-w-xs p-4 bg-white rounded-md animate-slide-in">
+						<div className=" flex flex-col items-center gap-4">
+							<span className=" font-semibold text-center">
+								Are you sure you want to admit
+								<span className=" font-bold ml-1">
+									{selectedUser.name}
+								</span>{" "}
+								?
+							</span>
+						</div>
+						<div className=" flex justify-center mt-4 gap-4">
+							<Button
+								radiusSize="md"
+								className=" h-8 max-w-20 flex justify-center items-center bg-gray-600 rounded-md"
+								onClick={hideConfirmDialog}
+							>
+								Cancel
+							</Button>
+							<Button
+								radiusSize="md"
+								className=" h-8 max-w-20 flex justify-center items-center bg-green-600 rounded-md"
+								onClick={() => markAsVerified(selectedUser.id)}
+							>
+								Confirm
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }
