@@ -6,7 +6,9 @@ const createMany = async (
   startDate: Date,
   endDate: Date | undefined,
   userID: string,
-  cutType: CutType
+  cutType: CutType,
+  month: number,
+  year: number
 ) => {
   try {
     if (!endDate || startDate.getTime() === endDate.getTime()) {
@@ -48,7 +50,7 @@ const createMany = async (
       data: newDates.map((date) => ({ date, cutType, userId: userID })),
     });
 
-    return newDates.map((date) => ({ date, cutType, userId: userID }));
+    return await readMonthlyMessCuts(db, month, year, userID);
   } catch (error) {
     console.error(error);
     throw error;

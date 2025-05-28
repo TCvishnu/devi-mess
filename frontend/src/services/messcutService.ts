@@ -29,13 +29,17 @@ export const readMonthlyMessCuts = async (
 export const createMesscuts = async (
   userID: string,
   cutRange: [Dayjs | null, Dayjs | null],
-  cutType: MealType
+  cutType: MealType,
+  month: number,
+  year: number
 ) => {
   try {
     const sendData = {
       startDate: cutRange[0]?.toISOString(),
       endDate: cutRange[1]?.toISOString(),
       cutType,
+      month,
+      year,
     };
     const response = await fetchApi(`/api/verified-user/${userID}/messcuts`, {
       method: "POST",

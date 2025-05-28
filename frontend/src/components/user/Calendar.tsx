@@ -45,6 +45,8 @@ const Calendar: FC = () => {
   ]);
   const [messCuts, setMessCuts] = useState<DisplayingCutType[]>([]);
 
+  useEffect(() => console.log(messCuts), [messCuts]);
+
   const [cutsToRemove, setCutsToRemove] = useState<Set<CutID>>(new Set());
 
   const [popupInfo, setPopupInfo] = useState<{
@@ -231,21 +233,27 @@ const Calendar: FC = () => {
     const result = await createMesscuts(
       user?.id as string,
       newCutRange,
-      selectedCutType
+      selectedCutType,
+      currentMonthDisplayed.month(),
+      currentMonthDisplayed.year()
     );
     if (result.status !== 201) {
       handleNewCutsCancel();
       return;
     }
-
-    setMessCuts((prev) => [
-      ...prev,
-      ...result.data.map((cutDate: Messcut) => ({
-        id: cutDate.id,
-        cutType: cutDate.cutType,
-        date: dayjs(cutDate.date),
-      })),
-    ]);
+    console.log("cjeck: ", result.data);
+    if (result.data.length === 1) {
+      const { id, cutType, date } = result.data[0];
+      setMessCuts((prev) => [...prev, { id, cutType, date: dayjs(date) }]);
+    } else {
+      setMessCuts(
+        result.data.map((cut: Messcut) => ({
+          id: cut.id,
+          cutType: cut.cutType,
+          date: dayjs(cut.date),
+        }))
+      );
+    }
 
     handleNewCutsCancel();
   };

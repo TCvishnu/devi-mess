@@ -22,6 +22,8 @@ export const createManyMessCutsSchema = yup.object({
     .mixed<CutType>()
     .oneOf(["MORNING", "AFTERNOON", "EVENING", "FULL"])
     .required(),
+  month: yup.number().integer().min(0).max(11).required(),
+  year: yup.number().integer().min(2025).max(2100).required(),
 });
 
 export const monthYearQueryMessCutsSchema = yup.object({

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import messcutsService from "../services/messcuts.service";
 
 const createMany = async (req: Request, res: Response) => {
-  const { startDate, endDate, cutType } = req.body;
+  const { startDate, endDate, cutType, month, year } = req.body;
   const { userID } = req.params;
 
   const startDateStr = new Date(startDate);
@@ -14,7 +14,9 @@ const createMany = async (req: Request, res: Response) => {
       startDateStr,
       endDateStr,
       userID,
-      cutType
+      cutType,
+      month,
+      year
     );
 
     res.status(201).json({ result });
