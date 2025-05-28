@@ -56,3 +56,24 @@ export const createMesscuts = async (
     };
   }
 };
+
+export const deleteMessCuts = async (userID: string, cutIDs: string[]) => {
+  try {
+    const response = await fetchApi(`/api/verified-user/${userID}/messcuts`, {
+      method: "DELETE",
+      body: JSON.stringify({ cutIDs }),
+    });
+
+    return {
+      status: response.status,
+      data: response.data,
+    };
+  } catch (error) {
+    if (error instanceof Error) handleError(error.message);
+
+    return {
+      status: false,
+      message: "An error occured. Please try again later",
+    };
+  }
+};

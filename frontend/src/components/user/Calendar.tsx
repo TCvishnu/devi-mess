@@ -15,7 +15,11 @@ import { Messcut } from "@type/user";
 import { DisplayingCutType } from "@type/messcuts";
 
 //api endpoints
-import { readMonthlyMessCuts, createMesscuts } from "@services/messcutService";
+import {
+  readMonthlyMessCuts,
+  createMesscuts,
+  deleteMessCuts,
+} from "@services/messcutService";
 
 import { useAuthContext } from "@contexts/AuthContext";
 import useTimer from "@hooks/useTimer";
@@ -250,6 +254,25 @@ const Calendar: FC = () => {
     setIsRemovingCuts(false);
   };
 
+  const handleRemoveCuts = async () => {
+    const cutIDs = Array.from(cutsToRemove);
+
+    if (!cutIDs.length) {
+      handleCutRemovalCancel();
+    }
+    if (!user || !user.id) return;
+    const result = await deleteMessCuts(user.id, cutIDs);
+
+    if (result.status === 200) {
+      const cutsLeft = messCuts.filter(
+        (cut: DisplayingCutType) => !cutsToRemove.has(cut.id)
+      );
+      setMessCuts(cutsLeft);
+      setCutsToRemove(new Set());
+    }
+    handleCutRemovalCancel();
+  };
+
   useEffect(() => {
     const fetchMonthlyMessCuts = async () => {
       if (!user) return;
@@ -350,7 +373,9 @@ const Calendar: FC = () => {
         )}
         {!isSelectingCuts && isRemovingCuts && (
           <>
-            <PrimaryButton>Confirm Removal</PrimaryButton>
+            <PrimaryButton onClick={handleRemoveCuts}>
+              Confirm Removal
+            </PrimaryButton>
             <PrimaryButton onClick={handleCutRemovalCancel}>
               Cancel
             </PrimaryButton>
