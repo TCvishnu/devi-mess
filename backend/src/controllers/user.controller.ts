@@ -64,7 +64,7 @@ const getResidentDetails = async (req: Request, res: Response) => {
 		)
 
 		if (!data) {
-			handleError(res, 404, "No information found")
+			handleError(res, 404, "No resident details found")
 			return
 		}
 
