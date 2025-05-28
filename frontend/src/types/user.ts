@@ -1,7 +1,7 @@
 import { Gender, MealType, UserRole } from "./enums"
 
 export interface UserDetails {
-	id?: number
+	id?: string
 	name?: string
 	phoneNumber?: string
 	gender?: Gender
