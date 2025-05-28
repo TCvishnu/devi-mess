@@ -29,6 +29,7 @@ export const login = async (data: LoginFormData): Promise<LoginResponse> => {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(data),
+			credentials: "include",
 		})
 
 		if (!response) throw new Error("Network Error")
