@@ -138,7 +138,7 @@ const logout = async (req: Request, res: Response) => {
     sameSite: process.env.NODE_ENV === "prod" ? "strict" : "lax",
   });
 
-  // res.status(200).json({ message: "Logged out successfully" });
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 export default {
