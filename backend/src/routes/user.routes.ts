@@ -23,10 +23,10 @@ router.get(
 	userController.getNotVerifiedList
 )
 
-router.get("/resident/:userId", verifyUserID, userController.getResidentDetails)
+router.get("/resident/:userID", verifyUserID, userController.getResidentDetails)
 
 router.post(
-	"/mark-verified/:userId",
+	"/mark-verified/:userID",
 	verifyUserID,
 	userController.markAsVerified
 )

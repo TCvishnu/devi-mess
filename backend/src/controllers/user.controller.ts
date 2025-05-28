@@ -60,7 +60,7 @@ const getResidentDetails = async (req: Request, res: Response) => {
 
 		const data = await residentService.getDetailsByUserId(
 			db,
-			req.params.userId
+			req.params.userID
 		)
 
 		if (!data) {
@@ -85,7 +85,7 @@ const markAsVerified = async (req: Request, res: Response) => {
 
 		const data = await userServices.findByIdAndUpdate(
 			db,
-			req.params.userId,
+			req.params.userID,
 			{
 				adminVerified: true,
 			}

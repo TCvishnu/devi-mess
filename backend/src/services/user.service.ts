@@ -70,6 +70,9 @@ const findNotVerifiedUsers = async (
 		where: {
 			adminVerified: false,
 		},
+		orderBy: {
+			updatedAt: "desc",
+		},
 		skip,
 		take,
 	})
