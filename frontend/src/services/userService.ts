@@ -17,7 +17,7 @@ type VerificationRequestReturn = {
 	data?: {
 		pagination: {
 			limit: number
-			page: number
+			currentPage: number
 			totalPages: number
 		}
 		result: UserDetails[]
@@ -77,17 +77,20 @@ export const fetchVerificationRequests = async (
 	limit?: number
 ): Promise<VerificationRequestReturn> => {
 	try {
+		console.log(page, limit)
 		const urlParams = new URLSearchParams()
 
 		if (page !== undefined) {
-			urlParams.set("page", `${page || 1}`)
+			urlParams.set("page", `${page}`)
 		}
 
 		if (limit !== undefined) {
-			urlParams.set("limit", `${limit || 10}`)
+			urlParams.set("limit", `${limit}`)
 		}
 
-		const response = await fetchApi(`/api/user/not-verified-users`)
+		const response = await fetchApi(
+			`/api/user/not-verified-users?${urlParams.toString()}`
+		)
 
 		if (!response.data?.result?.length)
 			return {

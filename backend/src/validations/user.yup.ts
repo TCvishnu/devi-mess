@@ -63,3 +63,11 @@ export const ProfileCompleteRequest = yup
 			}),
 	})
 	.stripUnknown()
+
+export const NotVerifiedListRequest = yup
+	.object()
+	.shape({
+		page: yup.number().integer().min(1).default(1),
+		limit: yup.number().integer().min(10).default(10),
+	})
+	.stripUnknown()

@@ -1,23 +1,42 @@
-import { Router } from "express";
+import { Router } from "express"
 
-import userController from "@controllers/user.controller";
+import userController from "@controllers/user.controller"
 
-import { validateAndTransformRequest } from "@middlewares/validation.middleware";
-import { ProfileCompleteRequest } from "@validations/user.yup";
+import {
+	validateAndTransformRequest,
+	validateQueryAndTransformRequest,
+} from "@middlewares/validation.middleware"
+import {
+	NotVerifiedListRequest,
+	ProfileCompleteRequest,
+} from "@validations/user.yup"
+import { verifyUserID } from "@middlewares/verifyUserID.middleware"
 
-const router = Router();
+const router = Router()
 
-router.get("/get-current-user", userController.getCurrentUser);
+router.get("/get-current-user", userController.getCurrentUser)
 
-// move this route to any other router if admin routes are defined in a different router
-router.get("/not-verified-users", userController.getNotVerifiedList)
-router.get("/resident/:userId", userController.getResidentDetails)
-router.post("/mark-verified/:userId", userController.markAsVerified)
+/////// move this route to any other router if admin routes are defined in a different router
+router.get(
+	"/not-verified-users",
+	validateQueryAndTransformRequest(NotVerifiedListRequest),
+	userController.getNotVerifiedList
+)
+
+router.get("/resident/:userId", verifyUserID, userController.getResidentDetails)
 
 router.post(
-  "/complete-profile",
-  validateAndTransformRequest(ProfileCompleteRequest),
-  userController.updateOnboardDetails
-);
+	"/mark-verified/:userId",
+	verifyUserID,
+	userController.markAsVerified
+)
 
-export default router;
+///////
+
+router.post(
+	"/complete-profile",
+	validateAndTransformRequest(ProfileCompleteRequest),
+	userController.updateOnboardDetails
+)
+
+export default router
