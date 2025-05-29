@@ -25,12 +25,12 @@ const FoodCountDisplay: FC = () => {
   const { selectedDate } = useDate();
 
   const fetchCurrentDateCount = async () => {
-    console.log(selectedDate.toISOString());
     const result = await getDailyFoodCount(selectedDate);
 
     if (result.status === 200) {
       const { total, cutCounts, totalNonVegetarians } = result;
       // all the best (it works, not chatGPT)
+      // better cache this in localstorage ig
       setFoodCounts({
         morning: {
           count:

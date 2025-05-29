@@ -10,6 +10,7 @@ const getDailyFoodCount = async (
   startOfDay.setDate(startOfDay.getDate() + 1);
 
   const totalStudents = await db.user.count({
+    //redis?
     where: {
       role: { not: UserRole.ADMIN },
       adminVerified: true,
@@ -17,6 +18,7 @@ const getDailyFoodCount = async (
   });
 
   const totalNonVegetarians = await db.user.count({
+    //redis?
     where: {
       role: { not: UserRole.ADMIN },
       adminVerified: true,

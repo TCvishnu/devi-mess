@@ -1,7 +1,7 @@
 import { UserWithoutPassword } from "@type/user";
 import { FC, HTMLAttributes } from "react";
 import { toTitleCase } from "@utils/stringUtils";
-import { MealType } from "@type/enums";
+import { Building, MealType } from "@type/enums";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 type StudentCardType = {
@@ -61,8 +61,12 @@ const StudentCard: FC<StudentCardType> = ({
 
       {user.residentialData && (
         <div className="flex w-full px-4 text-gray-400 font-medium justify-between">
-          <span>{user.residentialData.building}</span>
-          <span>{user.residentialData.floor}</span>
+          <span>
+            {user.residentialData.building === Building.ROCKLAND_ARCADE
+              ? "Rockland Arcade"
+              : "Devi Veed"}
+          </span>
+          <span>{toTitleCase(user.residentialData.floor)} floor</span>
         </div>
       )}
     </div>

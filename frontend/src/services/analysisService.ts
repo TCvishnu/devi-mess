@@ -8,7 +8,6 @@ export const getDailyFoodCount = async (date: Dayjs) => {
     const response = await fetchApi(
       `/api/analysis/daily-food-count?date=${sendDate}`
     );
-    console.log(response.data.result);
     return {
       status: response.status,
       total: response.data.result.totalStudents,
