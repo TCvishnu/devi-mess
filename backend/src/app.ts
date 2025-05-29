@@ -9,7 +9,7 @@ import passport from "./auth/passport";
 import getPrisma from "./lib/getPrisma";
 
 // middleware imports
-import { userAdminVerified } from "./middlewares/userAdminVerified.middleware";
+
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
 
@@ -53,7 +53,6 @@ app.use("/", async (req, _, next) => {
 app.use("/api/auth", authRouter);
 app.use("/api", passport.authenticate("jwt", { session: false }));
 app.use("/api", useZenstackClient);
-app.use("/api/verified-user/", userAdminVerified);
 
 // routes
 app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);

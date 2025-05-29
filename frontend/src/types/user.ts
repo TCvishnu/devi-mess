@@ -47,7 +47,10 @@ export interface User {
   hasOnboarded: boolean;
   adminVerified: boolean;
   messcuts: Messcut[];
+  residentialData?: ResidentialDataType;
 }
+
+export type UserWithoutPassword = Omit<User, "password">;
 
 export interface Messcut {
   id: string;

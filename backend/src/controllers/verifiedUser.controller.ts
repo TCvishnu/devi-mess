@@ -21,4 +21,28 @@ const updateUserNameAndFoodPreference = async (req: Request, res: Response) => {
   }
 };
 
-export default { updateUserNameAndFoodPreference };
+const getResidents = async (req: Request, res: Response) => {
+  try {
+    const result = await verifiedUserService.getResidents(req.db);
+
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getMessStudents = async (req: Request, res: Response) => {
+  try {
+    const result = await verifiedUserService.getMessStudents(req.db);
+
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default {
+  updateUserNameAndFoodPreference,
+  getResidents,
+  getMessStudents,
+};

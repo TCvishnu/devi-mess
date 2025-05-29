@@ -25,3 +25,35 @@ export const updateNameAndFoodPreference = async (
     };
   }
 };
+
+export const getResidents = async () => {
+  try {
+    const response = await fetchApi(`/api/verified-users/residents`);
+    return {
+      status: response.status,
+      residents: response.data.result,
+    };
+  } catch (err: unknown) {
+    if (err instanceof Error) handleError(err.message);
+    return {
+      status: false,
+      error: "Failed to update profile details. Please try again later",
+    };
+  }
+};
+
+export const getMessStudents = async () => {
+  try {
+    const response = await fetchApi(`/api/verified-users/mess-students`);
+    return {
+      status: response.status,
+      messStudents: response.data.result,
+    };
+  } catch (err: unknown) {
+    if (err instanceof Error) handleError(err.message);
+    return {
+      status: false,
+      error: "Failed to update profile details. Please try again later",
+    };
+  }
+};

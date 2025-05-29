@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 
 const authenticateAdmin = (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User;
@@ -10,7 +10,7 @@ const authenticateAdmin = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  if (user.role !== "ADMIN") {
+  if (user.role !== UserRole.ADMIN) {
     res.status(403).json({ error: "Unauthorized: Admins only" });
     return;
   }

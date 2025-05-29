@@ -1,139 +1,17 @@
-import { FC, useState } from "react";
-import type { User } from "@type/user";
+import { FC, useEffect, useState } from "react";
+import type { UserWithoutPassword } from "@type/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import { toTitleCase } from "@utils/stringUtils";
-import { Gender, MealType, UserRole } from "@type/enums";
-// to be removed
-const dummyMessUsers: User[] = [
-  {
-    id: "user1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Jishnu Menon",
-    phoneNumber: "9876543210",
-    password: "hashedpassword1",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Mess,
-    isVeg: false,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-  {
-    id: "user2",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Jishnu Menon",
-    phoneNumber: "9876543210",
-    password: "hashedpassword1",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Mess,
-    isVeg: false,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-  {
-    id: "user3",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Jishnu Menon",
-    phoneNumber: "9876543210",
-    password: "hashedpassword1",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Mess,
-    isVeg: false,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-  {
-    id: "user4",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Jishnu Menon",
-    phoneNumber: "9876543210",
-    password: "hashedpassword1",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Mess,
-    isVeg: false,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-];
+import { MealType } from "@type/enums";
 
-const dummyResidents: User[] = [
-  {
-    id: "resident1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Ananya Iyer",
-    phoneNumber: "9876543210",
-    password: "hashedpassword1",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Resident,
-    isVeg: false,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-  {
-    id: "resident2",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Rohit Mehta",
-    phoneNumber: "9123456780",
-    password: "hashedpassword2",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Resident,
-    isVeg: true,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-  {
-    id: "resident3",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Sneha Deshpande",
-    phoneNumber: "9012345678",
-    password: "hashedpassword3",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Resident,
-    isVeg: true,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-  {
-    id: "resident4",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Karthik Nair",
-    phoneNumber: "9988776655",
-    password: "hashedpassword4",
-    gender: Gender.Male,
-    mealType: MealType.Full,
-    role: UserRole.Resident,
-    isVeg: false,
-    hasOnboarded: true,
-    adminVerified: true,
-    messcuts: [],
-  },
-];
+import { getResidents, getMessStudents } from "@services/verifiedUserService";
 
 const DisplayStudents: FC = () => {
   const [displayResidents, setDisplayResidents] = useState<boolean>(true);
   const [magnifiedUsers, setMagnifiedUsers] = useState<Set<string>>(new Set());
+
+  const [students, setStudents] = useState<UserWithoutPassword[]>([]);
 
   const toggleMagnifiedUsers = (userID: string) => {
     setMagnifiedUsers((prev) => {
@@ -155,6 +33,30 @@ const DisplayStudents: FC = () => {
     setDisplayResidents(false);
     setMagnifiedUsers(new Set());
   };
+
+  const fetchAllResidents = async () => {
+    const result = await getResidents();
+
+    if (result.status === 200) {
+      setStudents(result.residents);
+    }
+    // error message
+  };
+
+  const fetchAllMessStudents = async () => {
+    const result = await getMessStudents();
+    if (result.status === 200) {
+      setStudents(result.messStudents);
+    }
+  };
+
+  useEffect(() => {
+    if (displayResidents) {
+      fetchAllResidents();
+    } else {
+      fetchAllMessStudents();
+    }
+  }, [displayResidents]);
 
   return (
     <div className="w-full flex flex-col gap-4 py-6 h-full">
@@ -190,19 +92,23 @@ const DisplayStudents: FC = () => {
 
       <div className="overflow-y-auto">
         <div className="w-full flex gap-2 flex-col">
-          {(displayResidents ? dummyResidents : dummyMessUsers).map(
-            (user, index) => (
+          {students.map((user, index) => {
+            const isExpanded = magnifiedUsers.has(user.id);
+            const hasData = !!user.residentialData;
+            const maxHeight = hasData ? "max-h-40" : "max-h-32";
+
+            return (
               <div
                 className={`w-full border border-gray-300 rounded-md flex flex-col text-sm items-center 
-              px-2 pt-2 overflow-hidden transition-all duration-1000 gap-2
-              ${
-                magnifiedUsers.has(user.id) ? "h-28 justify-start py-2" : "h-12"
-              }`}
+                  px-2 pt-2 overflow-hidden transition-all duration-1000 ease-in-out gap-2
+                  ${
+                    isExpanded ? maxHeight + " justify-start py-2" : "max-h-12"
+                  }`}
                 key={user.id}
               >
                 <div className="w-full flex">
                   <div className="w-full flex gap-2 items-center px-2">
-                    <span className="font-medium text-gray-500 text-center">
+                    <span className="font-medium text-gray-500 text-center w-4">
                       {index + 1}.
                     </span>
                     <div className="w-[1.5px] h-6 bg-gray-300" />
@@ -213,25 +119,34 @@ const DisplayStudents: FC = () => {
                   <button onClick={() => toggleMagnifiedUsers(user.id)}>
                     <Icon
                       icon="mynaui:chevron-right-solid"
-                      className={`text-gray-500 size-8 transform transition-transform duration-1000 ease-in-out 
-                  ${magnifiedUsers.has(user.id) && " rotate-90"}`}
+                      className={`text-gray-500 size-8 transform transition-transform duration-700 ease-in-out 
+              ${isExpanded && "rotate-90"}`}
                     />
                   </button>
                 </div>
+
                 <div className="flex w-full px-4 text-gray-400 font-medium justify-between">
                   <span>{user.phoneNumber}</span>
                   <span>
-                    {user.mealType}{" "}
+                    {toTitleCase(user.mealType)}{" "}
                     {user.mealType === MealType.Full ? "Day Mess" : "Only"}
                   </span>
                 </div>
+
                 <div className="flex w-full px-4 text-gray-400 font-medium justify-between">
                   <span>{toTitleCase(user.gender)}</span>
                   <span>{user.isVeg ? "Vegetarian" : "Non-Vegetarian"}</span>
                 </div>
+
+                {user.residentialData && (
+                  <div className="flex w-full px-4 text-gray-400 font-medium justify-between">
+                    <span>{user.residentialData.building}</span>
+                    <span>{user.residentialData.floor}</span>
+                  </div>
+                )}
               </div>
-            )
-          )}
+            );
+          })}
         </div>
       </div>
     </div>
