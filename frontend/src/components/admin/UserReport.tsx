@@ -8,11 +8,11 @@ const UserReport: FC = () => {
   );
 
   return (
-    <div className="w-full flex flex-col items-center gap-4 mt-6">
+    <div className="w-full grid grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-4 mt-6">
       {reportMonths.map((date) => (
         <div
           key={date.format("YYYY-MM")}
-          className="w-full rounded-sm border border-gray-300 shadow-sm"
+          className="w-full rounded-sm border border-gray-300 shadow-sm col-span-1"
         >
           <div className="p-6 flex flex-col gap-4 items-center">
             <div className="text-center">
