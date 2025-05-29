@@ -112,7 +112,7 @@ const DisplayStudents: FC = () => {
         setMessStudents((prev) => [...prev, ...newMess]);
         setHasMoreMessStudents(newMess.length === LIMIT);
         setNoMoreStudentsLeft(
-          newMess.length + residents.length === result.total
+          newMess.length + messStudents.length === result.total
         );
       }
     } catch (err) {
@@ -197,7 +197,7 @@ const DisplayStudents: FC = () => {
     }
   }, [debouncedName]);
 
-  const currentList = searchName.length
+  const currentList = debouncedName.length
     ? searchResults
     : displayResidents
     ? residents
@@ -272,10 +272,12 @@ const DisplayStudents: FC = () => {
             <div className=" size-8 rounded-full border-2 border-transparent border-t-primary animate-spin" />
           </div>
         )}
-        {!loading && currentList.length === 0 && !searchName && (
-          <p className="text-center py-2 text-gray-500">No students found.</p>
+        {debouncedName && searchResults.length === 0 && (
+          <p className="text-center py-2 text-gray-500">
+            No search results for {debouncedName}...
+          </p>
         )}
-        {noMoreStudentsLeft && !searchName && (
+        {noMoreStudentsLeft && !debouncedName && (
           <span className=" text-sm font-medium text-center w-full text-gray-600">
             No more students left
           </span>
