@@ -11,6 +11,7 @@ import {
 import {
   updateUserNameAndFoodPreferenceSchema,
   fetchStudentsSchema,
+  searchUserByNameSchema,
 } from "@validations/verifiedUser.yup";
 import authenticateAdmin from "auth/authenticateAdmin";
 
@@ -36,6 +37,13 @@ verifiedUserRouter.get(
   authenticateAdmin,
   validateQueryAndTransformRequest(fetchStudentsSchema),
   verifiedUserController.getMessStudents
+);
+
+verifiedUserRouter.get(
+  "/search",
+  authenticateAdmin,
+  validateQueryAndTransformRequest(searchUserByNameSchema),
+  verifiedUserController.searchStudentsByName
 );
 
 export default verifiedUserRouter;

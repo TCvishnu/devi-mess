@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import verifiedUserService from "@services/verifiedUser.service";
 import { Request, Response } from "express";
 
@@ -47,8 +48,24 @@ const getMessStudents = async (req: Request, res: Response) => {
   }
 };
 
+const searchStudentsByName = async (req: Request, res: Response) => {
+  const { name, role } = req.validatedQuery as { name: string; role: UserRole };
+
+  try {
+    const result = await verifiedUserService.searchStudentsByName(
+      req.db,
+      name,
+      role
+    );
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export default {
   updateUserNameAndFoodPreference,
   getResidents,
   getMessStudents,
+  searchStudentsByName,
 };

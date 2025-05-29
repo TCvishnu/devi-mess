@@ -87,8 +87,29 @@ const getMessStudents = async (
   return { messStudents, total };
 };
 
+const searchStudentsByName = async (
+  db: ReturnType<typeof getPrisma>,
+  name: string,
+  role: UserRole
+) => {
+  const students = await db.user.findMany({
+    where: {
+      role,
+      name: {
+        startsWith: name,
+        mode: "insensitive",
+      },
+      adminVerified: true,
+    },
+    select: selectFields,
+  });
+
+  return students;
+};
+
 export default {
   updateUserNameAndFoodPreference,
   getResidents,
   getMessStudents,
+  searchStudentsByName,
 };

@@ -1,9 +1,21 @@
-import { FC, useEffect, useState, useRef, useCallback } from "react";
+import {
+  FC,
+  ChangeEvent,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import type { UserWithoutPassword } from "@type/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { getResidents, getMessStudents } from "@services/verifiedUserService";
+import {
+  getResidents,
+  getMessStudents,
+  searchStudentsByName,
+} from "@services/verifiedUserService";
 
 import StudentCard from "./StudentCard";
+import { UserRole } from "@type/enums";
 
 const LIMIT = 10 as const;
 
@@ -28,6 +40,11 @@ const DisplayStudents: FC = () => {
   const observer = useRef<IntersectionObserver | null>(null);
   const hasFetchedInitial = useRef({ residents: false, mess: false });
 
+  const [searchName, setSearchName] = useState<string>("");
+  const [debouncedName, setDebouncedName] = useState<string>("");
+
+  const [searchResults, setSearchResults] = useState<UserWithoutPassword[]>([]);
+
   const toggleMagnifiedUsers = (userID: string) => {
     setMagnifiedUsers((prev) => {
       const updated = new Set(prev);
@@ -45,6 +62,8 @@ const DisplayStudents: FC = () => {
     setResidentsPage(1);
     setHasMoreResidents(true);
     setNoMoreStudentsLeft(false);
+    setSearchName("");
+    setSearchResults([]);
     hasFetchedInitial.current.residents = false; // not yet fetched any residents
   };
 
@@ -57,10 +76,10 @@ const DisplayStudents: FC = () => {
     setMessPage(1);
     setHasMoreMessStudents(true);
     setNoMoreStudentsLeft(false);
+    setSearchName("");
+    setSearchResults([]);
     hasFetchedInitial.current.mess = false;
   };
-
-  useEffect(() => console.log(residentsPage), [residentsPage]);
 
   const fetchResidents = useCallback(async () => {
     if (!displayResidents || !hasMoreResidents || loading) return;
@@ -72,7 +91,9 @@ const DisplayStudents: FC = () => {
         setResidents((prev) => [...prev, ...newResidents]);
         setHasMoreResidents(newResidents.length === LIMIT); // if this length < LIMIT .. no more students left
 
-        setNoMoreStudentsLeft(newResidents.length === LIMIT); // for message display at the bottom of the page
+        setNoMoreStudentsLeft(
+          newResidents.length + residents.length === result.total
+        ); // for message display at the bottom of the page
       }
     } catch (err) {
       console.error("Failed to fetch residents", err);
@@ -90,7 +111,9 @@ const DisplayStudents: FC = () => {
         const newMess = result.messStudents;
         setMessStudents((prev) => [...prev, ...newMess]);
         setHasMoreMessStudents(newMess.length === LIMIT);
-        setNoMoreStudentsLeft(newMess.length === LIMIT);
+        setNoMoreStudentsLeft(
+          newMess.length + residents.length === result.total
+        );
       }
     } catch (err) {
       console.error("Failed to fetch mess students", err);
@@ -120,6 +143,22 @@ const DisplayStudents: FC = () => {
     [loading, displayResidents]
   );
 
+  const changeName = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchName(e.target.value);
+  };
+
+  const fetchStudentsByName = async () => {
+    const result = await searchStudentsByName(
+      debouncedName,
+      displayResidents ? UserRole.Resident : UserRole.Mess
+    );
+    if (result.status === 200) {
+      setSearchResults(result.students);
+      return;
+    }
+    setSearchResults([]);
+  };
+
   useEffect(() => {
     if (displayResidents && residentsPage > 1) {
       fetchResidents();
@@ -142,7 +181,27 @@ const DisplayStudents: FC = () => {
     }
   }, [displayResidents]);
 
-  const currentList = displayResidents ? residents : messStudents;
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      setDebouncedName(searchName);
+    }, 1000);
+
+    return () => clearTimeout(timeoutID);
+  }, [searchName]);
+
+  useEffect(() => {
+    if (debouncedName.trim().length) {
+      fetchStudentsByName();
+    } else {
+      setSearchResults([]);
+    }
+  }, [debouncedName]);
+
+  const currentList = searchName.length
+    ? searchResults
+    : displayResidents
+    ? residents
+    : messStudents;
 
   return (
     <div className="w-full flex flex-col gap-4 pt-6 h-full">
@@ -150,6 +209,8 @@ const DisplayStudents: FC = () => {
         <Icon icon="uil:search" className="size-6 text-gray-500" />
         <div className="w-[1.5px] h-6 bg-gray-400" />
         <input
+          value={searchName}
+          onChange={changeName}
           className="h-full w-full outline-none text-sm font-medium placeholder:text-gray-300"
           placeholder="Search.."
         />
@@ -211,10 +272,10 @@ const DisplayStudents: FC = () => {
             <div className=" size-8 rounded-full border-2 border-transparent border-t-primary animate-spin" />
           </div>
         )}
-        {!loading && currentList.length === 0 && (
+        {!loading && currentList.length === 0 && !searchName && (
           <p className="text-center py-2 text-gray-500">No students found.</p>
         )}
-        {noMoreStudentsLeft && (
+        {noMoreStudentsLeft && !searchName && (
           <span className=" text-sm font-medium text-center w-full text-gray-600">
             No more students left
           </span>
