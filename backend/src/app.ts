@@ -18,6 +18,8 @@ import messCutsRouter from "@routes/messcuts.routes";
 import authRouter from "@routes/auth/routes/auth.routes";
 import userRouter from "@routes/user.routes";
 import verifiedUserRouter from "@routes/verifieduser.routes";
+import analysisRouter from "@routes/analysis.routes";
+import authenticateAdmin from "auth/authenticateAdmin";
 
 const app = express();
 const PORT = 3000;
@@ -58,6 +60,7 @@ app.use("/api", useZenstackClient);
 app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);
 app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
+app.use("/api/analysis", authenticateAdmin, analysisRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);

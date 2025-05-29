@@ -19,7 +19,6 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
 }) => {
   return (
     <button
-      disabled={mealType !== "FULL"}
       key={mealType}
       {...props}
       className={clsx(

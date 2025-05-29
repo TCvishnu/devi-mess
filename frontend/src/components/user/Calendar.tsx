@@ -37,7 +37,7 @@ const Calendar: FC = () => {
   const [isSelectingCuts, setIsSelectingCuts] = useState<boolean>(false);
   const [isRemovingCuts, setIsRemovingCuts] = useState<boolean>(false);
   const [selectedCutType, setSelectedCutType] = useState<MealType>(
-    MealType.Full
+    user?.mealType as MealType
   );
   const [newCutRange, setNewCutRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
@@ -345,6 +345,7 @@ const Calendar: FC = () => {
         {isSelectingCuts &&
           mealTypes.map(({ mealType, icon }) => (
             <MealTypeButton
+              disabled={mealType !== user?.mealType}
               key={mealType}
               mealType={mealType}
               icon={icon}

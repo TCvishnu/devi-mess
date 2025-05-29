@@ -1,6 +1,8 @@
 import { FC, useState, useEffect } from "react";
 import { useDate } from "@contexts/DateContext";
 
+import { getDailyFoodCount } from "@services/analysisService";
+
 type mealStructure = {
   count: number;
   veg: number;
@@ -22,30 +24,71 @@ const FoodCountDisplay: FC = () => {
 
   const { selectedDate } = useDate();
 
-  useEffect(() => {
-    setFoodCounts(() => {
-      const mrngCount = Math.floor(Math.random() * 100);
-      const afternoonCount = Math.floor(Math.random() * 100);
-      const nightCount = Math.floor(Math.random() * 100);
+  const fetchCurrentDateCount = async () => {
+    console.log(selectedDate.toISOString());
+    const result = await getDailyFoodCount(selectedDate);
 
-      return {
+    if (result.status === 200) {
+      const { total, cutCounts, totalNonVegetarians } = result;
+      // all the best (it works, not chatGPT)
+      setFoodCounts({
         morning: {
-          count: mrngCount,
-          veg: Math.floor(mrngCount / 4),
-          nonVeg: Math.floor((mrngCount / 4) * 3),
+          count:
+            total -
+            (cutCounts.MORNING.veg +
+              cutCounts.MORNING.nonVeg +
+              cutCounts.FULL.veg +
+              cutCounts.FULL.nonVeg),
+          veg:
+            total -
+            totalNonVegetarians -
+            cutCounts.MORNING.veg -
+            cutCounts.FULL.veg,
+          nonVeg:
+            totalNonVegetarians -
+            cutCounts.MORNING.nonVeg -
+            cutCounts.FULL.nonVeg,
         },
         afternoon: {
-          count: afternoonCount,
-          veg: Math.floor(afternoonCount / 4),
-          nonVeg: Math.floor((afternoonCount / 4) * 3),
+          count:
+            total -
+            (cutCounts.AFTERNOON.veg +
+              cutCounts.AFTERNOON.nonVeg +
+              cutCounts.FULL.veg +
+              cutCounts.FULL.nonVeg),
+          veg:
+            total -
+            totalNonVegetarians -
+            cutCounts.AFTERNOON.veg -
+            cutCounts.FULL.veg,
+          nonVeg:
+            totalNonVegetarians -
+            cutCounts.AFTERNOON.nonVeg -
+            cutCounts.FULL.nonVeg,
         },
         night: {
-          count: nightCount,
-          veg: Math.floor(nightCount / 4),
-          nonVeg: Math.floor((nightCount / 4) * 3),
+          count:
+            total -
+            (cutCounts.EVENING.veg +
+              cutCounts.EVENING.nonVeg +
+              cutCounts.FULL.veg +
+              cutCounts.FULL.nonVeg),
+          veg:
+            total -
+            totalNonVegetarians -
+            cutCounts.EVENING.veg -
+            cutCounts.FULL.veg,
+          nonVeg:
+            totalNonVegetarians -
+            cutCounts.EVENING.nonVeg -
+            cutCounts.FULL.nonVeg,
         },
-      };
-    });
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentDateCount();
   }, [selectedDate]);
 
   return (
