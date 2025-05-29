@@ -7,3 +7,8 @@ export const updateUserNameAndFoodPreferenceSchema = yup
     isVeg: yup.boolean().required(),
   })
   .stripUnknown();
+
+export const fetchStudentsSchema = yup.object().shape({
+  page: yup.number().min(1).required(),
+  limit: yup.number().min(1).max(50).required(),
+});

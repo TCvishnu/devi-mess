@@ -22,8 +22,9 @@ const updateUserNameAndFoodPreference = async (req: Request, res: Response) => {
 };
 
 const getResidents = async (req: Request, res: Response) => {
+  const { page, limit } = req.validatedQuery as { page: number; limit: number };
   try {
-    const result = await verifiedUserService.getResidents(req.db);
+    const result = await verifiedUserService.getResidents(req.db, page, limit);
 
     res.status(200).json({ result });
   } catch (error) {
@@ -32,8 +33,13 @@ const getResidents = async (req: Request, res: Response) => {
 };
 
 const getMessStudents = async (req: Request, res: Response) => {
+  const { page, limit } = req.validatedQuery as { page: number; limit: number };
   try {
-    const result = await verifiedUserService.getMessStudents(req.db);
+    const result = await verifiedUserService.getMessStudents(
+      req.db,
+      page,
+      limit
+    );
 
     res.status(200).json({ result });
   } catch (error) {

@@ -26,12 +26,15 @@ export const updateNameAndFoodPreference = async (
   }
 };
 
-export const getResidents = async () => {
+export const getResidents = async (page: number, limit: number) => {
   try {
-    const response = await fetchApi(`/api/verified-users/residents`);
+    const response = await fetchApi(
+      `/api/verified-users/residents?page=${page}&limit=${limit}`
+    );
     return {
       status: response.status,
-      residents: response.data.result,
+      residents: response.data.result.residents,
+      total: response.data.result.total,
     };
   } catch (err: unknown) {
     if (err instanceof Error) handleError(err.message);
@@ -42,12 +45,15 @@ export const getResidents = async () => {
   }
 };
 
-export const getMessStudents = async () => {
+export const getMessStudents = async (page: number, limit: number) => {
   try {
-    const response = await fetchApi(`/api/verified-users/mess-students`);
+    const response = await fetchApi(
+      `/api/verified-users/mess-students?page=${page}&limit=${limit}`
+    );
     return {
       status: response.status,
-      messStudents: response.data.result,
+      messStudents: response.data.result.messStudents,
+      total: response.data.result.total,
     };
   } catch (err: unknown) {
     if (err instanceof Error) handleError(err.message);

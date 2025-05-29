@@ -34,28 +34,57 @@ const selectFields = {
   residentialData: true,
 };
 
-const getResidents = async (db: ReturnType<typeof getPrisma>) => {
+const getResidents = async (
+  db: ReturnType<typeof getPrisma>,
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
   const residents = await db.user.findMany({
     where: {
       adminVerified: true,
       role: UserRole.RESIDENT,
     },
     select: selectFields,
+    skip,
+    take: limit,
   });
 
-  return residents;
+  // redis cache?
+  const total = await db.user.count({
+    where: {
+      adminVerified: true,
+      role: UserRole.RESIDENT,
+    },
+  });
+
+  return { residents, total };
 };
 
-const getMessStudents = async (db: ReturnType<typeof getPrisma>) => {
+const getMessStudents = async (
+  db: ReturnType<typeof getPrisma>,
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
   const messStudents = await db.user.findMany({
     where: {
       adminVerified: true,
       role: UserRole.MESS,
     },
     select: selectFields,
+    skip,
+    take: limit,
   });
 
-  return messStudents;
+  const total = await db.user.count({
+    where: {
+      adminVerified: true,
+      role: UserRole.MESS,
+    },
+  });
+
+  return { messStudents, total };
 };
 
 export default {
