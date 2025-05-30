@@ -3,7 +3,10 @@ import { useDate } from "@contexts/DateContext";
 
 import { Dayjs } from "dayjs";
 
-const DatePicker: FC = () => {
+type DatePickerType = {
+  allowDateChanging: boolean;
+};
+const DatePicker: FC<DatePickerType> = ({ allowDateChanging }) => {
   const { selectedDate, setSelectedDate } = useDate();
 
   let displayDates = Array.from({ length: 5 }, (_, i) =>
@@ -22,8 +25,9 @@ const DatePicker: FC = () => {
       <div className="w-full flex justify-between">
         {displayDates.map((date) => (
           <button
+            disabled={!allowDateChanging}
             onClick={() => changeSelectedDate(date)}
-            className={`h-14 w-12 xs:h-16 xs:w-1/6 sm:h-20 flex flex-col items-center justify-center rounded-md ${
+            className={`h-14 w-12 xs:h-16 xs:w-1/6 sm:h-20 flex flex-col items-center justify-center rounded-md disabled:active:animate-shake ${
               selectedDate.isSame(date, "day")
                 ? " bg-accent text-white"
                 : "border-gray-500 border text-gray-500"

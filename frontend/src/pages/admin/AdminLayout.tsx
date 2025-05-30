@@ -11,7 +11,13 @@ import { useNavigate } from "react-router-dom";
 const AdminLayout: FC = () => {
   const { user, login: updateUser } = useAuthContext();
   const [loading, setLoading] = useState(true);
+  const [allowDateChanging, setAllowDateChanging] = useState<boolean>(true);
+
   const navigate = useNavigate();
+
+  const handleToggleDateChanging = (allow: boolean) => {
+    setAllowDateChanging(allow);
+  };
 
   const getCurrentUser = async () => {
     try {
@@ -58,8 +64,8 @@ const AdminLayout: FC = () => {
       <h1 className="text-white text-3xl font-bold">{user?.name}</h1>
       {user && (
         <DateContextProvider>
-          <DatePicker />
-          <AdminDashboard />
+          <DatePicker allowDateChanging={allowDateChanging} />
+          <AdminDashboard onToggleDateChanging={handleToggleDateChanging} />
         </DateContextProvider>
       )}
     </div>

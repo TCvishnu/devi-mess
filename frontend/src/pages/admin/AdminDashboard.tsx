@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import FoodCountDisplay from "@components/admin/FoodCountDisplay";
 import DisplayStudents from "@components/admin/DisplayStudents";
 import UserReport from "@components/admin/UserReport";
@@ -6,12 +6,19 @@ import UserReport from "@components/admin/UserReport";
 const navbar = ["Count", "Students", "Report"] as const;
 type Page = "Count" | "Students" | "Report";
 
-const AdminDashboard: FC = () => {
+type AdminDashboardType = {
+  onToggleDateChanging: (allow: boolean) => void;
+};
+const AdminDashboard: FC<AdminDashboardType> = ({ onToggleDateChanging }) => {
   const [curPage, setCurPage] = useState<Page>("Count");
 
   const changePage = (page: Page) => {
     setCurPage(page);
   };
+
+  useEffect(() => {
+    onToggleDateChanging(curPage === "Count");
+  }, [curPage]);
 
   return (
     <div className=" w-full bg-white h-full rounded-xs flex flex-col overflow-y-auto p-4">
