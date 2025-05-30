@@ -7,11 +7,13 @@ import { DateContextProvider } from "@contexts/DateContext";
 import { useAuthContext } from "@contexts/AuthContext";
 import { fetchCurrentUser } from "@services/userService";
 import { useNavigate } from "react-router-dom";
+import { logoutUser } from "@services/authService";
 
 const AdminLayout: FC = () => {
-  const { user, login: updateUser } = useAuthContext();
+  const { user, login: updateUser, logout } = useAuthContext();
   const [loading, setLoading] = useState(true);
   const [allowDateChanging, setAllowDateChanging] = useState<boolean>(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const navigate = useNavigate();
 
@@ -37,6 +39,16 @@ const AdminLayout: FC = () => {
     }
   };
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    const status = await logoutUser();
+    if (status === 200) {
+      logout();
+      navigate("/");
+    }
+    setIsLoggingOut(false);
+  };
+
   useEffect(() => {
     getCurrentUser();
   }, []);
@@ -56,7 +68,10 @@ const AdminLayout: FC = () => {
     <div className="w-screen h-screen flex flex-col p-4 bg-primary overflow-y-auto">
       <div className="w-full flex justify-between">
         <h1 className="text-white text-3xl font-bold">Hi!</h1>
-        <button className="bg-white text-black font-semibold py-2 px-5 text-sm rounded-xs">
+        <button
+          className="bg-white text-black font-semibold py-2 px-5 text-sm rounded-xs"
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </div>
@@ -67,6 +82,13 @@ const AdminLayout: FC = () => {
           <DatePicker allowDateChanging={allowDateChanging} />
           <AdminDashboard onToggleDateChanging={handleToggleDateChanging} />
         </DateContextProvider>
+      )}
+
+      {isLoggingOut && (
+        <>
+          <div className="fixed inset-0 backdrop-blur-[1.5px] z-40" />
+          <div className="fixed right-1/2 top-1/2 translate-x-1/2 -translate-y-1/2 size-32 border-4 border-primary border-t-transparent rounded-full animate-spin z-50" />
+        </>
       )}
     </div>
   );
