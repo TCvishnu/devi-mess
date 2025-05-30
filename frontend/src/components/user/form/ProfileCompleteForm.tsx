@@ -43,8 +43,13 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				name === "gender" && value == Gender.Male
 					? MealType.Full
 					: prev.mealType,
+			role:
+				name === "gender" && value == Gender.Female
+					? UserRole.Mess
+					: prev.role,
 			residentialData:
-				name === "role" && value === UserRole.Mess
+				(name === "role" && value === UserRole.Mess) ||
+				(name === "gender" && value === Gender.Female)
 					? undefined
 					: prev.residentialData,
 			[name]: name === "isVeg" ? checked : value,
@@ -69,8 +74,8 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
-		console.log(formData)
-		// onSubmit(event, formData)
+		// console.log(formData)
+		onSubmit(event, formData)
 	}
 
 	return (
@@ -118,9 +123,11 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				value={formData.role}
 			>
 				<SelectBox.Option value={UserRole.Mess}>Mess</SelectBox.Option>
-				<SelectBox.Option value={UserRole.Resident}>
-					Resident
-				</SelectBox.Option>
+				{formData.gender === Gender.Male && (
+					<SelectBox.Option value={UserRole.Resident}>
+						Resident
+					</SelectBox.Option>
+				)}
 			</SelectBox.Select>
 
 			{formData.role == UserRole.Resident && (
