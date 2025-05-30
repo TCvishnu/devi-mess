@@ -10,93 +10,58 @@ type mealStructure = {
 };
 
 type FoodCountsType = {
-  morning: mealStructure;
-  afternoon: mealStructure;
-  night: mealStructure;
+  MORNING: mealStructure;
+  AFTERNOON: mealStructure;
+  EVENING: mealStructure;
 };
 
 const FoodCountDisplay: FC = () => {
-  const [foodCounts, setFoodCounts] = useState<FoodCountsType>({
-    morning: { count: 50, veg: 30, nonVeg: 20 },
-    afternoon: { count: 50, veg: 30, nonVeg: 20 },
-    night: { count: 50, veg: 30, nonVeg: 20 },
-  });
+  const [foodCounts, setFoodCounts] = useState<FoodCountsType | null>(null);
 
   const { selectedDate } = useDate();
 
   const fetchCurrentDateCount = async () => {
     const result = await getDailyFoodCount(selectedDate);
-
-    // if (result.status === 200) {
-    // const { total, cutCounts, totalNonVegetarians } = result;
-    // all the best (it works, not chatGPT)
-    // better cache this in localstorage ig
-    // setFoodCounts({
-    //   morning: {
-    //     count:
-    //       total -
-    //       (cutCounts.MORNING.veg +
-    //         cutCounts.MORNING.nonVeg +
-    //         cutCounts.FULL.veg +
-    //         cutCounts.FULL.nonVeg),
-    //     veg:
-    //       total -
-    //       totalNonVegetarians -
-    //       cutCounts.MORNING.veg -
-    //       cutCounts.FULL.veg,
-    //     nonVeg:
-    //       totalNonVegetarians -
-    //       cutCounts.MORNING.nonVeg -
-    //       cutCounts.FULL.nonVeg,
-    //   },
-    //   afternoon: {
-    //     count:
-    //       total -
-    //       (cutCounts.AFTERNOON.veg +
-    //         cutCounts.AFTERNOON.nonVeg +
-    //         cutCounts.FULL.veg +
-    //         cutCounts.FULL.nonVeg),
-    //     veg:
-    //       total -
-    //       totalNonVegetarians -
-    //       cutCounts.AFTERNOON.veg -
-    //       cutCounts.FULL.veg,
-    //     nonVeg:
-    //       totalNonVegetarians -
-    //       cutCounts.AFTERNOON.nonVeg -
-    //       cutCounts.FULL.nonVeg,
-    //   },
-    //   night: {
-    //     count:
-    //       total -
-    //       (cutCounts.EVENING.veg +
-    //         cutCounts.EVENING.nonVeg +
-    //         cutCounts.FULL.veg +
-    //         cutCounts.FULL.nonVeg),
-    //     veg:
-    //       total -
-    //       totalNonVegetarians -
-    //       cutCounts.EVENING.veg -
-    //       cutCounts.FULL.veg,
-    //     nonVeg:
-    //       totalNonVegetarians -
-    //       cutCounts.EVENING.nonVeg -
-    //       cutCounts.FULL.nonVeg,
-    //},
-    //});
-    // }
+    if (result.status === 200) {
+      const cutMap = result.cutCounts;
+      setFoodCounts({
+        MORNING: {
+          count: cutMap.MORNING.veg + cutMap.MORNING.nonVeg,
+          veg: cutMap.MORNING.veg,
+          nonVeg: cutMap.MORNING.nonVeg,
+        },
+        AFTERNOON: {
+          count: cutMap.AFTERNOON.veg + cutMap.AFTERNOON.nonVeg,
+          veg: cutMap.AFTERNOON.veg,
+          nonVeg: cutMap.AFTERNOON.nonVeg,
+        },
+        EVENING: {
+          count: cutMap.EVENING.veg + cutMap.EVENING.nonVeg,
+          veg: cutMap.EVENING.veg,
+          nonVeg: cutMap.EVENING.nonVeg,
+        },
+      });
+    }
   };
 
   useEffect(() => {
     fetchCurrentDateCount();
   }, [selectedDate]);
 
+  if (!foodCounts) {
+    return (
+      <div className=" flex items-center justify-center h-full">
+        <div className="size-32 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
       <div className="rounded-sm shadow-sm p-4 border border-gray-400 active:animate-shake">
         <h3 className="text-lg font-semibold text-primary">Morning</h3>
         <p className="mt-2 text-3xl font-bold text-accent">
-          {foodCounts.morning.count}
+          {foodCounts.MORNING.count}
         </p>
         <p className="text-sm text-gray-400 font-medium mt-1">Total Meals</p>
       </div>
@@ -104,24 +69,24 @@ const FoodCountDisplay: FC = () => {
       <div className="rounded-sm shadow-sm p-4 border border-gray-400 active:animate-shake">
         <h3 className="text-lg font-semibold text-primary">Afternoon</h3>
         <p className="mt-2 text-3xl font-bold text-accent">
-          {foodCounts.afternoon.count}
+          {foodCounts.AFTERNOON.count}
         </p>
         <p className="text-sm text-gray-400 font-medium mt-1">Total Meals</p>
         <div className="mt-3 flex justify-between text-sm text-primary font-semibold">
-          <span>Veg: {foodCounts.afternoon.veg}</span>
-          <span>Non-Veg: {foodCounts.afternoon.nonVeg}</span>
+          <span>Veg: {foodCounts.AFTERNOON.veg}</span>
+          <span>Non-Veg: {foodCounts.AFTERNOON.nonVeg}</span>
         </div>
       </div>
 
       <div className="rounded-sm shadow-sm p-4 border border-gray-400 active:animate-shake">
         <h3 className="text-lg font-semibold text-primary">Night</h3>
         <p className="mt-2 text-3xl font-bold text-accent">
-          {foodCounts.night.count}
+          {foodCounts.EVENING.count}
         </p>
         <p className="text-sm text-gray-400 font-medium mt-1">Total Meals</p>
         <div className="mt-3 flex justify-between text-sm text-primary font-semibold">
-          <span>Veg: {foodCounts.night.veg}</span>
-          <span>Non-Veg: {foodCounts.night.nonVeg}</span>
+          <span>Veg: {foodCounts.EVENING.veg}</span>
+          <span>Non-Veg: {foodCounts.EVENING.nonVeg}</span>
         </div>
       </div>
     </div>

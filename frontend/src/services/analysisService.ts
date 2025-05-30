@@ -3,18 +3,15 @@ import fetchApi from "./fetchConfig/fetchWrapper";
 import { handleError } from "./handlerService";
 
 export const getDailyFoodCount = async (date: Dayjs) => {
-  const sendDate = date.toISOString();
   try {
     const response = await fetchApi(
-      `/api/analysis/daily-food-count?date=${sendDate}`
+      `/api/analysis/daily-food-count?date=${date}`
     );
     console.log(response.data.result);
-    // return {
-    //   status: response.status,
-    //   total: response.data.result.totalStudents,
-    //   cutCounts: response.data.result.cutCounts,
-    //   totalNonVegetarians: response.data.result.totalNonVegetarians,
-    // };
+    return {
+      status: response.status,
+      cutCounts: response.data.result.afterCutCounts,
+    };
   } catch (error) {
     if (error instanceof Error) handleError(error.message);
 

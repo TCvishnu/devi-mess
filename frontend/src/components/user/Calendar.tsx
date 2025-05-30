@@ -138,7 +138,7 @@ const Calendar: FC = () => {
   const handleNewCutsCancel: () => void = () => {
     setIsSelectingCuts(false);
     setNewCutRange([null, null]);
-    setSelectedCutType(MealType.Full);
+    setSelectedCutType(user?.mealType || MealType.Full);
   };
 
   const getDayClassNames = (
