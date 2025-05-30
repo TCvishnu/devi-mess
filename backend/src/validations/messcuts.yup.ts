@@ -1,28 +1,29 @@
 import * as yup from "yup";
 import { CutType } from "@prisma/client";
 
+const datetimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
 export const createManyMessCutsSchema = yup.object({
   startDate: yup
     .string()
     .required()
-    .test("is-iso", "startDate must be a valid ISO string", (value) => {
-      return value ? !isNaN(Date.parse(value)) : false;
-    }),
+    .matches(
+      datetimeRegex,
+      "startDate must be in 'YYYY-MM-DD HH:mm:ss' format"
+    ),
 
-  endDate: yup
-    .string()
-    .optional()
-    .nullable()
-    .test("is-iso", "endDate must be a valid ISO string", (value) => {
-      if (value === undefined || value === null) return true;
-      return !isNaN(Date.parse(value));
-    }),
+  endDate: yup.string().nullable().optional().matches(datetimeRegex, {
+    excludeEmptyString: true,
+    message: "endDate must be in 'YYYY-MM-DD HH:mm:ss' format",
+  }),
 
   cutType: yup
     .mixed<CutType>()
     .oneOf(["MORNING", "AFTERNOON", "EVENING", "FULL"])
     .required(),
+
   month: yup.number().integer().min(0).max(11).required(),
+
   year: yup.number().integer().min(2025).max(2100).required(),
 });
 

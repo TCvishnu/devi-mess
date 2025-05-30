@@ -8,12 +8,13 @@ export const getDailyFoodCount = async (date: Dayjs) => {
     const response = await fetchApi(
       `/api/analysis/daily-food-count?date=${sendDate}`
     );
-    return {
-      status: response.status,
-      total: response.data.result.totalStudents,
-      cutCounts: response.data.result.cutCounts,
-      totalNonVegetarians: response.data.result.totalNonVegetarians,
-    };
+    console.log(response.data.result);
+    // return {
+    //   status: response.status,
+    //   total: response.data.result.totalStudents,
+    //   cutCounts: response.data.result.cutCounts,
+    //   totalNonVegetarians: response.data.result.totalNonVegetarians,
+    // };
   } catch (error) {
     if (error instanceof Error) handleError(error.message);
 

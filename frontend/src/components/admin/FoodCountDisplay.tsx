@@ -27,64 +27,64 @@ const FoodCountDisplay: FC = () => {
   const fetchCurrentDateCount = async () => {
     const result = await getDailyFoodCount(selectedDate);
 
-    if (result.status === 200) {
-      const { total, cutCounts, totalNonVegetarians } = result;
-      // all the best (it works, not chatGPT)
-      // better cache this in localstorage ig
-      setFoodCounts({
-        morning: {
-          count:
-            total -
-            (cutCounts.MORNING.veg +
-              cutCounts.MORNING.nonVeg +
-              cutCounts.FULL.veg +
-              cutCounts.FULL.nonVeg),
-          veg:
-            total -
-            totalNonVegetarians -
-            cutCounts.MORNING.veg -
-            cutCounts.FULL.veg,
-          nonVeg:
-            totalNonVegetarians -
-            cutCounts.MORNING.nonVeg -
-            cutCounts.FULL.nonVeg,
-        },
-        afternoon: {
-          count:
-            total -
-            (cutCounts.AFTERNOON.veg +
-              cutCounts.AFTERNOON.nonVeg +
-              cutCounts.FULL.veg +
-              cutCounts.FULL.nonVeg),
-          veg:
-            total -
-            totalNonVegetarians -
-            cutCounts.AFTERNOON.veg -
-            cutCounts.FULL.veg,
-          nonVeg:
-            totalNonVegetarians -
-            cutCounts.AFTERNOON.nonVeg -
-            cutCounts.FULL.nonVeg,
-        },
-        night: {
-          count:
-            total -
-            (cutCounts.EVENING.veg +
-              cutCounts.EVENING.nonVeg +
-              cutCounts.FULL.veg +
-              cutCounts.FULL.nonVeg),
-          veg:
-            total -
-            totalNonVegetarians -
-            cutCounts.EVENING.veg -
-            cutCounts.FULL.veg,
-          nonVeg:
-            totalNonVegetarians -
-            cutCounts.EVENING.nonVeg -
-            cutCounts.FULL.nonVeg,
-        },
-      });
-    }
+    // if (result.status === 200) {
+    // const { total, cutCounts, totalNonVegetarians } = result;
+    // all the best (it works, not chatGPT)
+    // better cache this in localstorage ig
+    // setFoodCounts({
+    //   morning: {
+    //     count:
+    //       total -
+    //       (cutCounts.MORNING.veg +
+    //         cutCounts.MORNING.nonVeg +
+    //         cutCounts.FULL.veg +
+    //         cutCounts.FULL.nonVeg),
+    //     veg:
+    //       total -
+    //       totalNonVegetarians -
+    //       cutCounts.MORNING.veg -
+    //       cutCounts.FULL.veg,
+    //     nonVeg:
+    //       totalNonVegetarians -
+    //       cutCounts.MORNING.nonVeg -
+    //       cutCounts.FULL.nonVeg,
+    //   },
+    //   afternoon: {
+    //     count:
+    //       total -
+    //       (cutCounts.AFTERNOON.veg +
+    //         cutCounts.AFTERNOON.nonVeg +
+    //         cutCounts.FULL.veg +
+    //         cutCounts.FULL.nonVeg),
+    //     veg:
+    //       total -
+    //       totalNonVegetarians -
+    //       cutCounts.AFTERNOON.veg -
+    //       cutCounts.FULL.veg,
+    //     nonVeg:
+    //       totalNonVegetarians -
+    //       cutCounts.AFTERNOON.nonVeg -
+    //       cutCounts.FULL.nonVeg,
+    //   },
+    //   night: {
+    //     count:
+    //       total -
+    //       (cutCounts.EVENING.veg +
+    //         cutCounts.EVENING.nonVeg +
+    //         cutCounts.FULL.veg +
+    //         cutCounts.FULL.nonVeg),
+    //     veg:
+    //       total -
+    //       totalNonVegetarians -
+    //       cutCounts.EVENING.veg -
+    //       cutCounts.FULL.veg,
+    //     nonVeg:
+    //       totalNonVegetarians -
+    //       cutCounts.EVENING.nonVeg -
+    //       cutCounts.FULL.nonVeg,
+    //},
+    //});
+    // }
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { CutType, UserRole } from "@prisma/client";
+import { CutType, MealType, UserRole } from "@prisma/client";
 import getPrisma from "../lib/getPrisma";
 
 const getDailyFoodCount = async (
@@ -7,24 +7,39 @@ const getDailyFoodCount = async (
 ) => {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
-  startOfDay.setDate(startOfDay.getDate() + 1);
+  startOfDay.setDate(startOfDay.getDate());
+  console.log(startOfDay);
 
-  const totalStudents = await db.user.count({
-    //redis?
+  const mealCounts = await db.user.groupBy({
+    by: ["mealType"],
+    _count: {
+      mealType: true,
+    },
     where: {
-      role: { not: UserRole.ADMIN },
+      role: { not: "ADMIN" },
       adminVerified: true,
     },
   });
+  const countMap: Record<MealType, number> = {
+    MORNING: 0,
+    AFTERNOON: 0,
+    EVENING: 0,
+    FULL: 0,
+  };
 
-  const totalNonVegetarians = await db.user.count({
-    //redis?
-    where: {
-      role: { not: UserRole.ADMIN },
-      adminVerified: true,
-      isVeg: false,
-    },
-  });
+  for (const item of mealCounts) {
+    if (item.mealType === null) {
+      // type saefty
+      continue;
+    }
+    countMap[item.mealType] = item._count.mealType;
+  }
+
+  const totalCounts = {
+    morning: countMap["MORNING"] + countMap["FULL"],
+    afternoon: countMap["AFTERNOON"] + countMap["FULL"],
+    evening: countMap["EVENING"] + countMap["FULL"],
+  };
 
   const messcuts = await db.messcut.findMany({
     where: {
@@ -36,26 +51,57 @@ const getDailyFoodCount = async (
       },
     },
   });
+  console.log("cuts: ", messcuts);
 
-  const cutCounts: Record<CutType, { veg: number; nonVeg: number }> = {
-    FULL: { veg: 0, nonVeg: 0 },
-    MORNING: { veg: 0, nonVeg: 0 },
-    EVENING: { veg: 0, nonVeg: 0 },
-    AFTERNOON: { veg: 0, nonVeg: 0 },
-  };
+  return { totalCounts };
 
-  for (const cut of messcuts) {
-    const type = cut.cutType;
-    const isVeg = cut.user.isVeg;
+  // const totalStudents = await db.user.count({
+  //   //redis?
+  //   where: {
+  //     role: { not: UserRole.ADMIN },
+  //     adminVerified: true,
+  //   },
+  // });
 
-    if (isVeg) {
-      cutCounts[type].veg += 1;
-    } else {
-      cutCounts[type].nonVeg += 1;
-    }
-  }
+  // const totalNonVegetarians = await db.user.count({
+  //   //redis?
+  //   where: {
+  //     role: { not: UserRole.ADMIN },
+  //     adminVerified: true,
+  //     isVeg: false,
+  //   },
+  // });
 
-  return { totalStudents, totalNonVegetarians, cutCounts };
+  // const messcuts = await db.messcut.findMany({
+  //   where: {
+  //     date: { equals: startOfDay },
+  //   },
+  //   include: {
+  //     user: {
+  //       select: { isVeg: true },
+  //     },
+  //   },
+  // });
+
+  // const cutCounts: Record<CutType, { veg: number; nonVeg: number }> = {
+  //   FULL: { veg: 0, nonVeg: 0 },
+  //   MORNING: { veg: 0, nonVeg: 0 },
+  //   EVENING: { veg: 0, nonVeg: 0 },
+  //   AFTERNOON: { veg: 0, nonVeg: 0 },
+  // };
+
+  // for (const cut of messcuts) {
+  //   const type = cut.cutType;
+  //   const isVeg = cut.user.isVeg;
+
+  //   if (isVeg) {
+  //     cutCounts[type].veg += 1;
+  //   } else {
+  //     cutCounts[type].nonVeg += 1;
+  //   }
+  // }
+
+  // return { totalStudents, totalNonVegetarians, cutCounts };
 };
 
 export default { getDailyFoodCount };
