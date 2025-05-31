@@ -23,6 +23,7 @@ import userRouter from "@routes/user.routes";
 import verifiedUserRouter from "@routes/verifieduser.routes";
 import analysisRouter from "@routes/analysis.routes";
 import authenticateAdmin from "auth/authenticateAdmin";
+import settingsRouter from "@routes/settings.routes";
 
 const app = express();
 const PORT = 3000;
@@ -65,14 +66,16 @@ app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
 app.use("/api/analysis", authenticateAdmin, analysisRouter);
 
-agendaFunction(agenda);
+app.use("/api/settings", authenticateAdmin, settingsRouter);
 
-(async () => {
-  await agenda.start();
+// agendaFunction(agenda);
 
-  // Schedule job to run on 1st of every month at midnight
-  await agenda.every("* * * * *", "calculate-monthly-fees");
-})();
+// (async () => {
+//   await agenda.start();
+
+//   // Schedule job to run on 1st of every month at midnight
+//   await agenda.every("* * * * *", "calculate-monthly-fees");
+// })();
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);

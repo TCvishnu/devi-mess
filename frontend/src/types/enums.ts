@@ -10,6 +10,8 @@ export enum MealType {
   Full = "FULL_MEAL",
 }
 
+export type RateMealType = Exclude<MealType, MealType.Full>;
+
 export enum UserRole {
   Admin = "ADMIN",
   Resident = "RESIDENT",
@@ -24,4 +26,14 @@ export enum Building {
 export enum Floor {
   TOP = "TOP",
   GROUND = "GROUND",
+}
+
+export enum BillType {
+  RENT = "RENT",
+  ELECTRICITY = "ELECTRICITY",
+  WIFI = "WIFI",
+  MORNING_MEAL = "MORNING_MEAL",
+  AFTERNOON_MEAL = "AFTERNOON_MEAL",
+  EVENING_MEAL = "EVENING_MEAL",
+  FULL_MEAL = "FULL_MEAL",
 }

@@ -8,7 +8,8 @@ model BillTypeConfiguration extends Base {
 
     userBillTypeConfiguration UserBillTypeConfiguration[]
 
-    @@allow('all', true)
+    @@allow('all', auth().role == 'ADMIN')
+    @@allow('read', auth() != null)
 }
 
 // Change User Table as well when editing this
