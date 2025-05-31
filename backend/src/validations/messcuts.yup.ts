@@ -19,7 +19,7 @@ export const createManyMessCutsSchema = yup.object({
 
   cutType: yup
     .mixed<CutType>()
-    .oneOf(["MORNING", "AFTERNOON", "EVENING", "FULL"])
+    .oneOf(["MORNING_MEAL", "AFTERNOON_MEAL", "EVENING_MEAL", "FULL_MEAL"])
     .required(),
 
   month: yup.number().integer().min(0).max(11).required(),

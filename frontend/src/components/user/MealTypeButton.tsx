@@ -1,6 +1,7 @@
 import { FC, ButtonHTMLAttributes } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
+import { toTitleCase } from "@utils/stringUtils";
 
 import { MealType } from "@type/enums";
 
@@ -34,7 +35,7 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
             : "text-gray-500 font-medium"
         } text-[0.6rem] `}
       >
-        {mealType}
+        {toTitleCase(mealType.split("_")[0])}
       </span>
       <Icon
         icon={icon}

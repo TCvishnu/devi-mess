@@ -4,10 +4,10 @@ export enum Gender {
 }
 
 export enum MealType {
-  Morning = "MORNING",
-  Afternoon = "AFTERNOON",
-  Evening = "EVENING",
-  Full = "FULL",
+  Morning = "MORNING_MEAL",
+  Afternoon = "AFTERNOON_MEAL",
+  Evening = "EVENING_MEAL",
+  Full = "FULL_MEAL",
 }
 
 export enum UserRole {

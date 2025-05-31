@@ -170,7 +170,7 @@ const UserSettings: FC = () => {
 
         <div className="bg-primary-50 rounded-xl py-4 flex flex-col items-center">
           <span className="uppercase text-sm font-medium tracking-wide">
-            {profileData.mealType === "FULL"
+            {profileData.mealType === MealType.Full
               ? "Full Day Meal"
               : `${profileData.mealType} Only`}
           </span>

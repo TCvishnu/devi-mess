@@ -20,10 +20,10 @@ const getDailyFoodCount = async (
   });
 
   const foodPrefMap: Record<MealType, { veg: number; nonVeg: number }> = {
-    MORNING: { veg: 0, nonVeg: 0 },
-    AFTERNOON: { veg: 0, nonVeg: 0 },
-    EVENING: { veg: 0, nonVeg: 0 },
-    FULL: { veg: 0, nonVeg: 0 },
+    MORNING_MEAL: { veg: 0, nonVeg: 0 },
+    AFTERNOON_MEAL: { veg: 0, nonVeg: 0 },
+    EVENING_MEAL: { veg: 0, nonVeg: 0 },
+    FULL_MEAL: { veg: 0, nonVeg: 0 },
   };
 
   for (const item of foodPrefCount) {
@@ -33,17 +33,17 @@ const getDailyFoodCount = async (
   }
 
   const combinedFoodPrefMap = {
-    MORNING: {
-      veg: foodPrefMap.MORNING.veg + foodPrefMap.FULL.veg,
-      nonVeg: foodPrefMap.MORNING.nonVeg + foodPrefMap.FULL.nonVeg,
+    MORNING_MEAL: {
+      veg: foodPrefMap.MORNING_MEAL.veg + foodPrefMap.FULL_MEAL.veg,
+      nonVeg: foodPrefMap.MORNING_MEAL.nonVeg + foodPrefMap.FULL_MEAL.nonVeg,
     },
-    AFTERNOON: {
-      veg: foodPrefMap.AFTERNOON.veg + foodPrefMap.FULL.veg,
-      nonVeg: foodPrefMap.AFTERNOON.nonVeg + foodPrefMap.FULL.nonVeg,
+    AFTERNOON_MEAL: {
+      veg: foodPrefMap.AFTERNOON_MEAL.veg + foodPrefMap.FULL_MEAL.veg,
+      nonVeg: foodPrefMap.AFTERNOON_MEAL.nonVeg + foodPrefMap.FULL_MEAL.nonVeg,
     },
-    EVENING: {
-      veg: foodPrefMap.EVENING.veg + foodPrefMap.FULL.veg,
-      nonVeg: foodPrefMap.EVENING.nonVeg + foodPrefMap.FULL.nonVeg,
+    EVENING_MEAL: {
+      veg: foodPrefMap.EVENING_MEAL.veg + foodPrefMap.FULL_MEAL.veg,
+      nonVeg: foodPrefMap.EVENING_MEAL.nonVeg + foodPrefMap.FULL_MEAL.nonVeg,
     },
   };
 
@@ -60,10 +60,10 @@ const getDailyFoodCount = async (
 
   for (const cut of messcuts) {
     const pref = cut.user.isVeg ? "veg" : "nonVeg";
-    if (cut.cutType === "FULL") {
-      combinedFoodPrefMap.MORNING[pref] -= 1;
-      combinedFoodPrefMap.AFTERNOON[pref] -= 1;
-      combinedFoodPrefMap.EVENING[pref] -= 1;
+    if (cut.cutType === "FULL_MEAL") {
+      combinedFoodPrefMap.MORNING_MEAL[pref] -= 1;
+      combinedFoodPrefMap.AFTERNOON_MEAL[pref] -= 1;
+      combinedFoodPrefMap.EVENING_MEAL[pref] -= 1;
     } else {
       combinedFoodPrefMap[cut.cutType][pref] -= 1;
     }

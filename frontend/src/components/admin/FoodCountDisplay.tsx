@@ -26,19 +26,19 @@ const FoodCountDisplay: FC = () => {
       const cutMap = result.cutCounts;
       setFoodCounts({
         MORNING: {
-          count: cutMap.MORNING.veg + cutMap.MORNING.nonVeg,
-          veg: cutMap.MORNING.veg,
-          nonVeg: cutMap.MORNING.nonVeg,
+          count: cutMap.MORNING_MEAL.veg + cutMap.MORNING_MEAL.nonVeg,
+          veg: cutMap.MORNING_MEAL.veg,
+          nonVeg: cutMap.MORNING_MEAL.nonVeg,
         },
         AFTERNOON: {
-          count: cutMap.AFTERNOON.veg + cutMap.AFTERNOON.nonVeg,
-          veg: cutMap.AFTERNOON.veg,
-          nonVeg: cutMap.AFTERNOON.nonVeg,
+          count: cutMap.AFTERNOON_MEAL.veg + cutMap.AFTERNOON_MEAL.nonVeg,
+          veg: cutMap.AFTERNOON_MEAL.veg,
+          nonVeg: cutMap.AFTERNOON_MEAL.nonVeg,
         },
         EVENING: {
-          count: cutMap.EVENING.veg + cutMap.EVENING.nonVeg,
-          veg: cutMap.EVENING.veg,
-          nonVeg: cutMap.EVENING.nonVeg,
+          count: cutMap.EVENING_MEAL.veg + cutMap.EVENING_MEAL.nonVeg,
+          veg: cutMap.EVENING_MEAL.veg,
+          nonVeg: cutMap.EVENING_MEAL.nonVeg,
         },
       });
     }

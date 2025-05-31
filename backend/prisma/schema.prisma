@@ -31,10 +31,10 @@ enum UserRole {
 }
 
 enum CutType {
-  MORNING
-  AFTERNOON
-  EVENING
-  FULL
+  MORNING_MEAL
+  AFTERNOON_MEAL
+  EVENING_MEAL
+  FULL_MEAL
 }
 
 enum Building {
