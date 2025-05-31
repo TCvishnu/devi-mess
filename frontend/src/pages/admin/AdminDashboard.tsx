@@ -2,9 +2,10 @@ import { useState, FC, useEffect } from "react";
 import FoodCountDisplay from "@components/admin/FoodCountDisplay";
 import DisplayStudents from "@components/admin/DisplayStudents";
 import UserReport from "@components/admin/UserReport";
+import AdminSettings from "@components/admin/AdminSettings";
 
-const navbar = ["Count", "Students", "Report"] as const;
-type Page = "Count" | "Students" | "Report";
+const navbar = ["Count", "Students", "Report", "Settings"] as const;
+type Page = "Count" | "Students" | "Report" | "Settings";
 
 type AdminDashboardType = {
   onToggleDateChanging: (allow: boolean) => void;
@@ -40,6 +41,7 @@ const AdminDashboard: FC<AdminDashboardType> = ({ onToggleDateChanging }) => {
       {curPage === "Count" && <FoodCountDisplay />}
       {curPage === "Students" && <DisplayStudents />}
       {curPage === "Report" && <UserReport />}
+      {curPage === "Settings" && <AdminSettings />}
     </div>
   );
 };
