@@ -26,7 +26,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 		role: UserRole.Mess,
 		isVeg: false,
 		residentialData: {
-			floor: "GROUND",
+			floor: "TOP",
 			building: "DEVI_HOUSE",
 		},
 	})
@@ -43,8 +43,13 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				name === "gender" && value == Gender.Male
 					? MealType.Full
 					: prev.mealType,
-			residentType:
-				name === "role" && value === UserRole.Mess
+			role:
+				name === "gender" && value == Gender.Female
+					? UserRole.Mess
+					: prev.role,
+			residentialData:
+				(name === "role" && value === UserRole.Mess) ||
+				(name === "gender" && value === Gender.Female)
 					? undefined
 					: prev.residentialData,
 			[name]: name === "isVeg" ? checked : value,
@@ -59,7 +64,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 			residentialData: {
 				...(prev.residentialData || {
 					building: "DEVI_HOUSE",
-					floor: "GROUND",
+					floor: "TOP",
 				}),
 				[name]: value,
 			},
@@ -69,6 +74,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
+		// console.log(formData)
 		onSubmit(event, formData)
 	}
 
@@ -117,9 +123,11 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 				value={formData.role}
 			>
 				<SelectBox.Option value={UserRole.Mess}>Mess</SelectBox.Option>
-				<SelectBox.Option value={UserRole.Resident}>
-					Resident
-				</SelectBox.Option>
+				{formData.gender === Gender.Male && (
+					<SelectBox.Option value={UserRole.Resident}>
+						Resident
+					</SelectBox.Option>
+				)}
 			</SelectBox.Select>
 
 			{formData.role == UserRole.Resident && (
@@ -152,15 +160,15 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 						<SelectBox.Option value="">
 							Select a floor
 						</SelectBox.Option>
-						<SelectBox.Option value="GROUND">
-							Ground floor
-						</SelectBox.Option>
 						{formData.residentialData?.building ===
 							"ROCKLAND_ARCADE" && (
-							<SelectBox.Option value="TOP">
-								Top floor
+							<SelectBox.Option value="GROUND">
+								Ground floor
 							</SelectBox.Option>
 						)}
+						<SelectBox.Option value="TOP">
+							Top floor
+						</SelectBox.Option>
 					</SelectBox.Select>
 				</>
 			)}

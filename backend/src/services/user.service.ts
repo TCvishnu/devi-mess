@@ -22,6 +22,43 @@ const create = async (user: User) => {
 	})
 }
 
+const updateOnBoardDetails = async (
+	db: ReturnType<typeof getPrisma>,
+	id: string,
+	updatedData: User,
+	residentialData: Resident
+) => {
+	return await db.$transaction(async (tx) => {
+		const updatedUser = await tx.user.update({
+			where: {
+				id,
+			},
+			data: { ...updatedData, hasOnboarded: true },
+		})
+
+		let savedResidentialData: Resident | null = null
+
+		if (residentialData) {
+			const newResidentialData = residentialData as Pick<
+				Resident,
+				"floor" | "building"
+			>
+
+			savedResidentialData = await tx.resident.create({
+				data: {
+					userId: updatedUser.id,
+					floor: newResidentialData.floor,
+					building: newResidentialData.building,
+				},
+			})
+		}
+
+		const { password, ...safeUser } = updatedUser
+
+		return { ...safeUser, residentialData: savedResidentialData }
+	})
+}
+
 const getFullUserDetails = async (
 	db: ReturnType<typeof getPrisma>,
 	userID: string
