@@ -7,7 +7,7 @@ import { Gender, BillType } from "@type/enums";
 
 export default function AdminSettings() {
   const [fixedRent, setFixedRent] = useState<
-    Record<string, Record<string, number>>
+    Record<string, Record<string, number | string>>
   >({
     [BillType.RENT]: { MALE: 0 },
     [BillType.MORNING_MEAL]: { MALE: 0, FEMALE: 0 },
@@ -16,7 +16,7 @@ export default function AdminSettings() {
   });
 
   const [varidableRent, setVariableRent] = useState<
-    Record<string, Record<string, number>>
+    Record<string, Record<string, number | string>>
   >({
     [BillType.ELECTRICITY]: {
       "ROCKLAND_ARCADE TOP": 0,
@@ -90,8 +90,16 @@ export default function AdminSettings() {
     e: React.ChangeEvent<HTMLInputElement>,
     isFixed: boolean
   ) => {
-    const value = Number(e.target.value);
-    handleInputChange(type, classifier, value, isFixed);
+    const value = e.target.value;
+    const updater = isFixed ? setFixedRent : setVariableRent;
+
+    updater((prev) => ({
+      ...prev,
+      [type]: {
+        ...(prev[type] || {}),
+        [classifier]: value === "" ? "" : Number(value),
+      },
+    }));
   };
 
   const handleInputChange = (
@@ -102,7 +110,7 @@ export default function AdminSettings() {
   ) => {
     const updater = isFixed ? setFixedRent : setVariableRent;
 
-    updater((prev: Record<BillType, Record<string, number>>) => ({
+    updater((prev: Record<BillType, Record<string, number | string>>) => ({
       ...prev,
       [type]: {
         ...(prev[type] || {}),
