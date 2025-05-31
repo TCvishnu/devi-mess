@@ -128,14 +128,11 @@ export default function AdminSettings() {
           Save Fixed Rates
         </button>
 
-        <section>
+        <section className="mt-10">
           <div className="w-full flex justify-between items-center">
             <h2 className="text-xl font-semibold mb-2 text-primary">
               Electricity Charges (Per Floor)
             </h2>
-            <span className=" font-semibold text-sm">
-              - {today.subtract(1, "month").format("MMM")}
-            </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
@@ -144,9 +141,15 @@ export default function AdminSettings() {
               "DEVI_HOUSE TOP",
             ].map((floor, index) => (
               <div key={floor}>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  {floorLabel[floor]}
-                </label>
+                <div className="w-full flex justify-between items-center">
+                  <label className="block mb-1 text-sm font-medium text-gray-700">
+                    {floorLabel[floor]}
+                  </label>
+                  <span className="text-xs">
+                    - {dayjs(config[2 + index].updatedAt).format("MMM")}
+                  </span>
+                </div>
+
                 <input
                   type="number"
                   onChange={(e) => handleChange(e, 2 + index)}
@@ -164,9 +167,6 @@ export default function AdminSettings() {
             <h2 className="text-xl font-semibold mb-2 text-primary">
               WiFi Charges (Per Floor)
             </h2>
-            <span className=" font-semibold text-sm">
-              - {today.subtract(1, "month").format("MMM")}
-            </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -176,9 +176,14 @@ export default function AdminSettings() {
               "DEVI_HOUSE TOP",
             ].map((floor, index) => (
               <div key={floor}>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  {floorLabel[floor]}
-                </label>
+                <div className="w-full flex justify-between items-center">
+                  <label className="block mb-1 text-sm font-medium text-gray-700">
+                    {floorLabel[floor]}
+                  </label>
+                  <span className="text-xs">
+                    - {dayjs(config[10 + index].updatedAt).format("MMM")}
+                  </span>
+                </div>
                 <input
                   value={config[10 + index].amount}
                   onChange={(e) => handleChange(e, 10 + index)}
@@ -192,7 +197,7 @@ export default function AdminSettings() {
         </section>
 
         <button className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md ">
-          Save {today.subtract(1, "month").format("MMM")} Month's Rates
+          Generate Resident Bills
         </button>
       </div>
     </div>
