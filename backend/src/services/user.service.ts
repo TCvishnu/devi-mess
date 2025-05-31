@@ -1,4 +1,4 @@
-import { User } from "@prisma/client"
+import { Resident, User } from "@prisma/client"
 import prisma from "@lib/prisma"
 import getPrisma from "@lib/getPrisma"
 
@@ -163,4 +163,5 @@ export default {
 	findByPhoneNumber,
 	findByIdAndUpdate,
 	findNotVerifiedUsers,
+	updateOnBoardDetails,
 }
