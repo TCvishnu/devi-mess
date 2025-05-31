@@ -138,7 +138,6 @@ export const fetchResidentDetails = async (
 			method: "GET",
 		})
 
-		if (!response.ok) throw new Error()
 		return {
 			data: response.data,
 		}

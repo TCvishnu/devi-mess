@@ -154,6 +154,7 @@ const UserVerificationList: FC = () => {
 		getVerificationRequest()
 	}, [])
 
+	// add existing search and in-view fetching to this component
 	return (
 		<div className="w-full flex flex-col gap-4 py-6 h-full">
 			<div className="w-full min-h-12 border border-gray-400 flex items-center rounded-sm gap-2 px-2">
@@ -227,7 +228,7 @@ const UserVerificationList: FC = () => {
 										: "Non-Vegetarian"}
 								</span>
 							</div>
-							{user.residentialData ? (
+							{user.residentialData && (
 								<div className="flex w-full px-4 text-gray-400 font-medium justify-between">
 									<span>
 										{
@@ -244,10 +245,6 @@ const UserVerificationList: FC = () => {
 										}
 									</span>
 								</div>
-							) : (
-								<span className=" font-semibold text-gray-400 text-sm">
-									Profile not completed
-								</span>
 							)}
 						</div>
 					))}
@@ -264,11 +261,7 @@ const UserVerificationList: FC = () => {
 							disabled={pending}
 						>
 							{pending ? (
-								<Icon
-									width={24}
-									color="white"
-									icon="eos-icons:loading"
-								/>
+								<div className=" w-4 h-4 border-2 border-b-transparent rounded-full animate-spin " />
 							) : (
 								"Load more"
 							)}

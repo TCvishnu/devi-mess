@@ -2,6 +2,20 @@ import { User } from "@prisma/client"
 import prisma from "@lib/prisma"
 import getPrisma from "@lib/getPrisma"
 
+const selectFields = {
+	id: true,
+	createdAt: true,
+	updatedAt: true,
+	name: true,
+	phoneNumber: true,
+	gender: true,
+	mealType: true,
+	role: true,
+	isVeg: true,
+	hasOnboarded: true,
+	adminVerified: true,
+}
+
 const create = async (user: User) => {
 	return await prisma.user.create({
 		data: user,
@@ -63,13 +77,16 @@ const findNotVerifiedUsers = async (
 	const totalUsers = await db.user.count({
 		where: {
 			adminVerified: false,
+			hasOnboarded: false,
 		},
 	})
 
 	const result = await db.user.findMany({
 		where: {
 			adminVerified: false,
+			hasOnboarded: false,
 		},
+		select: selectFields,
 		orderBy: {
 			updatedAt: "desc",
 		},
@@ -79,7 +96,7 @@ const findNotVerifiedUsers = async (
 
 	return {
 		pagination: {
-			currrentPage: page,
+			currentPage: page,
 			limit,
 			totalPages: Math.ceil(totalUsers / limit),
 		},
