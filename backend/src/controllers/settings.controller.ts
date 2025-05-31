@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import settingsService from "@services/settings.service";
+
 const getSettingsConfiguration = async (req: Request, res: Response) => {
   try {
     const result = await settingsService.getSettingsConfiguration(req.db);
@@ -10,4 +11,17 @@ const getSettingsConfiguration = async (req: Request, res: Response) => {
   }
 };
 
-export default { getSettingsConfiguration };
+const updateFixedConfig = async (req: Request, res: Response) => {
+  const { updateData } = req.body;
+
+  try {
+    const result = await settingsService.updateFixedConfig(req.db, updateData);
+
+    res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default { getSettingsConfiguration, updateFixedConfig };

@@ -1,127 +1,82 @@
-import { getConfiguration } from "@services/configurationService";
+import {
+  getConfiguration,
+  updateFixedConfig,
+} from "@services/configurationService";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { rateMealKeys, labelRateMealKeys } from "@constants/rateMealKeys";
 import { labelGender, floorLabel } from "@constants/label";
-import { Gender, BillType } from "@type/enums";
+import { Gender } from "@type/enums";
+import { BillTypeConfiguration } from "@type/configuration";
+
+const fixedSkipIndex = [7, 0, 5];
 
 export default function AdminSettings() {
-  const [fixedRent, setFixedRent] = useState<
-    Record<string, Record<string, number | string>>
-  >({
-    [BillType.RENT]: { MALE: 0 },
-    [BillType.MORNING_MEAL]: { MALE: 0, FEMALE: 0 },
-    [BillType.AFTERNOON_MEAL]: { MALE: 0, FEMALE: 0 },
-    [BillType.EVENING_MEAL]: { MALE: 0, FEMALE: 0 },
-  });
+  const [config, setConfig] = useState<BillTypeConfiguration[]>([]);
 
-  const [varidableRent, setVariableRent] = useState<
-    Record<string, Record<string, number | string>>
-  >({
-    [BillType.ELECTRICITY]: {
-      "ROCKLAND_ARCADE TOP": 0,
-      "ROCKLAND_ARCADE GROUND": 0,
-      "DEVI_HOUSE TOP": 0,
-    },
-    [BillType.WIFI]: {
-      "ROCKLAND_ARCADE TOP": 0,
-      "ROCKLAND_ARCADE GROUND": 0,
-      "DEVI_HOUSE TOP": 0,
-    },
-  });
-
+  const initialData = useRef<BillTypeConfiguration[]>([]);
   const today = dayjs();
 
   const fetchSettingsConfiguration = async () => {
     const result = await getConfiguration();
     const { settingsData } = result;
-
-    const fixedRents = settingsData
-      .filter(
-        ({ type }: { type: BillType }) =>
-          type !== BillType.ELECTRICITY && type !== BillType.WIFI
-      )
-      .reduce(
-        (
-          acc: Record<BillType, Record<string, number>>,
-          {
-            type,
-            classifier,
-            amount,
-          }: { type: BillType; classifier: string; amount: number }
-        ) => {
-          if (!acc[type]) {
-            acc[type] = {};
-          }
-          acc[type][classifier] = amount;
-          return acc;
-        },
-        {}
-      );
-    const variableRents = settingsData
-      .filter(
-        ({ type }: { type: BillType }) =>
-          type === BillType.ELECTRICITY || type === BillType.WIFI
-      )
-      .reduce(
-        (
-          acc: Record<BillType, Record<string, number>>,
-          {
-            type,
-            classifier,
-            amount,
-          }: { type: BillType; classifier: string; amount: number }
-        ) => {
-          if (!acc[type]) {
-            acc[type] = {};
-          }
-          acc[type][classifier] = amount;
-          return acc;
-        },
-        {}
-      );
-    setFixedRent(fixedRents);
-    setVariableRent(variableRents);
-  };
-
-  const handleChange = (
-    type: BillType,
-    classifier: string,
-    e: React.ChangeEvent<HTMLInputElement>,
-    isFixed: boolean
-  ) => {
-    const value = e.target.value;
-    const updater = isFixed ? setFixedRent : setVariableRent;
-
-    updater((prev) => ({
-      ...prev,
-      [type]: {
-        ...(prev[type] || {}),
-        [classifier]: value === "" ? "" : Number(value),
-      },
-    }));
-  };
-
-  const handleInputChange = (
-    type: BillType,
-    classifier: string,
-    value: number,
-    isFixed: boolean
-  ) => {
-    const updater = isFixed ? setFixedRent : setVariableRent;
-
-    updater((prev: Record<BillType, Record<string, number | string>>) => ({
-      ...prev,
-      [type]: {
-        ...(prev[type] || {}),
-        [classifier]: value,
-      },
-    }));
+    setConfig(settingsData);
+    initialData.current = JSON.parse(JSON.stringify(settingsData)); // deeeep copy
+    console.log(
+      settingsData.map((setting: BillTypeConfiguration) => setting.type)
+    );
   };
 
   useEffect(() => {
     fetchSettingsConfiguration();
   }, []);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    setConfig((prev: BillTypeConfiguration[]) => {
+      const tempConfig = [...prev];
+      tempConfig[index].amount = e.target.value.length
+        ? Number(e.target.value)
+        : "";
+      return tempConfig;
+    });
+  };
+
+  const validateFixedChange = () => {
+    let changedPrices: { id: string; amount: number }[] = [];
+    for (let i = 0; i < 10; i++) {
+      if (i >= 2 && i <= 4) {
+        continue;
+      }
+      if (Number(config[i].amount) !== initialData.current[i].amount) {
+        changedPrices.unshift({
+          id: config[i].id,
+          amount: Number(config[i].amount),
+        });
+      }
+    }
+
+    return changedPrices;
+  };
+
+  const validateVariableChange = () => {};
+
+  const handleFixedConfigUpdation = async () => {
+    const changedPrices = validateFixedChange();
+    if (!changedPrices.length) {
+      console.log("nope");
+      return;
+    }
+
+    await updateFixedConfig(changedPrices);
+  };
+
+  if (!config.length) {
+    return (
+      <div className=" flex items-center justify-center h-full">
+        <div className="size-32 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
   return (
     <div className="w-full min-h-screen py-6 ">
       <div className="rounded-2xl space-y-8 w-full">
@@ -130,29 +85,30 @@ export default function AdminSettings() {
             Hostel Rent
           </h2>
           <input
-            value={fixedRent["RENT"]["MALE"]}
-            onChange={(e) => handleChange(BillType.RENT, "MALE", e, true)}
+            value={config[9].amount}
+            type="Number"
+            onChange={(e) => handleChange(e, 9)}
             placeholder="Enter rent amount"
             className="w-full p-3 border rounded-md shadow-sm outline-none"
           />
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-4">Meal Rates</h2>
-          {rateMealKeys.map((meal) => (
+          {rateMealKeys.map((meal, i) => (
             <div key={meal} className="mb-6">
               <h3 className="text-lg font-medium mb-2">
                 {labelRateMealKeys[meal]} Meal
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[Gender.Male, Gender.Female].map((gender) => (
+                {[Gender.Male, Gender.Female].map((gender, index) => (
                   <div key={gender}>
                     <label className="block mb-1 text-sm font-medium text-gray-700">
                       {labelGender[gender]}
                     </label>
                     <input
-                      value={fixedRent[meal][gender]}
+                      value={config[fixedSkipIndex[i] + index].amount}
                       onChange={(e) =>
-                        handleChange(BillType[meal], gender, e, true)
+                        handleChange(e, fixedSkipIndex[i] + index)
                       }
                       type="number"
                       placeholder={`${labelRateMealKeys[meal]} - ${labelGender[gender]}`}
@@ -165,7 +121,10 @@ export default function AdminSettings() {
           ))}
         </section>
 
-        <button className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md ">
+        <button
+          className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md "
+          onClick={handleFixedConfigUpdation}
+        >
           Save Fixed Rates
         </button>
 
@@ -183,17 +142,15 @@ export default function AdminSettings() {
               "ROCKLAND_ARCADE TOP",
               "ROCKLAND_ARCADE GROUND",
               "DEVI_HOUSE TOP",
-            ].map((floor) => (
+            ].map((floor, index) => (
               <div key={floor}>
                 <label className="block mb-1 text-sm font-medium text-gray-700">
                   {floorLabel[floor]}
                 </label>
                 <input
                   type="number"
-                  value={varidableRent["ELECTRICITY"][floor]}
-                  onChange={(e) =>
-                    handleChange(BillType.ELECTRICITY, floor, e, false)
-                  }
+                  onChange={(e) => handleChange(e, 2 + index)}
+                  value={config[2 + index].amount}
                   placeholder={`${floorLabel[floor]} `}
                   className="w-full p-3 border rounded-md shadow-sm outline-none text-sm"
                 />
@@ -217,15 +174,15 @@ export default function AdminSettings() {
               "ROCKLAND_ARCADE TOP",
               "ROCKLAND_ARCADE GROUND",
               "DEVI_HOUSE TOP",
-            ].map((floor) => (
+            ].map((floor, index) => (
               <div key={floor}>
                 <label className="block mb-1 text-sm font-medium text-gray-700">
                   {floorLabel[floor]}
                 </label>
                 <input
+                  value={config[10 + index].amount}
+                  onChange={(e) => handleChange(e, 10 + index)}
                   type="number"
-                  value={varidableRent["WIFI"][floor]}
-                  onChange={(e) => handleChange(BillType.WIFI, floor, e, false)}
                   placeholder={`${floorLabel[floor]} `}
                   className="w-full p-3 border rounded-md shadow-sm focus:outline-none outline-none text-sm"
                 />
