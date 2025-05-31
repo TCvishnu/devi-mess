@@ -1,0 +1,23 @@
+import '../base/base'
+import "../userBillTypeConfiguration/userBillTypeConfiguration"
+
+model BillTypeConfiguration extends Base {
+    type                      BillType
+    classifier                String
+    amount                    Float
+
+    userBillTypeConfiguration UserBillTypeConfiguration[]
+
+    @@allow('all', true)
+}
+
+// Change User Table as well when editing this
+enum BillType {
+    RENT
+    ELECTRICITY
+    WIFI
+    MORNING_MEAL
+    AFTERNOON_MEAL
+    EVENING_MEAL
+    FULL_MEAL
+}

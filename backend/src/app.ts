@@ -8,6 +8,9 @@ import cookieParser from "cookie-parser";
 import passport from "./auth/passport";
 import getPrisma from "./lib/getPrisma";
 
+import { agendaFunction } from "jobs/calculateFees";
+import agenda from "agenda/agenda";
+
 // middleware imports
 
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
@@ -61,6 +64,15 @@ app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);
 app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
 app.use("/api/analysis", authenticateAdmin, analysisRouter);
+
+agendaFunction(agenda);
+
+(async () => {
+  await agenda.start();
+
+  // Schedule job to run on 1st of every month at midnight
+  await agenda.every("* * * * *", "calculate-monthly-fees");
+})();
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);

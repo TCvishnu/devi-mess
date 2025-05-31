@@ -1,0 +1,15 @@
+import '../base/base'
+import "../user/user"
+import "../billTypeConfiguration/billTypeConfiguration"
+
+model UserBillTypeConfiguration extends Base {
+    user                    User                  @relation(fields: [userId], references: [id])
+    userId                  String
+
+    billTypeConfiguration   BillTypeConfiguration @relation(fields: [billTypeConfigurationId], references: [id])
+    billTypeConfigurationId String
+
+    overriddenAmount        Float
+
+    @@allow('all', true)
+}

@@ -1,0 +1,12 @@
+import '../base/base'
+import "../userBills/userBills"
+
+model BillComponents extends Base {
+    userBill   UserBill @relation(fields: [userBillid], references: [id])
+    userBillid String
+
+    totalDays  Int
+    amount     Float
+
+    @@allow('all', true)
+}
