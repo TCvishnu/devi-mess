@@ -77,7 +77,7 @@ const findNotVerifiedUsers = async (
 
 	const whereClause: { [key: string]: any } = {
 		adminVerified: false,
-		hasOnboarded: false,
+		hasOnboarded: true,
 	}
 
 	if (query?.name) {

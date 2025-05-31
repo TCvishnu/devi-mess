@@ -18,7 +18,7 @@ model User extends Base {
 
   @@allow('create', true)
   @@allow('read', auth() == this || auth().role == "ADMIN")
-  @@allow('update,delete', auth() == this)
+  @@allow('update,delete', auth() == this || auth().role == "ADMIN")
 }
 
 enum MealType {
