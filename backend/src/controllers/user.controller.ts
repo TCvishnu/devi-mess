@@ -31,12 +31,20 @@ const getCurrentUser = async (req: Request, res: Response) => {
 
 const getNotVerifiedList = async (req: Request, res: Response) => {
 	try {
-		const page = parseInt(req.query.page as string) || 1
-		const limit = parseInt(req.query.limit as string) || 10
+		const page = parseInt(req.validatedQuery?.page as string) || 1
+		const limit = parseInt(req.validatedQuery?.limit as string) || 10
 
 		const db = getPrisma(req)
 
-		const data = await userServices.findNotVerifiedUsers(db, page, limit)
+		delete req.validatedQuery?.page
+		delete req.validatedQuery?.limit
+
+		const data = await userServices.findNotVerifiedUsers(
+			db,
+			page,
+			limit,
+			req.validatedQuery
+		)
 
 		if (!data.result.length) {
 			handleError(res, 404, "No users found")

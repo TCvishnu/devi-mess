@@ -67,6 +67,7 @@ export const ProfileCompleteRequest = yup
 export const NotVerifiedListRequest = yup
 	.object()
 	.shape({
+		name: yup.string().optional(),
 		page: yup.number().integer().min(1).default(1),
 		limit: yup.number().integer().min(10).default(10),
 	})

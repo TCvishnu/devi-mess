@@ -35,6 +35,10 @@ type ResidentFetchReturn = {
 	error?: string
 }
 
+type UserSearchQuery = {
+	name?: string
+	// add other fields and use as query type
+}
 export const fetchCurrentUser = async (): Promise<CurrentUserReturn> => {
 	try {
 		const response = await fetchApi("/api/user/get-current-user")
@@ -74,11 +78,16 @@ export const saveProfile = async (
 
 export const fetchVerificationRequests = async (
 	page?: number,
-	limit?: number
+	limit?: number,
+	query?: UserSearchQuery
 ): Promise<VerificationRequestReturn> => {
 	try {
 		console.log(page, limit)
 		const urlParams = new URLSearchParams()
+
+		if (query?.name) {
+			urlParams.set("name", query.name)
+		}
 
 		if (page !== undefined) {
 			urlParams.set("page", `${page}`)

@@ -69,23 +69,30 @@ const findByPhoneNumber = async (phoneNumber: string) => {
 const findNotVerifiedUsers = async (
 	db: ReturnType<typeof getPrisma>,
 	page: number,
-	limit: number
+	limit: number,
+	query?: Omit<Partial<User>, "password">
 ) => {
-	const skip = (page - 1) * limit
-	const take = limit
+	const skip = (page - 1) * 5
+	const take = 5
+
+	const whereClause: { [key: string]: any } = {
+		adminVerified: false,
+		hasOnboarded: false,
+	}
+
+	if (query?.name) {
+		whereClause.name = {
+			contains: query.name,
+			mode: "insensitive",
+		}
+	}
 
 	const totalUsers = await db.user.count({
-		where: {
-			adminVerified: false,
-			hasOnboarded: false,
-		},
+		where: whereClause,
 	})
 
 	const result = await db.user.findMany({
-		where: {
-			adminVerified: false,
-			hasOnboarded: false,
-		},
+		where: whereClause,
 		select: selectFields,
 		orderBy: {
 			updatedAt: "desc",

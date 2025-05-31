@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { ChangeEvent, FC, useEffect, useState } from "react"
 import type { UserDetails } from "@type/user"
 import { Icon } from "@iconify/react/dist/iconify.js"
 
@@ -39,6 +39,7 @@ type DisplayResidentType = {
 }
 
 const UserVerificationList: FC = () => {
+	const [search, setSearch] = useState<string>("")
 	const [pending, setPending] = useState<boolean>(false)
 	const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null)
 
@@ -107,19 +108,32 @@ const UserVerificationList: FC = () => {
 		setSelectedUser(null)
 	}
 
-	const getVerificationRequest = async () => {
+	const getVerificationRequest = async (
+		currentPage?: number,
+		limit?: number,
+		append: boolean = false
+	) => {
 		try {
 			setPending(true)
 
 			console.log(displayResidents.pagination)
 			const { data, error } = await fetchVerificationRequests(
-				displayResidents.pagination.currentPage + 1,
-				displayResidents.pagination.limit
+				currentPage || displayResidents.pagination.currentPage + 1,
+				limit || displayResidents.pagination.limit,
+				{
+					name: search,
+				}
 			)
 
 			if (!error && data) {
 				setErrorMessage("")
-				setDisplayResidents(data)
+				setDisplayResidents((prev) => ({
+					...prev,
+					pagination: data.pagination,
+					result: append
+						? [...prev.result, ...data.result]
+						: data.result,
+				}))
 			} else {
 				setErrorMessage("No more pending request")
 			}
@@ -150,9 +164,19 @@ const UserVerificationList: FC = () => {
 		}
 	}
 
+	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setSearch(event.target.value)
+	}
+
 	useEffect(() => {
-		getVerificationRequest()
-	}, [])
+		const timeoutId = setTimeout(() => {
+			getVerificationRequest(1)
+		}, 500)
+
+		return () => {
+			clearTimeout(timeoutId)
+		}
+	}, [search])
 
 	// add existing search and in-view fetching to this component
 	return (
@@ -161,8 +185,11 @@ const UserVerificationList: FC = () => {
 				<Icon icon="uil:search" className="size-6 text-gray-500" />
 				<div className="w-[1.5px] h-6 bg-gray-400" />
 				<input
+					id="search"
 					className="h-full w-full outline-none text-sm font-medium placeholder:text-gray-300"
-					placeholder="Search.."
+					placeholder="Search by name"
+					value={search}
+					onChange={handleChange}
 				/>
 			</div>
 
@@ -255,7 +282,13 @@ const UserVerificationList: FC = () => {
 					)}
 					<div className=" mt-4 w-full flex justify-center">
 						<button
-							onClick={getVerificationRequest}
+							onClick={() =>
+								getVerificationRequest(
+									displayResidents.pagination.currentPage + 1,
+									displayResidents.pagination.limit,
+									true
+								)
+							}
 							className=" px-2  w-32 h-8 text-sm flex justify-center items-center
 							 font-semibold bg-primary opacity-80 text-white disabled:opacity-60 rounded-md "
 							disabled={pending}
