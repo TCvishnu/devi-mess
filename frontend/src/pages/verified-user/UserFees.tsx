@@ -8,9 +8,16 @@ import { useAuthContext } from "@contexts/AuthContext";
 import { getMonthlyMessBill } from "@services/billService";
 import { BillComponent } from "@type/bill";
 import { labelRateMealKeys } from "@constants/rateMealKeys";
+import { BillType } from "@type/enums";
+import { residentialBillTypeLabel } from "@constants/label";
+
+const residentialBillTypes = new Set([
+  BillType.WIFI,
+  BillType.ELECTRICITY,
+  BillType.RENT,
+]);
 
 const today = dayjs();
-const prevMonth = today.subtract(1, "month");
 
 const UserFees: FC = () => {
   const { user } = useAuthContext();
@@ -19,8 +26,9 @@ const UserFees: FC = () => {
   const [messBillComponents, setMessBillComponents] = useState<
     BillComponent[] | null
   >(null);
-
-  const userRole: UserRole = user?.role || UserRole.Admin;
+  const [rentBillComponents, setRentBillComponents] = useState<
+    BillComponent[] | null
+  >(null);
 
   const residentialFees: ResidentFeesType = {
     rent: 3100,
@@ -60,7 +68,28 @@ const UserFees: FC = () => {
     }
 
     const { bill } = result;
-    setMessBillComponents(bill.billComponents);
+    setMessBillComponents(
+      bill.billComponents.filter(
+        (component: BillComponent) => !residentialBillTypes.has(component.type)
+      )
+    );
+
+    setRentBillComponents(
+      bill.billComponents.filter((component: BillComponent) =>
+        residentialBillTypes.has(component.type)
+      )
+    );
+
+    console.log(
+      bill.billComponents
+        .filter((component: BillComponent) =>
+          residentialBillTypes.has(component.type)
+        )
+        .map((component: BillComponent) => ({
+          type: component.type,
+          amount: component.amount,
+        }))
+    );
   };
 
   useEffect(() => {
@@ -68,7 +97,7 @@ const UserFees: FC = () => {
   }, []);
 
   return (
-    <div className="py-6 w-full max-w-md mx-auto flex flex-col gap-4">
+    <div className="py-6 w-full flex flex-col gap-4">
       {monthYear &&
         monthYear.month() !== today.subtract(1, "month").month() && (
           <div className="text-center w-full font-semibold mt-4 flex flex-col">
@@ -137,7 +166,7 @@ const UserFees: FC = () => {
         </div>
       )}
 
-      {userRole === UserRole.Resident && (
+      {rentBillComponents && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"
@@ -148,28 +177,29 @@ const UserFees: FC = () => {
               Hostel Fees
             </h2>
             <span className="text-primary font-semibold">
-              {prevMonth.format("MMMM, YYYY")}
+              {monthYear?.format("MMMM, YYYY")}
             </span>
           </div>
 
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>Room Rent</span>
-            <span>{residentialFees.rent}</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 pb-2">
-            <span>Electricity Bill</span>
-            <span>{residentialFees.electricity || "--"}</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 pb-2 border-b">
-            <span>Wifi Charges</span>
-            <span>{residentialFees.wifi || "--"}</span>
-          </div>
+          {rentBillComponents.map((component: BillComponent) => (
+            <div
+              className=" w-full flex justify-between text-gray-500"
+              key={component.id}
+            >
+              <span>{residentialBillTypeLabel[component.type]}</span>
+              <span>{component.amount > 0 ? component.amount : "--"}</span>
+            </div>
+          ))}
+          <div className="w-full border-b border-b-gray-600 mt-4" />
 
           <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
             <span className="flex items-center gap-1">Final Fees</span>
             <span className="text-accent font-black flex items-center">
               <Icon icon="mdi:currency-inr" className=" size-5 " />
-              {residentialFees.totalFees}
+              {rentBillComponents.reduce(
+                (acc, component) => acc + component.amount,
+                0
+              )}
             </span>
           </div>
         </div>

@@ -26,7 +26,7 @@ import authenticateAdmin from "auth/authenticateAdmin";
 import settingsRouter from "@routes/settings.routes";
 import billRouter from "@routes/bill.routes";
 
-import "./graphileWoker";
+// import "./graphileWoker";
 
 const app = express();
 const PORT = 3000;

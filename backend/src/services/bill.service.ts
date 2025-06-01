@@ -1,8 +1,6 @@
 import getPrisma from "../lib/getPrisma";
 import { BillType, UserRole } from "@prisma/client";
 
-const excludedBillTypes = [BillType.WIFI, BillType.ELECTRICITY, BillType.RENT];
-
 const getMonthlyMessBill = async (
   db: ReturnType<typeof getPrisma>,
   month: number,
@@ -16,13 +14,7 @@ const getMonthlyMessBill = async (
       userId: userID,
     },
     include: {
-      billComponents: {
-        where: {
-          type: {
-            notIn: excludedBillTypes,
-          },
-        },
-      },
+      billComponents: true,
     },
   });
 
