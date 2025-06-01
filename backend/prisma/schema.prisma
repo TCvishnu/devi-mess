@@ -117,6 +117,7 @@ model BillComponents {
   userBillid String
   totalDays  Int
   amount     Float
+  type       BillType
 }
 
 model UserBillTypeConfiguration {

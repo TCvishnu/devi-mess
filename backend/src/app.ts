@@ -68,13 +68,13 @@ app.use("/api/analysis", authenticateAdmin, analysisRouter);
 
 app.use("/api/settings", authenticateAdmin, settingsRouter);
 
+// for test run use bellow agenda.now()
 // agendaFunction(agenda);
 
 // (async () => {
 //   await agenda.start();
 
-//   // Schedule job to run on 1st of every month at midnight
-//   await agenda.every("* * * * *", "calculate-monthly-fees");
+//   await agenda.now("calculate-monthly-fees", {});
 // })();
 
 app.listen(PORT, () => {

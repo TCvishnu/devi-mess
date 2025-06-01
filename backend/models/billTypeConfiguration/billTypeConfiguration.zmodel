@@ -1,5 +1,6 @@
 import '../base/base'
 import "../userBillTypeConfiguration/userBillTypeConfiguration"
+import "../enums/billtype"
 
 model BillTypeConfiguration extends Base {
     type                      BillType
@@ -10,15 +11,4 @@ model BillTypeConfiguration extends Base {
 
     @@allow('all', auth().role == 'ADMIN')
     @@allow('read', auth() != null)
-}
-
-// Change User Table as well when editing this
-enum BillType {
-    RENT
-    ELECTRICITY
-    WIFI
-    MORNING_MEAL
-    AFTERNOON_MEAL
-    EVENING_MEAL
-    FULL_MEAL
 }

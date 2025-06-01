@@ -8,7 +8,7 @@ export const agendaFunction = (agenda: Agenda): void => {
       await prisma.$transaction(async (tx) => {
         const users = await tx.user.findMany({
           where: {
-            hasOnboarded: true,
+            adminVerified: true,
             role: {
               not: "ADMIN",
             },
@@ -16,6 +16,26 @@ export const agendaFunction = (agenda: Agenda): void => {
         });
         for (const user of users) {
           const now = new Date();
+
+          const prevMonthStart = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1,
+            0,
+            0,
+            0
+          );
+
+          const prevMonthEnd = new Date(
+            prevMonthStart.getFullYear(),
+            prevMonthStart.getMonth() + 1,
+            0
+          );
+
+          if (user.startDate && user.startDate > prevMonthEnd) {
+            continue; // joined after May, skip
+          }
+
           const year =
             now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
           const month = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
@@ -32,14 +52,6 @@ export const agendaFunction = (agenda: Agenda): void => {
           const startOfCurrentMonth = new Date(
             now.getFullYear(),
             now.getMonth(),
-            1,
-            0,
-            0,
-            0
-          );
-          const prevMonthStart = new Date(
-            now.getFullYear(),
-            now.getMonth() - 1,
             1,
             0,
             0,
@@ -122,11 +134,14 @@ export const agendaFunction = (agenda: Agenda): void => {
                     userBillConfig.billTypeConfiguration.amount),
                 userBillid: createdBill.id,
                 totalDays: days,
+                type: cutType,
               };
             }
           );
 
           await tx.billComponents.createMany({ data: billComponentsToCreate });
+
+          console.log("over: ", user.name);
         }
       });
     } catch (err) {

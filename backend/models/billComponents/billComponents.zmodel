@@ -1,5 +1,6 @@
 import '../base/base'
 import "../userBills/userBills"
+import "../enums/billtype"
 
 model BillComponents extends Base {
     userBill   UserBill @relation(fields: [userBillid], references: [id])
@@ -7,6 +8,7 @@ model BillComponents extends Base {
 
     totalDays  Int
     amount     Float
+    type       BillType
 
     @@allow('all', true)
 }
