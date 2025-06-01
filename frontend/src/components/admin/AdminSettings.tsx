@@ -9,6 +9,8 @@ import { labelGender, floorLabel } from "@constants/label";
 import { Gender } from "@type/enums";
 import { BillTypeConfiguration } from "@type/configuration";
 
+import { generateRent } from "@services/billService";
+
 const fixedSkipIndex = [7, 0, 5];
 
 export default function AdminSettings() {
@@ -58,8 +60,6 @@ export default function AdminSettings() {
     return changedPrices;
   };
 
-  const validateVariableChange = () => {};
-
   const handleFixedConfigUpdation = async () => {
     const changedPrices = validateFixedChange();
     if (!changedPrices.length) {
@@ -68,6 +68,10 @@ export default function AdminSettings() {
     }
 
     await updateFixedConfig(changedPrices);
+  };
+
+  const handleGen = () => {
+    generateRent([]);
   };
 
   if (!config.length) {
@@ -196,7 +200,10 @@ export default function AdminSettings() {
           </div>
         </section>
 
-        <button className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md ">
+        <button
+          className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md "
+          onClick={handleGen}
+        >
           Generate Resident Bills
         </button>
       </div>

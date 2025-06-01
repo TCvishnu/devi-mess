@@ -15,7 +15,7 @@ const updateFixedConfig = async (req: Request, res: Response) => {
   const { updateData } = req.body;
 
   try {
-    const result = await settingsService.updateFixedConfig(req.db, updateData);
+    const result = await settingsService.updateConfig(req.db, updateData);
 
     res.status(200).json({ result });
   } catch (error) {
@@ -24,4 +24,17 @@ const updateFixedConfig = async (req: Request, res: Response) => {
   }
 };
 
-export default { getSettingsConfiguration, updateFixedConfig };
+const generateRent = async (req: Request, res: Response) => {
+  const { updateData } = req.body;
+
+  try {
+    const result = await settingsService.generateRent(req.db, updateData);
+
+    res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default { getSettingsConfiguration, updateFixedConfig, generateRent };

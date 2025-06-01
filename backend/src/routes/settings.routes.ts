@@ -15,4 +15,6 @@ settingsRouter.post(
   validateAndTransformRequest(fixedSettingsUpdateSchema),
   settingsController.updateFixedConfig
 );
+
+settingsRouter.post("/generate-rent", settingsController.generateRent);
 export default settingsRouter;

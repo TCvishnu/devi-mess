@@ -33,6 +33,7 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "fill-range": "^7.1.1",
+    "graphile-worker": "^0.16.6",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.16.0",
     "passport": "^0.7.0",

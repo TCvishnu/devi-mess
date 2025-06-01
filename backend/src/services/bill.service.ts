@@ -1,5 +1,5 @@
 import getPrisma from "../lib/getPrisma";
-import { BillType } from "@prisma/client";
+import { BillType, UserRole } from "@prisma/client";
 
 const excludedBillTypes = [BillType.WIFI, BillType.ELECTRICITY, BillType.RENT];
 
