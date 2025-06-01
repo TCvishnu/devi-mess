@@ -11,3 +11,10 @@ export const labelRateMealKeys: Record<RateMealType, string> = {
   [MealType.Afternoon]: "Afternoon",
   [MealType.Evening]: "Evening",
 };
+
+export const labelMealKeys: Record<MealType, string> = {
+  [MealType.Morning]: "Morning",
+  [MealType.Afternoon]: "Afternoon",
+  [MealType.Evening]: "Evening",
+  [MealType.Full]: "Full",
+};
