@@ -46,6 +46,8 @@ export const agendaFunction = (agenda: Agenda): void => {
             data: {
               userId: user.id,
               draft: user.role === "RESIDENT",
+              month: prevMonthStart.getMonth(),
+              year: prevMonthStart.getFullYear(),
             },
           });
 

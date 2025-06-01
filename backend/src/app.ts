@@ -24,6 +24,7 @@ import verifiedUserRouter from "@routes/verifieduser.routes";
 import analysisRouter from "@routes/analysis.routes";
 import authenticateAdmin from "auth/authenticateAdmin";
 import settingsRouter from "@routes/settings.routes";
+import billRouter from "@routes/bill.routes";
 
 const app = express();
 const PORT = 3000;
@@ -62,6 +63,7 @@ app.use("/api", useZenstackClient);
 
 // routes
 app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);
+app.use("/api/verified-user/:userID/bill", verifyUserID, billRouter);
 app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
 app.use("/api/analysis", authenticateAdmin, analysisRouter);

@@ -6,6 +6,8 @@ model UserBill extends Base {
     user           User             @relation(fields: [userId], references: [id])
     userId         String
     draft          Boolean
+    month          Int
+    year           Int
 
     billComponents BillComponents[]
 
