@@ -69,6 +69,16 @@ const UserFees: FC = () => {
 
   return (
     <div className="py-6 w-full max-w-md mx-auto flex flex-col gap-4">
+      {monthYear &&
+        monthYear.month() !== today.subtract(1, "month").month() && (
+          <div className="text-center w-full font-semibold mt-4 flex flex-col">
+            <span>
+              {today.subtract(1, "month").format("MMMM, YYYY")}'s fees is being
+              calculated.
+            </span>
+            <span>Try again after 1am</span>
+          </div>
+        )}
       {messBillComponents && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 

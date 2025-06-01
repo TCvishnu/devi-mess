@@ -79,6 +79,14 @@ app.use("/api/settings", authenticateAdmin, settingsRouter);
 //   await agenda.now("calculate-monthly-fees", {});
 // })();
 
+// schedule below to calculate mess fees everymonth
+// (async () => {
+//   await agenda.start();
+
+//   // Run at midnight on the 1st of every month
+//   await agenda.every("0 0 1 * *", "calculate-monthly-fees");
+//  })();
+
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);
 });
