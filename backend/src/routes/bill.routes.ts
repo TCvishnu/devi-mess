@@ -4,7 +4,7 @@ import { validateQueryAndTransformRequest } from "@middlewares/validation.middle
 import { getMonthlyBillSchema } from "@validations/bill.yup";
 import billController from "@controllers/bill.controller";
 
-const billRouter = Router();
+const billRouter = Router({ mergeParams: true });
 
 billRouter.get(
   "/",

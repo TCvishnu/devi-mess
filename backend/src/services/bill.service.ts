@@ -26,26 +26,7 @@ const getMonthlyMessBill = async (
     },
   });
 
-  const prevMonthStart = new Date(year, month, 1);
-  const startOfCurrentMonth = new Date(year, month + 1, 1);
-
-  const prevMonthMessCutsCount = await db.messcut.groupBy({
-    by: ["cutType"],
-    where: {
-      userId: {
-        equals: userID,
-      },
-      date: {
-        gte: prevMonthStart,
-        lt: startOfCurrentMonth,
-      },
-    },
-    _count: {
-      _all: true,
-    },
-  });
-
-  return { userBill, prevMonthMessCutsCount };
+  return { userBill };
 };
 
 export default { getMonthlyMessBill };

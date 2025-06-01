@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 const getMonthlyMessBill = async (req: Request, res: Response) => {
   const { month, year } = req.validatedQuery as { month: number; year: number };
   const { userID } = req.params;
+  console.log(userID);
   try {
     const result = await billService.getMonthlyMessBill(
       req.db,
