@@ -16,6 +16,7 @@ model User extends Base {
   residentialData           Resident?
   userBills                 UserBill[]
   userBillTypeConfiguration UserBillTypeConfiguration[]
+  startDate                 DateTime?
 
   hasOnboarded              Boolean                     @default(false)
   adminVerified             Boolean                     @default(false)
