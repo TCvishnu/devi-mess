@@ -1,6 +1,8 @@
 import { Building, Floor, Gender, MealType, UserRole } from "@prisma/client";
 import * as yup from "yup";
 
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
 export const RegisterRequest = yup
   .object()
   .shape({
@@ -54,5 +56,9 @@ export const ProfileCompleteRequest = yup
         then: (schema) => schema.required("residentialData is required"),
         otherwise: (schema) => schema.strip(),
       }),
+    startDate: yup
+      .string()
+      .required()
+      .matches(dateRegex, "startDate must be in 'YYYY-MM-DD' format"),
   })
   .stripUnknown();

@@ -24,9 +24,13 @@ const updateOnBoardDetails = async (
       where: {
         id,
       },
-      data: { ...updatedData, hasOnboarded: true },
+      data: {
+        ...updatedData,
+        hasOnboarded: true,
+        startDate: new Date(updatedData.startDate!),
+      },
     });
-
+    console.log(updatedUser);
     let savedResidentialData: Resident | null = null;
 
     if (residentialData) {

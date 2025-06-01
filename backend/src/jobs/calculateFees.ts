@@ -88,13 +88,18 @@ export const agendaFunction = (agenda: Agenda): void => {
             }
           }
 
+          const excludedBillTypes = [
+            BillType.WIFI,
+            BillType.ELECTRICITY,
+            BillType.RENT,
+          ];
           const userBillConfigs = await tx.userBillTypeConfiguration.findMany({
             where: {
               userId: user.id,
               billTypeConfiguration: {
                 NOT: {
                   type: {
-                    in: [BillType.WIFI, BillType.ELECTRICITY, BillType.RENT],
+                    in: excludedBillTypes,
                   },
                 },
               },
@@ -104,21 +109,24 @@ export const agendaFunction = (agenda: Agenda): void => {
             },
           });
 
-          for (const userBillConfig of userBillConfigs) {
-            const insertData = {
-              amount:
-                totalDaysHadFoodAfterCuts[
-                  userBillConfig.billTypeConfiguration.type as CutType
-                ] * userBillConfig.billTypeConfiguration.amount,
-              userBillid: createdBill.id,
-              totalDays:
-                totalDaysHadFoodAfterCuts[
-                  userBillConfig.billTypeConfiguration.type as CutType
-                ],
-            };
+          const billComponentsToCreate = userBillConfigs.map(
+            (userBillConfig) => {
+              const cutType = userBillConfig.billTypeConfiguration
+                .type as CutType;
+              const days = totalDaysHadFoodAfterCuts[cutType] || 0;
 
-            await tx.billComponents.create({ data: insertData });
-          }
+              return {
+                amount:
+                  days *
+                  (userBillConfig.overriddenAmount ||
+                    userBillConfig.billTypeConfiguration.amount),
+                userBillid: createdBill.id,
+                totalDays: days,
+              };
+            }
+          );
+
+          await tx.billComponents.createMany({ data: billComponentsToCreate });
         }
       });
     } catch (err) {
