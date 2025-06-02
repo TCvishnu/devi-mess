@@ -40,7 +40,7 @@ export const jobRun = run({
         0,
         0,
         0
-      );
+      ); // might be bug prone
 
       const prevMonthEnd = new Date(
         prevMonthStart.getFullYear(),
@@ -187,11 +187,23 @@ const messBill = async (userID: string, prevMonthStart: Date) => {
       const count = cut._count._all;
 
       if (cutType === "FULL_MEAL") {
-        totalDaysHadFoodAfterCuts.MORNING_MEAL -= count;
-        totalDaysHadFoodAfterCuts.AFTERNOON_MEAL -= count;
-        totalDaysHadFoodAfterCuts.EVENING_MEAL -= count;
+        totalDaysHadFoodAfterCuts.MORNING_MEAL = Math.max(
+          0,
+          totalDaysHadFoodAfterCuts.MORNING_MEAL - count
+        );
+        totalDaysHadFoodAfterCuts.AFTERNOON_MEAL = Math.max(
+          0,
+          totalDaysHadFoodAfterCuts.AFTERNOON_MEAL - count
+        );
+        totalDaysHadFoodAfterCuts.EVENING_MEAL = Math.max(
+          0,
+          totalDaysHadFoodAfterCuts.EVENING_MEAL - count
+        );
       } else {
-        totalDaysHadFoodAfterCuts[cutType] -= count;
+        totalDaysHadFoodAfterCuts[cutType] = Math.max(
+          0,
+          totalDaysHadFoodAfterCuts[cutType] - count
+        );
       }
     }
 
