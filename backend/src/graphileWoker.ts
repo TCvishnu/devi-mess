@@ -3,6 +3,7 @@ import prisma from "@lib/prisma";
 import { BillType, UserBill, CutType } from "@prisma/client";
 
 const includedBillTypes = [BillType.WIFI, BillType.ELECTRICITY, BillType.RENT];
+const includedBillTypesToUpdate = [BillType.WIFI, BillType.ELECTRICITY];
 
 export const jobRun = run({
   connectionString: process.env.DATABASE_URL!,
@@ -95,6 +96,55 @@ const calculateRent = async (userID: string, month: number, year: number) => {
     console.log({ month, year });
     const totalDays = new Date(year, month + 1, 0).getDate();
 
+    if (!userBill.draft) {
+      const billComponentsToUpdate = await tx.billComponents.findMany({
+        where: {
+          userBillid: userBill.id,
+          type: {
+            in: includedBillTypesToUpdate,
+          },
+        },
+      });
+
+      const resident = await tx.resident.findFirst({
+        where: {
+          userId: userID,
+        },
+      });
+      if (!resident) return;
+
+      const applicableConfigs = await tx.billTypeConfiguration.findMany({
+        where: {
+          type: {
+            in: includedBillTypesToUpdate,
+          },
+          classifier: {
+            equals: `${resident.building} ${resident.floor}`,
+          },
+        },
+      });
+
+      const configMap = new Map(
+        applicableConfigs.map((c) => [c.type, c.amount])
+      );
+
+      const updatedComponents = billComponentsToUpdate.map((comp) => ({
+        ...comp,
+        amount: configMap.get(comp.type) ?? comp.amount,
+      }));
+
+      await Promise.all(
+        updatedComponents.map((comp) =>
+          tx.billComponents.update({
+            where: { id: comp.id },
+            data: { amount: comp.amount },
+          })
+        )
+      );
+
+      return;
+    }
+
     const billComponentsToCreate = userBillConfigs.map((userBillConfig) => {
       return {
         totalDays: totalDays,
@@ -115,6 +165,8 @@ const calculateRent = async (userID: string, month: number, year: number) => {
         draft: false,
       },
     });
+
+    console.log("Rent created for: ", userID);
   });
 };
 

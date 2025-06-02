@@ -55,7 +55,7 @@ const UserFees: FC = () => {
     }
 
     const { status, bill } = result;
-
+    console.log(bill);
     if (status === 404) {
       setNoBillsYet(true);
       return;
@@ -162,44 +162,46 @@ const UserFees: FC = () => {
         </div>
       )}
 
-      {user?.role === UserRole.Resident && rentBillComponents && (
-        <div
-          className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
+      {user?.role === UserRole.Resident &&
+        rentBillComponents &&
+        rentBillComponents.length > 0 && (
+          <div
+            className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-              <Icon icon="healthicons:home-outline" className="size-8" />
-              Hostel Fees
-            </h2>
-            <span className="text-primary font-semibold">
-              {monthYear?.format("MMMM, YYYY")}
-            </span>
-          </div>
-
-          {rentBillComponents.map((component: BillComponent) => (
-            <div
-              className=" w-full flex justify-between text-gray-500"
-              key={component.id}
-            >
-              <span>{residentialBillTypeLabel[component.type]}</span>
-              <span>{component.amount > 0 ? component.amount : "--"}</span>
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                <Icon icon="healthicons:home-outline" className="size-8" />
+                Hostel Fees
+              </h2>
+              <span className="text-primary font-semibold">
+                {monthYear?.format("MMMM, YYYY")}
+              </span>
             </div>
-          ))}
-          <div className="w-full border-b border-b-gray-600 mt-4" />
 
-          <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
-            <span className="flex items-center gap-1">Final Fees</span>
-            <span className="text-accent font-black flex items-center">
-              <Icon icon="mdi:currency-inr" className=" size-5 " />
-              {rentBillComponents.reduce(
-                (acc, component) => acc + component.amount,
-                0
-              )}
-            </span>
+            {rentBillComponents.map((component: BillComponent) => (
+              <div
+                className=" w-full flex justify-between text-gray-500"
+                key={component.id}
+              >
+                <span>{residentialBillTypeLabel[component.type]}</span>
+                <span>{component.amount > 0 ? component.amount : "--"}</span>
+              </div>
+            ))}
+            <div className="w-full border-b border-b-gray-600 mt-4" />
+
+            <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
+              <span className="flex items-center gap-1">Final Fees</span>
+              <span className="text-accent font-black flex items-center">
+                <Icon icon="mdi:currency-inr" className=" size-5 " />
+                {rentBillComponents.reduce(
+                  (acc, component) => acc + component.amount,
+                  0
+                )}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

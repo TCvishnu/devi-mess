@@ -15,6 +15,8 @@ const fixedSkipIndex = [7, 0, 5];
 
 export default function AdminSettings() {
   const [config, setConfig] = useState<BillTypeConfiguration[]>([]);
+  const [disableGenerateButton, setDisableGenerateButton] =
+    useState<boolean>(false);
 
   const initialData = useRef<BillTypeConfiguration[]>([]);
 
@@ -78,6 +80,7 @@ export default function AdminSettings() {
   };
 
   const handleGen = () => {
+    setDisableGenerateButton(true);
     generateRent([]);
   };
 
@@ -210,6 +213,7 @@ export default function AdminSettings() {
         <button
           className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md "
           onClick={handleGen}
+          disabled={disableGenerateButton}
         >
           Generate Resident Bills
         </button>
