@@ -8,8 +8,11 @@ import cookieParser from "cookie-parser";
 import passport from "./auth/passport";
 import getPrisma from "./lib/getPrisma";
 
+import { agendaFunction } from "jobs/calculateFees";
+import agenda from "agenda/agenda";
+
 // middleware imports
-import { userAdminVerified } from "./middlewares/userAdminVerified.middleware";
+
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
 
@@ -18,6 +21,12 @@ import messCutsRouter from "@routes/messcuts.routes";
 import authRouter from "@routes/auth/routes/auth.routes";
 import userRouter from "@routes/user.routes";
 import verifiedUserRouter from "@routes/verifieduser.routes";
+import analysisRouter from "@routes/analysis.routes";
+import authenticateAdmin from "auth/authenticateAdmin";
+import settingsRouter from "@routes/settings.routes";
+import billRouter from "@routes/bill.routes";
+
+// import "./graphileWoker";
 
 const app = express();
 const PORT = 3000;
@@ -53,12 +62,32 @@ app.use("/", async (req, _, next) => {
 app.use("/api/auth", authRouter);
 app.use("/api", passport.authenticate("jwt", { session: false }));
 app.use("/api", useZenstackClient);
-app.use("/api/verified-user/", userAdminVerified);
 
 // routes
 app.use("/api/verified-user/:userID/messcuts", verifyUserID, messCutsRouter);
+app.use("/api/verified-user/:userID/bill", verifyUserID, billRouter);
 app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
+app.use("/api/analysis", authenticateAdmin, analysisRouter);
+
+app.use("/api/settings", authenticateAdmin, settingsRouter);
+
+// for test run use bellow agenda.now()
+// agendaFunction(agenda);
+
+// (async () => {
+//   await agenda.start();
+
+//   await agenda.now("calculate-monthly-fees", {});
+// })();
+
+// schedule below to calculate mess fees everymonth
+// (async () => {
+//   await agenda.start();
+
+//   // Run at midnight on the 1st of every month
+//   await agenda.every("0 0 1 * *", "calculate-monthly-fees");
+//  })();
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);

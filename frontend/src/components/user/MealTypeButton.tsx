@@ -1,8 +1,9 @@
 import { FC, ButtonHTMLAttributes } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
+import { toTitleCase } from "@utils/stringUtils";
 
-import { MealType } from "@constants/mealTypes";
+import { MealType } from "@type/enums";
 
 type CutTypeButtonProps = {
   mealType: MealType;
@@ -19,7 +20,6 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
 }) => {
   return (
     <button
-      disabled={mealType !== "FULL"}
       key={mealType}
       {...props}
       className={clsx(
@@ -35,7 +35,7 @@ const MealTypeButton: FC<CutTypeButtonProps> = ({
             : "text-gray-500 font-medium"
         } text-[0.6rem] `}
       >
-        {mealType}
+        {toTitleCase(mealType.split("_")[0])}
       </span>
       <Icon
         icon={icon}

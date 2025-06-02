@@ -1,125 +1,165 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { MealType, UserRole } from "@type/enums";
+import { MealType, RateMealType, UserRole } from "@type/enums";
 import { ResidentFeesType } from "@type/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useAuthContext } from "@contexts/AuthContext";
+import { getMonthlyMessBill } from "@services/billService";
+import { BillComponent } from "@type/bill";
+import { labelRateMealKeys } from "@constants/rateMealKeys";
+import { BillType } from "@type/enums";
+import { residentialBillTypeLabel } from "@constants/label";
 
-type MessCut = {
-  date: Dayjs;
-  cutType: MealType;
-};
+const residentialBillTypes = new Set([
+  BillType.WIFI,
+  BillType.ELECTRICITY,
+  BillType.RENT,
+]);
 
 const today = dayjs();
-const prevMonth = today.subtract(1, "month");
-const daysInPreviousMonth = prevMonth.daysInMonth();
-const totalFees = daysInPreviousMonth * 160;
-
-// from backend and gender wise
-const cutToCostMap = {
-  FULL: 160,
-  EVENING: 60,
-  MORNING: 50,
-  AFTERNOON: 40,
-};
 
 const UserFees: FC = () => {
   const { user } = useAuthContext();
 
-  const userRole: UserRole = user?.role || UserRole.Admin;
+  const [monthYear, setMonthYear] = useState<Dayjs>();
+  const [messBillComponents, setMessBillComponents] = useState<
+    BillComponent[] | null
+  >(null);
+  const [rentBillComponents, setRentBillComponents] = useState<
+    BillComponent[] | null
+  >(null);
 
-  //ignore type issues; to be removed
-  const AprMessCuts: MessCut[] = [
-    { date: dayjs("2025-03-10"), cutType: "FULL" },
-    { date: dayjs("2025-03-11"), cutType: "MORNING" },
-    { date: dayjs("2025-03-21"), cutType: "FULL" },
-    { date: dayjs("2025-03-24"), cutType: "EVENING" },
-  ];
+  const getBillingMonthAndYear = () => {
+    const now = new Date();
 
-  const residentialFees: ResidentFeesType = {
-    rent: 3100,
-    wifi: 0,
-    electricity: 0,
-    totalFees: 3100,
+    const isFirstOfMonthEarly = now.getDate() === 1 && now.getHours() < 1;
+
+    const date = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    if (isFirstOfMonthEarly) {
+      date.setMonth(date.getMonth() - 1);
+    }
+
+    return {
+      month: date.getMonth(),
+      year: date.getFullYear(),
+    };
   };
 
-  const finalFees = AprMessCuts.reduce(
-    (fees, cutDate) => fees - cutToCostMap[cutDate.cutType],
-    totalFees
-  );
-
-  const cutDetails = AprMessCuts.reduce(
-    (counter, cutDate) => {
-      return {
-        ...counter,
-        [cutDate.cutType]: counter[cutDate.cutType] + 1,
-      };
-    },
-    {
-      FULL: 0,
-      MORNING: 0,
-      EVENING: 0,
-      AFTERNOON: 0,
+  const fetchPrevMonthMessBill = async () => {
+    if (!user || !user.id) {
+      return;
     }
-  );
+    const { month, year } = getBillingMonthAndYear();
+    setMonthYear(dayjs(new Date(year, month, 1)));
+
+    const result = await getMonthlyMessBill(month, year, user.id);
+
+    if (!result.status) {
+      return;
+    }
+
+    const { bill } = result;
+    setMessBillComponents(
+      bill.billComponents.filter(
+        (component: BillComponent) => !residentialBillTypes.has(component.type)
+      )
+    );
+
+    setRentBillComponents(
+      bill.billComponents.filter((component: BillComponent) =>
+        residentialBillTypes.has(component.type)
+      )
+    );
+
+    console.log(
+      bill.billComponents
+        .filter((component: BillComponent) =>
+          residentialBillTypes.has(component.type)
+        )
+        .map((component: BillComponent) => ({
+          type: component.type,
+          amount: component.amount,
+        }))
+    );
+  };
+
+  useEffect(() => {
+    fetchPrevMonthMessBill();
+  }, []);
 
   return (
-    <div className="py-6 w-full max-w-md mx-auto flex flex-col gap-4">
-      <div
-        className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
+    <div className="py-6 w-full flex flex-col gap-4">
+      {monthYear &&
+        monthYear.month() !== today.subtract(1, "month").month() && (
+          <div className="text-center w-full font-semibold mt-4 flex flex-col">
+            <span>
+              {today.subtract(1, "month").format("MMMM, YYYY")}'s fees is being
+              calculated.
+            </span>
+            <span>Try again after 1am</span>
+          </div>
+        )}
+      {messBillComponents && (
+        <div
+          className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-            <Icon icon="icon-park-outline:calendar" className=" size-6 " />
-            Mess Fees
-          </h2>
-          <span className="text-primary font-semibold">
-            {prevMonth.format("MMMM, YYYY")}
-          </span>
-        </div>
-
-        <div className="flex justify-between text-sm text-gray-600 mb-2 border-b pb-2">
-          <span>Total Days</span>
-          <span>{daysInPreviousMonth} days</span>
-        </div>
-
-        <div className="flex justify-between text-base font-medium text-gray-700 my-2">
-          <span>Days Attended</span>
-          <span>{daysInPreviousMonth - AprMessCuts.length} days</span>
-        </div>
-
-        <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
-          <span className="flex items-center gap-1">Final Fees</span>
-          <span className="text-accent font-black flex items-center">
-            <Icon icon="mdi:currency-inr" className=" size-5 " />
-            {finalFees}
-          </span>
-        </div>
-
-        <div className="flex justify-between text-sm text-gray-600 mt-4 border-b"></div>
-        <div className="w-full mt-4 flex flex-col gap-1 font-medium text-gray-500">
-          <div className="w-full flex justify-between">
-            <span>Full day cuts:</span>
-            <span>{cutDetails.FULL}</span>
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+              <Icon icon="icon-park-outline:calendar" className=" size-6 " />
+              Mess Fees
+            </h2>
+            <span className="text-primary font-semibold">
+              {monthYear?.format("MMMM, YYYY")}
+            </span>
           </div>
-          <div className="w-full flex justify-between">
-            <span>Morning cuts:</span>
-            <span>{cutDetails.MORNING}</span>
+
+          <div className="flex justify-between text-sm text-gray-600 mb-2 border-b pb-2">
+            <span>Total Days</span>
+            <span>{monthYear?.daysInMonth()} days</span>
           </div>
-          <div className="w-full flex justify-between">
-            <span>Afternoon cuts:</span>
-            <span>{cutDetails.AFTERNOON}</span>
+
+          <div className="flex justify-between text-base font-medium text-gray-700 my-2">
+            <span>Days Attended</span>
+            <span>
+              {messBillComponents.reduce(
+                (acc, component) =>
+                  component.totalDays > acc ? component.totalDays : acc,
+                0
+              )}{" "}
+              days
+            </span>
           </div>
-          <div className="w-full flex justify-between">
-            <span>Evening cuts:</span>
-            <span>{cutDetails.EVENING}</span>
+
+          <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
+            <span className="flex items-center gap-1">Final Fees</span>
+            <span className="text-accent font-black flex items-center">
+              <Icon icon="mdi:currency-inr" className=" size-5 " />
+              {messBillComponents.reduce(
+                (acc, component) => acc + component.amount,
+                0
+              )}
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm text-gray-600 mt-4 border-b"></div>
+          <div className="w-full mt-4 flex flex-col gap-1 font-medium text-gray-500">
+            {messBillComponents.map((component: BillComponent) => (
+              <div className="w-full flex justify-between" key={component.id}>
+                <span>
+                  {labelRateMealKeys[component.type as unknown as RateMealType]}{" "}
+                  count
+                </span>
+                <span>{component.totalDays}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
-      {userRole === UserRole.Resident && (
+      {rentBillComponents && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"
@@ -130,28 +170,29 @@ const UserFees: FC = () => {
               Hostel Fees
             </h2>
             <span className="text-primary font-semibold">
-              {prevMonth.format("MMMM, YYYY")}
+              {monthYear?.format("MMMM, YYYY")}
             </span>
           </div>
 
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>Room Rent</span>
-            <span>{residentialFees.rent}</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 pb-2">
-            <span>Electricity Bill</span>
-            <span>{residentialFees.electricity || "--"}</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 pb-2 border-b">
-            <span>Wifi Charges</span>
-            <span>{residentialFees.wifi || "--"}</span>
-          </div>
+          {rentBillComponents.map((component: BillComponent) => (
+            <div
+              className=" w-full flex justify-between text-gray-500"
+              key={component.id}
+            >
+              <span>{residentialBillTypeLabel[component.type]}</span>
+              <span>{component.amount > 0 ? component.amount : "--"}</span>
+            </div>
+          ))}
+          <div className="w-full border-b border-b-gray-600 mt-4" />
 
           <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
             <span className="flex items-center gap-1">Final Fees</span>
             <span className="text-accent font-black flex items-center">
               <Icon icon="mdi:currency-inr" className=" size-5 " />
-              {residentialFees.totalFees}
+              {rentBillComponents.reduce(
+                (acc, component) => acc + component.amount,
+                0
+              )}
             </span>
           </div>
         </div>

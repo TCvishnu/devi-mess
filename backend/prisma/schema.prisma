@@ -4,64 +4,77 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 datasource db {
-    provider = "postgresql"
-    url = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 enum MealType {
-    MORNING
-    AFTERNOON
-    EVENING
-    FULL
+  MORNING_MEAL
+  AFTERNOON_MEAL
+  EVENING_MEAL
+  FULL_MEAL
 }
 
 enum Gender {
-    MALE
-    FEMALE
+  MALE
+  FEMALE
 }
 
 enum UserRole {
-    ADMIN
-    RESIDENT
-    MESS
+  ADMIN
+  RESIDENT
+  MESS
 }
 
 enum CutType {
-    MORNING
-    AFTERNOON
-    EVENING
-    FULL
+  MORNING_MEAL
+  AFTERNOON_MEAL
+  EVENING_MEAL
+  FULL_MEAL
 }
 
 enum Building {
-    DEVI_HOUSE
-    ROCKLAND_ARCADE
+  DEVI_HOUSE
+  ROCKLAND_ARCADE
 }
 
 enum Floor {
-    TOP
-    GROUND
+  TOP
+  GROUND
+}
+
+enum BillType {
+  RENT
+  ELECTRICITY
+  WIFI
+  MORNING_MEAL
+  AFTERNOON_MEAL
+  EVENING_MEAL
+  FULL_MEAL
 }
 
 model User {
-    id String @id() @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt()
-    name String
-    phoneNumber String @unique()
-    password String
-    gender Gender?
-    mealType MealType?
-    role UserRole?
-    isVeg Boolean?
-    messcuts Messcut[]
-    residentialData Resident?
-    hasOnboarded Boolean @default(false)
-    adminVerified Boolean @default(false)
+  id                        String                      @id() @default(cuid())
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt()
+  name                      String
+  phoneNumber               String                      @unique()
+  password                  String
+  gender                    Gender?
+  mealType                  MealType?
+  role                      UserRole?
+  isVeg                     Boolean?
+  messcuts                  Messcut[]
+  residentialData           Resident?
+  userBills                 UserBill[]
+  userBillTypeConfiguration UserBillTypeConfiguration[]
+  startDate                 DateTime?
+  hasOnboarded              Boolean                     @default(false)
+  adminVerified             Boolean                     @default(false)
 }
 
 model Messcut {
@@ -77,11 +90,55 @@ model Messcut {
 }
 
 model Resident {
-    id String @id() @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt()
-    user User @relation(fields: [userId], references: [id])
-    userId String @unique()
-    building Building
-    floor Floor
+  id        String   @id() @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique()
+  building  Building
+  floor     Floor
+}
+
+model UserBill {
+  id             String           @id() @default(cuid())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt()
+  user           User             @relation(fields: [userId], references: [id])
+  userId         String
+  draft          Boolean
+  month          Int
+  year           Int
+  billComponents BillComponents[]
+}
+
+model BillComponents {
+  id         String   @id() @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt()
+  userBill   UserBill @relation(fields: [userBillid], references: [id])
+  userBillid String
+  totalDays  Int
+  amount     Float
+  type       BillType
+}
+
+model UserBillTypeConfiguration {
+  id                      String                @id() @default(cuid())
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt()
+  user                    User                  @relation(fields: [userId], references: [id])
+  userId                  String
+  billTypeConfiguration   BillTypeConfiguration @relation(fields: [billTypeConfigurationId], references: [id])
+  billTypeConfigurationId String
+  overriddenAmount        Float
+}
+
+model BillTypeConfiguration {
+  id                        String                      @id() @default(cuid())
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt()
+  type                      BillType
+  classifier                String
+  amount                    Float
+  userBillTypeConfiguration UserBillTypeConfiguration[]
 }

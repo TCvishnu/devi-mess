@@ -12,12 +12,13 @@ export interface UserDetails {
   residentialData?: ResidentialDataType;
   hasOnboarded?: boolean;
   adminVerified?: boolean;
+  startDate?: string;
 }
 
 export interface ProfileCompleteFormData
   extends Pick<
     UserDetails,
-    "gender" | "mealType" | "role" | "isVeg" | "residentialData"
+    "gender" | "mealType" | "role" | "isVeg" | "residentialData" | "startDate"
   > {}
 
 export type ProfileDataType = {
@@ -47,7 +48,10 @@ export interface User {
   hasOnboarded: boolean;
   adminVerified: boolean;
   messcuts: Messcut[];
+  residentialData?: ResidentialDataType;
 }
+
+export type UserWithoutPassword = Omit<User, "password">;
 
 export interface Messcut {
   id: string;
