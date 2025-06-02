@@ -1,0 +1,16 @@
+import "../base/base";
+
+
+model Report extends Base {
+
+    excelPath String
+    type ReportType
+    month Int
+    year Int
+
+}
+
+enum ReportType {
+    RESIDENT
+    MESS
+}
