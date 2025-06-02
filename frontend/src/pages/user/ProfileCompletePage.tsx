@@ -1,10 +1,11 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm";
 import { ProfileCompleteFormData } from "@type/user";
 import { saveProfile } from "@services/userService";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { UserRole } from "@type/enums";
 
 const ProfileCompletePage = () => {
   const navigate = useNavigate();
@@ -42,6 +43,14 @@ const ProfileCompletePage = () => {
   const handleGoBack = () => {
     navigate("/");
   };
+
+  useEffect(() => {
+    if (user && user.hasOnboarded) {
+      navigate(`/user/${user.id}`);
+    } else if (user?.role === UserRole.Admin) {
+      navigate("/admin");
+    }
+  }, []);
 
   return (
     <div className=" px-6 py-4 min-h-dvh flex flex-col gap-10 justify-between">
