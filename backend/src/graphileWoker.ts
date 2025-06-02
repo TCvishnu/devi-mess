@@ -1,12 +1,6 @@
 import { run } from "graphile-worker";
 import prisma from "@lib/prisma";
-import {
-  BillType,
-  UserBillTypeConfiguration,
-  UserBill,
-  User,
-  CutType,
-} from "@prisma/client";
+import { BillType, UserBill, CutType } from "@prisma/client";
 
 const includedBillTypes = [BillType.WIFI, BillType.ELECTRICITY, BillType.RENT];
 

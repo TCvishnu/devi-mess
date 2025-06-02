@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { MealType, RateMealType, UserRole } from "@type/enums";
-import { ResidentFeesType } from "@type/user";
+import { RateMealType, UserRole } from "@type/enums";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useAuthContext } from "@contexts/AuthContext";
 import { getMonthlyMessBill } from "@services/billService";
@@ -16,8 +16,6 @@ const residentialBillTypes = new Set([
   BillType.ELECTRICITY,
   BillType.RENT,
 ]);
-
-const today = dayjs();
 
 const UserFees: FC = () => {
   const { user } = useAuthContext();
@@ -35,13 +33,7 @@ const UserFees: FC = () => {
   const getBillingMonthAndYear = () => {
     const now = new Date();
 
-    const isFirstOfMonthEarly = now.getDate() === 1 && now.getHours() < 1;
-
     const date = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-
-    if (isFirstOfMonthEarly) {
-      date.setMonth(date.getMonth() - 1);
-    }
 
     return {
       month: date.getMonth(),
@@ -102,7 +94,7 @@ const UserFees: FC = () => {
         <div className="size-20 bg-gray-100 rounded-full flex items-center justify-center">
           <Icon icon="mdi:invoice-text-remove-outline" className="size-10" />
         </div>
-        <h2 className="text-xl font-semibold text-gray-800">No Bills Yet</h2>
+        <h2 className="text-xl font-semibold text-primary">No Bills Yet</h2>
         <p className="text-sm text-gray-500">
           Your monthly bills will appear here when available.
         </p>
@@ -112,16 +104,6 @@ const UserFees: FC = () => {
 
   return (
     <div className="py-6 w-full flex flex-col gap-4">
-      {monthYear &&
-        monthYear.month() !== today.subtract(1, "month").month() && (
-          <div className="text-center w-full font-semibold mt-4 flex flex-col">
-            <span>
-              {today.subtract(1, "month").format("MMMM, YYYY")}'s fees is being
-              calculated.
-            </span>
-            <span>Try again after 1am</span>
-          </div>
-        )}
       {messBillComponents && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 

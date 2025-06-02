@@ -8,11 +8,7 @@ import cookieParser from "cookie-parser";
 import passport from "./auth/passport";
 import getPrisma from "./lib/getPrisma";
 
-import { agendaFunction } from "jobs/calculateFees";
-import agenda from "agenda/agenda";
-
 // middleware imports
-
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
 
@@ -69,25 +65,7 @@ app.use("/api/verified-user/:userID/bill", verifyUserID, billRouter);
 app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
 app.use("/api/analysis", authenticateAdmin, analysisRouter);
-
 app.use("/api/settings", authenticateAdmin, settingsRouter);
-
-// for test run use bellow agenda.now()
-// agendaFunction(agenda);
-
-// (async () => {
-//   await agenda.start();
-
-//   await agenda.now("calculate-monthly-fees", {});
-// })();
-
-// schedule below to calculate mess fees everymonth
-// (async () => {
-//   await agenda.start();
-
-//   // Run at midnight on the 1st of every month
-//   await agenda.every("0 0 1 * *", "calculate-monthly-fees");
-//  })();
 
 app.listen(PORT, () => {
   console.log(`Server running or port: ${PORT}`);
