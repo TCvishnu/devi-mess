@@ -20,7 +20,7 @@ const DatePicker: FC<DatePickerType> = ({ allowDateChanging }) => {
   return (
     <div className="w-full min-h-32 bg-white my-6 rounded-sm xs:min-h-36 flex flex-col gap-2 items-center px-4 justify-center">
       <span className="font-semibold text-primary text-lg">
-        {selectedDate.format("MMM")}
+        {selectedDate.format("MMMM, YYYY")}
       </span>
       <div className="w-full flex justify-between">
         {displayDates.map((date) => (

@@ -3,6 +3,7 @@ import { FC, HTMLAttributes } from "react";
 import { toTitleCase } from "@utils/stringUtils";
 import { Building, MealType } from "@type/enums";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { labelMealKeys } from "@constants/rateMealKeys";
 
 type StudentCardType = {
   user: UserWithoutPassword;
@@ -49,7 +50,7 @@ const StudentCard: FC<StudentCardType> = ({
       <div className="flex w-full px-4 text-gray-400 font-medium justify-between">
         <span>{user.phoneNumber}</span>
         <span>
-          {toTitleCase(user.mealType)}{" "}
+          {labelMealKeys[user.mealType]}{" "}
           {user.mealType === MealType.Full ? "Day Mess" : "Only"}
         </span>
       </div>

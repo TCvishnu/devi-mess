@@ -17,7 +17,6 @@ export default function AdminSettings() {
   const [config, setConfig] = useState<BillTypeConfiguration[]>([]);
 
   const initialData = useRef<BillTypeConfiguration[]>([]);
-  const today = dayjs();
 
   const fetchSettingsConfiguration = async () => {
     const result = await getConfiguration();

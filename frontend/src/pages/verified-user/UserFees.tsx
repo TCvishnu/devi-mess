@@ -30,13 +30,6 @@ const UserFees: FC = () => {
     BillComponent[] | null
   >(null);
 
-  const residentialFees: ResidentFeesType = {
-    rent: 3100,
-    wifi: 0,
-    electricity: 0,
-    totalFees: 3100,
-  };
-
   const getBillingMonthAndYear = () => {
     const now = new Date();
 
