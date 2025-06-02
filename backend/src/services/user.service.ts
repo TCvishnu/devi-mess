@@ -1,4 +1,4 @@
-import { Resident, User } from "@prisma/client"
+import { Resident, User, BillTypeConfiguration, BillType } from "@prisma/client"
 import prisma from "@lib/prisma"
 import getPrisma from "@lib/getPrisma"
 
@@ -33,9 +33,13 @@ const updateOnBoardDetails = async (
 			where: {
 				id,
 			},
-			data: { ...updatedData, hasOnboarded: true },
+			data: {
+				...updatedData,
+				hasOnboarded: true,
+				startDate: new Date(updatedData.startDate!),
+			},
 		})
-
+		console.log(updatedUser)
 		let savedResidentialData: Resident | null = null
 
 		if (residentialData) {
@@ -52,9 +56,46 @@ const updateOnBoardDetails = async (
 				},
 			})
 		}
-
 		const { password, ...safeUser } = updatedUser
+		const { gender, mealType } = safeUser
+		if (!gender || !mealType) {
+			return { ...safeUser, residentialData: savedResidentialData }
+		}
 
+		const buildingClassifier =
+			savedResidentialData &&
+			`${savedResidentialData.building} ${savedResidentialData.floor}`
+
+		const conditions: any[] = []
+
+		const genderCondition: any = { classifier: gender }
+		if (mealType !== "FULL_MEAL") {
+			genderCondition.type = mealType as BillType
+		}
+		conditions.push(genderCondition)
+
+		if (buildingClassifier) {
+			conditions.push({ classifier: buildingClassifier })
+			conditions.push({ classifier: "RESIDENT" })
+		}
+
+		const applicableConfigs = await tx.billTypeConfiguration.findMany({
+			where: {
+				OR: conditions,
+			},
+		})
+
+		const insertData = applicableConfigs.map(
+			(config: BillTypeConfiguration) => ({
+				userId: safeUser.id,
+				billTypeConfigurationId: config.id,
+				overriddenAmount: 0,
+			})
+		)
+
+		console.log("here2", insertData)
+
+		await tx.userBillTypeConfiguration.createMany({ data: insertData })
 		return { ...safeUser, residentialData: savedResidentialData }
 	})
 }

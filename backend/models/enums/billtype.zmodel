@@ -1,0 +1,10 @@
+// enums/billType.zmodel
+enum BillType {
+    RENT
+    ELECTRICITY
+    WIFI
+    MORNING_MEAL
+    AFTERNOON_MEAL
+    EVENING_MEAL
+    FULL_MEAL
+}

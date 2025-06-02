@@ -26,6 +26,13 @@ export const readMonthlyMessCuts = async (
   }
 };
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export const createMesscuts = async (
   userID: string,
   cutRange: [Dayjs | null, Dayjs | null],
@@ -34,13 +41,23 @@ export const createMesscuts = async (
   year: number
 ) => {
   try {
+    const istStart = cutRange[0]
+      ?.tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD HH:mm:ss");
+    const istEnd = cutRange[1]
+      ?.tz("Asia/Kolkata")
+      .startOf("day")
+      .format("YYYY-MM-DD HH:mm:ss");
+
     const sendData = {
-      startDate: cutRange[0]?.toISOString(),
-      endDate: cutRange[1]?.toISOString(),
+      startDate: istStart,
+      endDate: istEnd,
       cutType,
       month,
       year,
     };
+
     const response = await fetchApi(`/api/verified-user/${userID}/messcuts`, {
       method: "POST",
       body: JSON.stringify(sendData),
@@ -56,7 +73,7 @@ export const createMesscuts = async (
 
     return {
       status: false,
-      message: "An error occured. Please try again later",
+      message: "An error occurred. Please try again later",
     };
   }
 };

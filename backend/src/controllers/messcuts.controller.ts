@@ -6,7 +6,12 @@ const createMany = async (req: Request, res: Response) => {
   const { userID } = req.params;
 
   const startDateStr = new Date(startDate);
+  startDateStr.setHours(startDateStr.getHours() + 5);
+  startDateStr.setMinutes(startDateStr.getMinutes() + 30);
+
   const endDateStr = endDate ? new Date(endDate) : undefined;
+  endDateStr?.setHours(startDateStr.getHours() + 5);
+  endDateStr?.setMinutes(startDateStr.getMinutes() + 30);
 
   try {
     const result = await messcutsService.createMany(

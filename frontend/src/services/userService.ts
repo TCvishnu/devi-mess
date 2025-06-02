@@ -63,7 +63,7 @@ export const saveProfile = async (
 			method: "POST",
 			body: JSON.stringify(formData),
 		})
-
+		console.log(response)
 		return {
 			data: response.data.data,
 		}

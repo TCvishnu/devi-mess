@@ -1,6 +1,8 @@
 import { Building, Floor, Gender, MealType, UserRole } from "@prisma/client"
 import * as yup from "yup"
 
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+
 export const RegisterRequest = yup
 	.object()
 	.shape({
@@ -39,10 +41,10 @@ export const ProfileCompleteRequest = yup
 		mealType: yup
 			.string()
 			.oneOf([
-				MealType.FULL,
-				MealType.MORNING,
-				MealType.EVENING,
-				MealType.AFTERNOON,
+				MealType.FULL_MEAL,
+				MealType.MORNING_MEAL,
+				MealType.EVENING_MEAL,
+				MealType.AFTERNOON_MEAL,
 			])
 			.required("mealType is required"),
 		isVeg: yup.boolean().required("isVeg is required"),
@@ -61,6 +63,10 @@ export const ProfileCompleteRequest = yup
 					schema.required("residentialData is required"),
 				otherwise: (schema) => schema.strip(),
 			}),
+		startDate: yup
+			.string()
+			.required()
+			.matches(dateRegex, "startDate must be in 'YYYY-MM-DD' format"),
 	})
 	.stripUnknown()
 

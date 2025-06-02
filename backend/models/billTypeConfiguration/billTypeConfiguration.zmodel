@@ -1,0 +1,14 @@
+import '../base/base'
+import "../userBillTypeConfiguration/userBillTypeConfiguration"
+import "../enums/billtype"
+
+model BillTypeConfiguration extends Base {
+    type                      BillType
+    classifier                String
+    amount                    Float
+
+    userBillTypeConfiguration UserBillTypeConfiguration[]
+
+    @@allow('all', auth().role == 'ADMIN')
+    @@allow('read', auth() != null)
+}

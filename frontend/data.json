@@ -1,0 +1,108 @@
+[
+  {
+    "id": "clw2p1k9y0000tx0h3l9knz1x",
+    "type": "RENT",
+    "classifier": "MALE",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  {
+    "id": "clw2p1k9y0001tx0h3l9knz1y",
+    "type": "ELECTRICITY",
+    "classifier": "ROCKLAND_ARCADE TOP",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  {
+    "id": "clw2p1k9y0001tx0h3l9knz1y",
+    "type": "ELECTRICITY",
+    "classifier": "ROCKLAND_ARCADE GROUND",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  {
+    "id": "clw2p1k9y0001tx0h3l9knz1y",
+    "type": "ELECTRICITY",
+    "classifier": "DEVI_HOUSE TOP",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  {
+    "id": "clw2p1k9y0002tx0h3l9knz1z",
+    "type": "WIFI",
+    "classifier": "ROCKLAND_ARCADE TOP",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  {
+    "id": "clw2p1k9y0002tx0h3l9knz1z",
+    "type": "WIFI",
+    "classifier": "ROCKLAND_ARCADE GROUND",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  {
+    "id": "clw2p1k9y0002tx0h3l9knz1z",
+    "type": "WIFI",
+    "classifier": "DEVI_HOUSE TOP",
+    "amount": 0,
+    "createdAt": "2025-05-31T15:10:00.000Z",
+    "updatedAt": "2025-05-31T15:10:00.000Z"
+  },
+  [
+    {
+      "id": "clw2p1k9y0003tx0h3l9knz20",
+      "type": "MORNING_MEAL",
+      "classifier": "MALE",
+      "amount": 0,
+      "createdAt": "2025-05-31T15:10:00.000Z",
+      "updatedAt": "2025-05-31T15:10:00.000Z"
+    },
+    {
+      "id": "clw2p1k9y0004tx0h3l9knz21",
+      "type": "MORNING_MEAL",
+      "classifier": "FEMALE",
+      "amount": 0,
+      "createdAt": "2025-05-31T15:10:00.000Z",
+      "updatedAt": "2025-05-31T15:10:00.000Z"
+    },
+    {
+      "id": "clw2p1k9y0005tx0h3l9knz22",
+      "type": "AFTERNOON_MEAL",
+      "classifier": "MALE",
+      "amount": 0,
+      "createdAt": "2025-05-31T15:10:00.000Z",
+      "updatedAt": "2025-05-31T15:10:00.000Z"
+    },
+    {
+      "id": "clw2p1k9y0006tx0h3l9knz23",
+      "type": "AFTERNOON_MEAL",
+      "classifier": "FEMALE",
+      "amount": 0,
+      "createdAt": "2025-05-31T15:10:00.000Z",
+      "updatedAt": "2025-05-31T15:10:00.000Z"
+    },
+    {
+      "id": "clw2p1k9y0007tx0h3l9knz24",
+      "type": "EVENING_MEAL",
+      "classifier": "MALE",
+      "amount": 0,
+      "createdAt": "2025-05-31T15:10:00.000Z",
+      "updatedAt": "2025-05-31T15:10:00.000Z"
+    },
+    {
+      "id": "clw2p1k9y0008tx0h3l9knz25",
+      "type": "EVENING_MEAL",
+      "classifier": "FEMALE",
+      "amount": 0,
+      "createdAt": "2025-05-31T15:10:00.000Z",
+      "updatedAt": "2025-05-31T15:10:00.000Z"
+    }
+  ]
+]
