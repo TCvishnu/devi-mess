@@ -1,5 +1,11 @@
 import prisma from "@lib/prisma"
-import { BillType, Report, ReportType, UserRole } from "@prisma/client"
+import {
+	BillComponents,
+	BillType,
+	Report,
+	ReportType,
+	UserRole,
+} from "@prisma/client"
 import { saveExcelFile } from "@utils/file.util"
 import ExcelJS from "exceljs"
 import { MessReportRows, ResidentReportRows } from "../types/excel"
@@ -61,16 +67,15 @@ const generateReport = async (
 		}
 
 		if (user.role === UserRole.RESIDENT) {
-			const electricityBill = user.userBills[0]?.billComponents.filter(
-				(eachBill) => eachBill.type === BillType.ELECTRICITY
-			)[0]
-			const rentBill = user.userBills[0]?.billComponents.filter(
-				(eachBill) => eachBill.type === BillType.RENT
-			)[0]
+			const billMap = new Map<BillType, BillComponents>()
 
-			const wifiBill = user.userBills[0]?.billComponents.filter(
-				(eachBill) => eachBill.type === BillType.WIFI
-			)[0]
+			user.userBills[0]?.billComponents.forEach((eachBill) => {
+				billMap.set(eachBill.type, eachBill)
+			})
+
+			const electricityBill = billMap.get(BillType.ELECTRICITY)
+			const rentBill = billMap.get(BillType.RENT)
+			const wifiBill = billMap.get(BillType.WIFI)
 
 			if (electricityBill) {
 				rowDetails.electricity = electricityBill.amount
