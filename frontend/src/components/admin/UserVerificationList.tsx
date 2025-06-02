@@ -29,6 +29,13 @@ const FloorList = {
 	},
 }
 
+const MealToContent = {
+	[MealType.Full]: "Full Day Mess",
+	[MealType.Morning]: "Morning Only",
+	[MealType.Afternoon]: "Afternoon Only",
+	[MealType.Evening]: "Evening Only",
+}
+
 type DisplayResidentType = {
 	pagination: {
 		limit: number
@@ -239,10 +246,9 @@ const UserVerificationList: FC = () => {
 							<div className="flex w-full px-4 text-gray-400 font-medium justify-between">
 								<span>{user.phoneNumber}</span>
 								<span>
-									{user.mealType}{" "}
-									{user.mealType === MealType.Full
-										? "Day Mess"
-										: "Only"}
+									{user.mealType
+										? MealToContent[user.mealType]
+										: ""}
 								</span>
 							</div>
 							<div className="flex w-full px-4 text-gray-400 font-medium justify-between">
@@ -304,7 +310,7 @@ const UserVerificationList: FC = () => {
 			</div>
 
 			{selectedUser && (
-				<div className=" absolute px-4 inset-0 w-full h-full flex justify-center items-center bg-blur rounded-md ">
+				<div className=" absolute px-4 inset-0 w-full h-full flex justify-center items-center bg-blur rounded-md overflow-hidden">
 					<div className="  w-full max-w-xs p-4 bg-white rounded-md animate-slide-in">
 						<div className=" flex flex-col items-center gap-4">
 							<span className=" font-semibold text-center">
