@@ -33,8 +33,10 @@ const generateRent = async (
   db: ReturnType<typeof getPrisma>,
   updateData: { id: string; amount: number }[]
 ) => {
-  // const count = await settingsService.updateConfig(db, updateData);
-  // if (!count) return;
+  console.log("yes: ", updateData);
+
+  const count = await updateConfig(db, updateData);
+  if (!count) return;
 
   const now = new Date();
 

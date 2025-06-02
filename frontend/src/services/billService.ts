@@ -38,7 +38,7 @@ export const generateRent = async (
   try {
     const response = await fetchApi(`/api/settings/generate-rent`, {
       method: "POST",
-      body: JSON.stringify(updateData),
+      body: JSON.stringify({ updateData }),
     });
 
     console.log(response);

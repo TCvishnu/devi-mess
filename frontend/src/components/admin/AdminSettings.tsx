@@ -64,6 +64,30 @@ export default function AdminSettings() {
     return changedPrices;
   };
 
+  const validateVariablePricesChanged = () => {
+    let changedPrices: { id: string; amount: number }[] = [];
+
+    for (let i = 2; i <= 4; i++) {
+      if (Number(config[i].amount) !== initialData.current[i].amount) {
+        changedPrices.unshift({
+          id: config[i].id,
+          amount: Number(config[i].amount),
+        });
+      }
+    }
+
+    for (let i = 10; i <= 12; i++) {
+      if (Number(config[i].amount) !== initialData.current[i].amount) {
+        changedPrices.unshift({
+          id: config[i].id,
+          amount: Number(config[i].amount),
+        });
+      }
+    }
+
+    return changedPrices;
+  };
+
   const handleFixedConfigUpdation = async () => {
     const changedPrices = validateFixedChange();
     if (!changedPrices.length) {
@@ -79,9 +103,14 @@ export default function AdminSettings() {
     }
   };
 
-  const handleGen = () => {
+  const handleGen = async () => {
+    const changedPrices = validateVariablePricesChanged();
+    if (!changedPrices.length) {
+      console.log("nope");
+      return;
+    }
     setDisableGenerateButton(true);
-    generateRent([]);
+    await generateRent(changedPrices);
   };
 
   if (!config.length) {
@@ -211,7 +240,7 @@ export default function AdminSettings() {
         </section>
 
         <button
-          className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md "
+          className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md disabled:opacity-40"
           onClick={handleGen}
           disabled={disableGenerateButton}
         >
