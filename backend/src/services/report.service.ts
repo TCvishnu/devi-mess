@@ -25,6 +25,8 @@ const generateReport = async (
 	const users = await prisma.user.findMany({
 		where: {
 			role: reportType,
+			adminVerified: true,
+			hasOnboarded: true,
 		},
 		include: {
 			userBills: {
