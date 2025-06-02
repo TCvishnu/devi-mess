@@ -4,11 +4,11 @@ import { makeWorkerUtils } from "graphile-worker";
 import { UserRole } from "@prisma/client";
 
 const getSettingsConfiguration = async (db: ReturnType<typeof getPrisma>) => {
-  const rawConfig = db.billTypeConfiguration.findMany();
+  const rawConfig = await db.billTypeConfiguration.findMany();
 
-  return (await rawConfig).sort(
+  return rawConfig.sort(
     (a: BillTypeConfiguration, b: BillTypeConfiguration) =>
-      a.type.localeCompare(b.type)
+      a.type.localeCompare(b.type) || b.classifier.localeCompare(a.classifier)
   );
 };
 

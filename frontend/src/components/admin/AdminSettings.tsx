@@ -24,7 +24,10 @@ export default function AdminSettings() {
     setConfig(settingsData);
     initialData.current = JSON.parse(JSON.stringify(settingsData)); // deeeep copy
     console.log(
-      settingsData.map((setting: BillTypeConfiguration) => setting.type)
+      settingsData.map((setting: BillTypeConfiguration) => [
+        setting.type,
+        setting.classifier,
+      ])
     );
   };
 
@@ -55,7 +58,7 @@ export default function AdminSettings() {
         });
       }
     }
-
+    console.log(changedPrices);
     return changedPrices;
   };
 
@@ -66,7 +69,12 @@ export default function AdminSettings() {
       return;
     }
 
-    await updateFixedConfig(changedPrices);
+    const { status } = await updateFixedConfig(changedPrices);
+
+    if (status === 200) {
+      initialData.current = JSON.parse(JSON.stringify(config)); // deep copy
+      console.log(initialData.current);
+    }
   };
 
   const handleGen = () => {
