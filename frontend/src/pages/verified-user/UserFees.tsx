@@ -30,6 +30,8 @@ const UserFees: FC = () => {
     BillComponent[] | null
   >(null);
 
+  const [noBillsYet, setNoBillsYet] = useState<boolean>(false);
+
   const getBillingMonthAndYear = () => {
     const now = new Date();
 
@@ -60,7 +62,12 @@ const UserFees: FC = () => {
       return;
     }
 
-    const { bill } = result;
+    const { status, bill } = result;
+
+    if (status === 404) {
+      setNoBillsYet(true);
+      return;
+    }
     setMessBillComponents(
       bill.billComponents.filter(
         (component: BillComponent) => !residentialBillTypes.has(component.type)
@@ -88,6 +95,20 @@ const UserFees: FC = () => {
   useEffect(() => {
     fetchPrevMonthMessBill();
   }, []);
+
+  if (noBillsYet) {
+    return (
+      <div className="py-8 w-full flex flex-col items-center justify-center gap-3 h-full text-center">
+        <div className="size-20 bg-gray-100 rounded-full flex items-center justify-center">
+          <Icon icon="mdi:invoice-text-remove-outline" className="size-10" />
+        </div>
+        <h2 className="text-xl font-semibold text-gray-800">No Bills Yet</h2>
+        <p className="text-sm text-gray-500">
+          Your monthly bills will appear here when available.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="py-6 w-full flex flex-col gap-4">
@@ -159,7 +180,7 @@ const UserFees: FC = () => {
         </div>
       )}
 
-      {rentBillComponents && (
+      {user?.role === UserRole.Resident && rentBillComponents && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"

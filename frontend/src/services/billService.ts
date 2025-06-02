@@ -11,6 +11,13 @@ export const getMonthlyMessBill = async (
       `/api/verified-user/${userID}/bill?month=${month}&year=${year}`
     );
 
+    if (response.status === 404) {
+      return {
+        status: response.status,
+        bill: null,
+      };
+    }
+
     return {
       status: response.status,
       bill: response.data.result.userBill,
