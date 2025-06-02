@@ -33,7 +33,7 @@ export const agendaFunction = (agenda: Agenda): void => {
           );
 
           if (user.startDate && user.startDate > prevMonthEnd) {
-            continue; // joined after May, skip
+            continue;
           }
 
           const year =
