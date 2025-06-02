@@ -1,6 +1,7 @@
 import "models/base/base"
 import "models/user/user"
 import "models/messcut/messcut"
+import "models/jobHistory/jobHistory"
 
 generator client {
   provider = "prisma-client-js"

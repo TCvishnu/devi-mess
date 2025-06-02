@@ -1,0 +1,7 @@
+import '../base/base'
+
+model JobHistory extends Base {
+    task  String @unique
+    year  Int
+    month Int
+}

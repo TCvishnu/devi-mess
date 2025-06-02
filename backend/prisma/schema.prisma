@@ -142,3 +142,12 @@ model BillTypeConfiguration {
   amount                    Float
   userBillTypeConfiguration UserBillTypeConfiguration[]
 }
+
+model JobHistory {
+  id        String   @id() @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  task      String   @unique()
+  year      Int
+  month     Int
+}

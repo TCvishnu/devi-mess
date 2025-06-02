@@ -60,7 +60,7 @@ export const jobRun = run({
       };
 
       console.log(`Generating mess bill for user ${userID}`);
-      await messBill(userID, prevMonthStart);
+      await messBill(userID);
     },
   },
 }).catch((err) => {
@@ -118,12 +118,21 @@ const calculateRent = async (userID: string, month: number, year: number) => {
   });
 };
 
-const messBill = async (userID: string, prevMonthStart: Date) => {
+const messBill = async (userID: string) => {
   await prisma.$transaction(async (tx) => {
+    const now = new Date();
+    const prevMonthStart = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      1,
+      0,
+      0,
+      0
+    );
+
     const user = await tx.user.findUnique({ where: { id: userID } });
     if (!user) return;
 
-    const now = new Date();
     const year =
       now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
     const month = now.getMonth() === 0 ? 11 : now.getMonth() - 1;

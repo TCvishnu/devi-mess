@@ -8,6 +8,9 @@ import cookieParser from "cookie-parser";
 import passport from "./auth/passport";
 import getPrisma from "./lib/getPrisma";
 
+import nodeCron from "node-cron";
+import "./graphileWoker";
+
 // middleware imports
 import { useZenstackClient } from "./middlewares/useZenstackClient.middleware";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
@@ -22,7 +25,7 @@ import authenticateAdmin from "auth/authenticateAdmin";
 import settingsRouter from "@routes/settings.routes";
 import billRouter from "@routes/bill.routes";
 
-// import "./graphileWoker";
+import tryRunningTriggerMessBillJob from "job/triggerMessBill";
 
 const app = express();
 const PORT = 3000;
@@ -67,6 +70,16 @@ app.use("/api/verified-users", verifiedUserRouter);
 app.use("/api/analysis", authenticateAdmin, analysisRouter);
 app.use("/api/settings", authenticateAdmin, settingsRouter);
 
-app.listen(PORT, () => {
+nodeCron.schedule("0 0 1 * *", async () => {
+  await tryRunningTriggerMessBillJob();
+});
+
+app.listen(PORT, async () => {
   console.log(`Server running or port: ${PORT}`);
+  // if server crashed then this will run
+  try {
+    await tryRunningTriggerMessBillJob();
+  } catch (err) {
+    console.error("Failed to run monthly job:", err);
+  }
 });
