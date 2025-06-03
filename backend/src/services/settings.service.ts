@@ -35,8 +35,7 @@ const generateRent = async (
 ) => {
   console.log("yes: ", updateData);
 
-  const count = await updateConfig(db, updateData);
-  if (!count) return;
+  await updateConfig(db, updateData);
 
   const now = new Date();
 

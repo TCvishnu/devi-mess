@@ -12,6 +12,7 @@ import { BillTypeConfiguration } from "@type/configuration";
 import { generateRent } from "@services/billService";
 
 const fixedSkipIndex = [7, 0, 5];
+const today = dayjs();
 
 export default function AdminSettings() {
   const [config, setConfig] = useState<BillTypeConfiguration[]>([]);
@@ -105,10 +106,6 @@ export default function AdminSettings() {
 
   const handleGen = async () => {
     const changedPrices = validateVariablePricesChanged();
-    if (!changedPrices.length) {
-      console.log("nope");
-      return;
-    }
     setDisableGenerateButton(true);
     await generateRent(changedPrices);
   };
@@ -188,9 +185,6 @@ export default function AdminSettings() {
                   <label className="block mb-1 text-sm font-medium text-gray-700">
                     {floorLabel[floor]}
                   </label>
-                  <span className="text-xs">
-                    - {dayjs(config[2 + index].updatedAt).format("MMM")}
-                  </span>
                 </div>
 
                 <input
@@ -223,9 +217,6 @@ export default function AdminSettings() {
                   <label className="block mb-1 text-sm font-medium text-gray-700">
                     {floorLabel[floor]}
                   </label>
-                  <span className="text-xs">
-                    - {dayjs(config[10 + index].updatedAt).format("MMM")}
-                  </span>
                 </div>
                 <input
                   value={config[10 + index].amount}
@@ -244,7 +235,7 @@ export default function AdminSettings() {
           onClick={handleGen}
           disabled={disableGenerateButton}
         >
-          Generate Resident Bills
+          Generate Resident Bills ({today.subtract(1, "month").format("MMM")})
         </button>
       </div>
     </div>

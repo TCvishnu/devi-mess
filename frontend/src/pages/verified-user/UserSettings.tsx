@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC, type ChangeEvent } from "react";
+import { useState, type FC, type ChangeEvent } from "react";
 import { Icon } from "@iconify/react";
 
 import { updateNameAndFoodPreference } from "@services/verifiedUserService";
@@ -10,9 +10,10 @@ import { mealTypes } from "@constants/mealTypes";
 
 import type { ProfileDataType } from "../../types/user";
 import { useAuthContext } from "@contexts/AuthContext";
-import { Gender, MealType } from "@type/enums";
+import { Building, Gender, MealType } from "@type/enums";
 
 import { labelMealKeys } from "@constants/rateMealKeys";
+import { toTitleCase } from "@utils/stringUtils";
 
 const UserSettings: FC = () => {
   const { user, updateUser } = useAuthContext();
@@ -201,7 +202,9 @@ const UserSettings: FC = () => {
                 Building
               </span>
               <span className="text-lg font-semibold text-primary text-center">
-                {user.residentialData.building}
+                {user.residentialData.building === Building.ROCKLAND_ARCADE
+                  ? "Rockland Arcade"
+                  : "Devi Veed"}
               </span>
             </div>
             <div className="flex flex-col items-center">
@@ -213,7 +216,7 @@ const UserSettings: FC = () => {
                 Floor
               </span>
               <span className="text-lg font-semibold text-primary">
-                {user.residentialData.floor} Floor
+                {toTitleCase(user.residentialData.floor)} Floor
               </span>
             </div>
           </div>
