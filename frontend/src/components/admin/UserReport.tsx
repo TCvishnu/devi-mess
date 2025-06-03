@@ -2,7 +2,12 @@ import { FC, useState } from "react"
 import dayjs from "dayjs"
 import { fetchReport } from "@services/reportService"
 import { ReportType } from "@type/enums"
-import ErrorBox from "@form/ErrorBox"
+import { MONTHS } from "@utils/time"
+
+const ReportTypeName = {
+	[ReportType.MESS]: "outsiders",
+	[ReportType.RESIDENT]: "residents",
+}
 
 const UserReport: FC = () => {
 	const [pending, setPending] = useState({
@@ -41,7 +46,7 @@ const UserReport: FC = () => {
 
 				link.href = url
 
-				link.download = "student-report"
+				link.download = `${MONTHS[month]}-${year}-${ReportTypeName[reportType]}-report`
 				link.click()
 				window.URL.revokeObjectURL(data)
 				document.body.removeChild(link)

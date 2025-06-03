@@ -76,6 +76,16 @@ export const EXCEL_COLUMNS: ExcelColumnType = {
 			},
 		},
 		{
+			header: "MESS",
+			key: "mess",
+			width: 10,
+			style: {
+				alignment: {
+					horizontal: "left",
+				},
+			},
+		},
+		{
 			header: "NO OF DAYS PRESENT",
 			key: "totalDays",
 			width: 20,

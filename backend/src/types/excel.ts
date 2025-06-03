@@ -22,6 +22,7 @@ export type ResidentReportRows = {
 	name: string
 	rent: number
 	totalDays: number
+	mess: number
 	wifi: number
 	electricity: number
 	totalAmount: number

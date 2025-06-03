@@ -10,6 +10,7 @@ const generateReport = async (req: Request, res: Response) => {
 		const { month, year, reportType } = req.body
 
 		const report = await reportServices.generateReport(
+			req.db,
 			month,
 			year,
 			reportType

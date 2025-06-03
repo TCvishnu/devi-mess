@@ -10,13 +10,15 @@ import { saveExcelFile } from "@utils/file.util"
 import ExcelJS from "exceljs"
 import { MessReportRows, ResidentReportRows } from "../types/excel"
 import { EXCEL_COLUMNS } from "../config/excelConfig"
+import getPrisma from "@lib/getPrisma"
 
 const generateReport = async (
+	db: ReturnType<typeof getPrisma>,
 	month: number,
 	year: number,
 	reportType: ReportType
 ): Promise<Report | null> => {
-	const alreadyExistingReport = await prisma.report.findFirst({
+	const alreadyExistingReport = await db.report.findFirst({
 		where: {
 			month,
 			year,
@@ -25,14 +27,25 @@ const generateReport = async (
 	})
 
 	if (alreadyExistingReport) {
+		console.log(alreadyExistingReport)
 		return alreadyExistingReport
 	}
 
-	const users = await prisma.user.findMany({
+	const reportEligibleLastDate = new Date()
+
+	reportEligibleLastDate.setFullYear(month == 11 ? year + 1 : year)
+	reportEligibleLastDate.setMonth(month == 11 ? 0 : month + 1)
+	reportEligibleLastDate.setDate(1)
+	reportEligibleLastDate.setHours(0, 0, 0, 0)
+
+	const users = await db.user.findMany({
 		where: {
 			role: reportType,
 			adminVerified: true,
 			hasOnboarded: true,
+			startDate: {
+				lt: reportEligibleLastDate,
+			},
 		},
 		include: {
 			userBills: {
@@ -61,6 +74,7 @@ const generateReport = async (
 			name: user.name,
 			totalDays: 0,
 			totalAmount: 0,
+			mess: 0,
 			rent: 0,
 			wifi: 0,
 			electricity: 0,
@@ -107,9 +121,14 @@ const generateReport = async (
 		)
 
 		if (messBill?.length > 0) {
-			rowDetails.totalDays = messBill[0].totalDays
 			messBill.forEach((eachBill) => {
+				rowDetails.totalDays =
+					rowDetails.totalDays < eachBill.totalDays
+						? eachBill.totalDays
+						: rowDetails.totalDays
+
 				rowDetails.totalAmount += eachBill.amount
+				rowDetails.mess += eachBill.amount
 			})
 		}
 
@@ -134,7 +153,7 @@ const generateReport = async (
 		return null
 	}
 
-	const savedReport = await prisma.report.create({
+	const savedReport = await db.report.create({
 		data: {
 			type: reportType,
 			excelPath: savedPath,
@@ -148,11 +167,12 @@ const generateReport = async (
 
 // use for billConfigChange
 const deleteReportByMonthAndYearAndType = async (
+	db: ReturnType<typeof getPrisma>,
 	month: number,
 	year: number,
 	type: ReportType
 ) => {
-	return await prisma.report.deleteMany({
+	return await db.report.deleteMany({
 		where: {
 			month,
 			year,
