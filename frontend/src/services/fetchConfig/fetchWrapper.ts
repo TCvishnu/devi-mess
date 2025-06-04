@@ -1,34 +1,50 @@
-import { getBackendBaseUrl } from "../../common/utils/base";
-import { handleError } from "../handlerService";
+import { getBackendBaseUrl } from "../../common/utils/base"
+import { handleError } from "../handlerService"
 
-const BACKEND_URL = getBackendBaseUrl();
+type ResponseType = "json" | "blob" | "text"
 
-const fetchApi = async (url: string, options?: RequestInit) => {
-  try {
-    const response = await fetch(BACKEND_URL + url, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      ...options, // overriding options
-    });
+const BACKEND_URL = getBackendBaseUrl()
 
-    if (!response) throw new Error("Network Failure");
+const fetchApi = async (
+	url: string,
+	options?: RequestInit,
+	responseType: ResponseType = "json"
+) => {
+	try {
+		const response = await fetch(BACKEND_URL + url, {
+			method: "GET",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			...options, // overriding options
+		})
 
-    if (response.status === 401) {
-      handleError("Token expired.Re-authentication is required", 401);
-      throw new Error("Token expired.Re-authentication is required");
-    }
-    const data = await response.json();
-    return {
-      ...response,
-      status: response.status,
-      data,
-    };
-  } catch (err) {
-    throw err;
-  }
-};
+		if (!response) throw new Error("Network Failure")
 
-export default fetchApi;
+		if (response.status === 401) {
+			handleError("Token expired.Re-authentication is required", 401)
+			throw new Error("Token expired.Re-authentication is required")
+		}
+
+		let data
+
+		if (responseType === "json") {
+			data = await response.json()
+		} else if (responseType === "blob") {
+			data = await response.blob()
+		} else if (responseType === "text") {
+			data = await response.text()
+		}
+
+		return {
+			...response,
+			status: response.status,
+			data,
+		}
+	} catch (err) {
+		throw err
+	}
+}
+
+export default fetchApi

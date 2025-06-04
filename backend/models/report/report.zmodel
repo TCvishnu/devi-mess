@@ -1,0 +1,17 @@
+import "../base/base";
+
+
+model Report extends Base {
+
+    excelPath String
+    type ReportType
+    month Int
+    year Int
+    
+    @@allow('all', auth().role == "ADMIN")
+}
+
+enum ReportType {
+    RESIDENT
+    MESS
+}
