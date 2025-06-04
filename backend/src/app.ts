@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 
 import passport from "./auth/passport";
 import getPrisma from "./lib/getPrisma";
+import path from "path";
 
 import nodeCron from "node-cron";
 import "./graphileWoker";
@@ -24,6 +25,7 @@ import analysisRouter from "@routes/analysis.routes";
 import authenticateAdmin from "auth/authenticateAdmin";
 import settingsRouter from "@routes/settings.routes";
 import billRouter from "@routes/bill.routes";
+import reportRouter from "@routes/report.routes";
 
 import tryRunningTriggerMessBillJob from "job/triggerMessBill";
 
@@ -52,6 +54,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
 
+app.use("/files", express.static(path.join(__dirname, "./files")));
+
 app.use("/", async (req, _, next) => {
   console.log(req.body, req.path);
   next();
@@ -69,6 +73,7 @@ app.use("/api/user", userRouter);
 app.use("/api/verified-users", verifiedUserRouter);
 app.use("/api/analysis", authenticateAdmin, analysisRouter);
 app.use("/api/settings", authenticateAdmin, settingsRouter);
+app.use("/api/reports", authenticateAdmin, reportRouter);
 
 nodeCron.schedule("0 0 1 * *", async () => {
   await tryRunningTriggerMessBillJob();
