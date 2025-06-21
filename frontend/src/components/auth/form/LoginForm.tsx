@@ -30,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 	})
 
 	const validateFormFields = (values: LoginFormData) => {
-		let errors: LoginFormDataError = {
+		const errors: LoginFormDataError = {
 			phoneNumber: "",
 			password: "",
 		}

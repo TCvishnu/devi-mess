@@ -8,7 +8,7 @@ export interface UserDetails {
 	mealType?: MealType
 	role?: UserRole
 	isVeg?: boolean
-	messcuts?: Array<Object>
+	messcuts?: Array<object>
 	residentialData?: ResidentialDataType
 	hasOnboarded?: boolean
 	adminVerified?: boolean

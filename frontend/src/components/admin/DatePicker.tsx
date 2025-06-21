@@ -9,7 +9,7 @@ type DatePickerType = {
 const DatePicker: FC<DatePickerType> = ({ allowDateChanging }) => {
   const { selectedDate, setSelectedDate } = useDate();
 
-  let displayDates = Array.from({ length: 5 }, (_, i) =>
+  const displayDates = Array.from({ length: 5 }, (_, i) =>
     selectedDate.add(i - 2, "day")
   );
 

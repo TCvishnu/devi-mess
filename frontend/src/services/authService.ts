@@ -1,13 +1,9 @@
-import {
-  LoginFormData,
-  RegisterFormData,
-  RegistrationDetails,
-} from "../types/auth";
 import { UserDetails } from "@type/user";
+import { LoginFormData, RegistrationDetails } from "../types/auth";
 
+import { getBackendBaseUrl } from "@utils/base";
 import fetchApi from "./fetchConfig/fetchWrapper";
 import { handleError } from "./handlerService";
-import { getBackendBaseUrl } from "@utils/base";
 
 type LoginResponse = {
   status: boolean;

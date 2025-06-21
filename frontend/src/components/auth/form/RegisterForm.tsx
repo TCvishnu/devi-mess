@@ -35,7 +35,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 	})
 
 	const validateFormFields = (values: RegisterFormData) => {
-		let errors: RegisterFormDataError = {
+		const errors: RegisterFormDataError = {
 			fullName: "",
 			phoneNumber: "",
 			password: "",

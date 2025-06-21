@@ -1,7 +1,6 @@
-import { ResidentialDataType, User, UserDetails } from "@type/user"
+import { ResidentialDataType, UserDetails } from "@type/user"
 import fetchApi from "./fetchConfig/fetchWrapper"
 import { handleError } from "./handlerService"
-import { data } from "react-router-dom"
 
 type UpdateProfileReturn = {
 	data?: Partial<UserDetails>

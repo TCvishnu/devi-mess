@@ -49,7 +49,7 @@ export default function AdminSettings() {
   };
 
   const validateFixedChange = () => {
-    let changedPrices: { id: string; amount: number }[] = [];
+    const changedPrices: { id: string; amount: number }[] = [];
     for (let i = 0; i < 10; i++) {
       if (i >= 2 && i <= 4) {
         continue;
@@ -66,7 +66,7 @@ export default function AdminSettings() {
   };
 
   const validateVariablePricesChanged = () => {
-    let changedPrices: { id: string; amount: number }[] = [];
+    const changedPrices: { id: string; amount: number }[] = [];
 
     for (let i = 2; i <= 4; i++) {
       if (Number(config[i].amount) !== initialData.current[i].amount) {
