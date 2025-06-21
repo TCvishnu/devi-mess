@@ -41,52 +41,42 @@ const UserFees: FC = () => {
     };
   };
 
-  const fetchPrevMonthMessBill = async () => {
-    if (!user || !user.id) {
-      return;
-    }
-    const { month, year } = getBillingMonthAndYear();
-    setMonthYear(dayjs(new Date(year, month, 1)));
+  useEffect(() => {
+    const fetchPrevMonthMessBill = async () => {
+      if (!user || !user.id) {
+        return;
+      }
+      const { month, year } = getBillingMonthAndYear();
+      setMonthYear(dayjs(new Date(year, month, 1)));
 
-    const result = await getMonthlyMessBill(month, year, user.id);
+      const result = await getMonthlyMessBill(month, year, user.id);
 
-    if (!result.status) {
-      return;
-    }
+      if (!result.status) {
+        return;
+      }
 
-    const { status, bill } = result;
-    console.log(bill);
-    if (status === 404) {
-      setNoBillsYet(true);
-      return;
-    }
-    setMessBillComponents(
-      bill.billComponents.filter(
-        (component: BillComponent) => !residentialBillTypes.has(component.type)
-      )
-    );
+      const { status, bill } = result;
+      if (status === 404) {
+        setNoBillsYet(true);
+        return;
+      }
 
-    setRentBillComponents(
-      bill.billComponents.filter((component: BillComponent) =>
-        residentialBillTypes.has(component.type)
-      )
-    );
+      setMessBillComponents(
+        bill.billComponents.filter(
+          (component: BillComponent) =>
+            !residentialBillTypes.has(component.type)
+        )
+      );
 
-    console.log(
-      bill.billComponents
-        .filter((component: BillComponent) =>
+      setRentBillComponents(
+        bill.billComponents.filter((component: BillComponent) =>
           residentialBillTypes.has(component.type)
         )
-        .map((component: BillComponent) => ({
-          type: component.type,
-          amount: component.amount,
-        }))
-    );
-  };
+      );
+    };
 
-  useEffect(() => {
     fetchPrevMonthMessBill();
-  }, []);
+  }, [user]);
 
   if (noBillsYet) {
     return (

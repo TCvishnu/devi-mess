@@ -18,10 +18,10 @@ const WaitingForAdminVerification: FC = () => {
       navigate(`/user/${user.id}`);
       return;
     }
+
     const interval = setInterval(async () => {
       const { data } = await fetchCurrentUser();
       if (!data) return;
-
       if (data.adminVerified) {
         updateUser({ adminVerified: true });
         navigate(`/user/${data.id}`);
@@ -29,7 +29,7 @@ const WaitingForAdminVerification: FC = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [navigate, user?.adminVerified]);
+  }, [navigate, user?.adminVerified, user?.role, user?.id, updateUser]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">

@@ -21,24 +21,6 @@ const AdminLayout: FC = () => {
     setAllowDateChanging(allow);
   };
 
-  const getCurrentUser = async () => {
-    try {
-      if (user) return;
-      const { data, error } = await fetchCurrentUser();
-
-      if (!error && data) {
-        updateUser(data);
-      } else {
-        navigate("/");
-      }
-    } catch (err) {
-      console.log(err);
-      navigate("/");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogout = async () => {
     setIsLoggingOut(true);
     const status = await logoutUser();
@@ -50,8 +32,26 @@ const AdminLayout: FC = () => {
   };
 
   useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        if (user) return;
+        const { data, error } = await fetchCurrentUser();
+
+        if (!error && data) {
+          updateUser(data);
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getCurrentUser();
-  }, []);
+  }, [navigate, updateUser, user]);
 
   if (loading) {
     return (
