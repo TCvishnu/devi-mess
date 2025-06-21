@@ -7,10 +7,7 @@ import CheckBox from "@form/Checkbox";
 import { Icon } from "@iconify/react";
 
 type ProfileCompleteFormProps = {
-  onSubmit: (
-    event: FormEvent<HTMLFormElement>,
-    formData: ProfileCompleteFormData
-  ) => void;
+  onSubmit: (formData: ProfileCompleteFormData) => void;
   disable?: boolean;
   pending?: boolean;
 };
@@ -82,7 +79,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(event, formData);
+    onSubmit(formData);
   };
 
   return (

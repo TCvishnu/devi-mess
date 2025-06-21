@@ -302,7 +302,7 @@ const Calendar: FC = () => {
     };
 
     fetchMonthlyMessCuts();
-  }, [currentMonthDisplayed]);
+  }, [currentMonthDisplayed, user]);
 
   return (
     <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col relative">

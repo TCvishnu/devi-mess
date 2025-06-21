@@ -9,29 +9,29 @@ const UserRoutesWrapper = () => {
   const { user, updateUser } = useAuthContext();
   const [pending, setPending] = useState(false);
 
-  const getCurrentUser = async () => {
-    try {
-      if (user) return;
-
-      setPending(true);
-
-      const { data, error } = await fetchCurrentUser();
-
-      if (!error && data) {
-        updateUser(data);
-      } else {
-        navigate("/");
-      }
-    } catch (err) {
-      console.log(err);
-      navigate("/");
-    } finally {
-      setPending(false);
-    }
-  };
-
   useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        if (user) return;
+        setPending(true);
+
+        const { data, error } = await fetchCurrentUser();
+
+        if (!error && data) {
+          updateUser(data);
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+        navigate("/");
+      } finally {
+        setPending(false);
+      }
+    };
     getCurrentUser();
+    // this functions sets the context which only ever needs to run when page loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (pending)
@@ -41,7 +41,6 @@ const UserRoutesWrapper = () => {
       </div>
     ); // replace with a component showing loading status
 
-  // this ensures that it's children have user details
   return <div className=" w-full h-auto">{user && <Outlet />}</div>;
 };
 
