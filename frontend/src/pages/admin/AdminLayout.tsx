@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import DatePicker from "@components/admin/DatePicker";
 import AdminDashboard from "./AdminDashboard";
-import { DateContextProvider } from "@contexts/DateContext";
+import { DateContextProvider } from "@contexts/DateContextProvider";
 import useAuthContext from "@contexts/useAuthContext";
 import { fetchCurrentUser } from "@services/userService";
 import { useNavigate } from "react-router-dom";
