@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from "react";
-import { useDate } from "@contexts/DateContext";
+import { useDate } from "@contexts/useDate";
 
 import { getDailyFoodCount } from "@services/analysisService";
 

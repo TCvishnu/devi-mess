@@ -1,4 +1,4 @@
-import { FC, ReactNode, createContext, useState, useContext } from "react";
+import { FC, ReactNode, createContext, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
 type DateContextType = {
@@ -10,7 +10,9 @@ type DateContextProviderType = {
   children: ReactNode;
 };
 
-const DateContext = createContext<DateContextType | undefined>(undefined);
+export const DateContext = createContext<DateContextType | undefined>(
+  undefined
+);
 
 export const DateContextProvider: FC<DateContextProviderType> = ({
   children,
@@ -21,12 +23,4 @@ export const DateContextProvider: FC<DateContextProviderType> = ({
       {children}
     </DateContext.Provider>
   );
-};
-
-export const useDate = () => {
-  const context = useContext(DateContext);
-  if (!context) {
-    throw new Error("useDate must be used within a DateProvider");
-  }
-  return context;
 };
