@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import type { FC } from "react";
 
@@ -54,7 +54,12 @@ const Calendar: FC = () => {
     cutType: string;
     position: { top: number; left: number };
   } | null>(null);
-  const { resetTimer } = useTimer(2, () => setPopupInfo(null));
+
+  const onEnd = useCallback(() => {
+    setPopupInfo(null);
+  }, []);
+
+  const { resetTimer } = useTimer(2, onEnd);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
