@@ -20,7 +20,7 @@ import { UserRole } from "@type/enums";
 const LIMIT = 10 as const;
 
 const DisplayStudents: FC = () => {
-  const [displayResidents, setDisplayResidents] = useState(true);
+  const [displayResidents, setDisplayResidents] = useState<boolean>(true);
   const [magnifiedUsers, setMagnifiedUsers] = useState<Set<string>>(new Set());
 
   const [residents, setResidents] = useState<UserWithoutPassword[]>([]);
@@ -104,9 +104,16 @@ const DisplayStudents: FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [residentsPage, displayResidents, hasMoreResidents, loading]);
+  }, [
+    residentsPage,
+    displayResidents,
+    hasMoreResidents,
+    loading,
+    residents.length,
+  ]);
 
   const fetchMessStudents = useCallback(async () => {
+    console.log("fetchMess");
     if (displayResidents || !hasMoreMessStudents || loading) return;
     setLoading(true);
     try {
@@ -124,7 +131,13 @@ const DisplayStudents: FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [messPage, displayResidents, hasMoreMessStudents, loading]);
+  }, [
+    messPage,
+    displayResidents,
+    hasMoreMessStudents,
+    loading,
+    messStudents.length,
+  ]);
 
   const lastStudentRef = useCallback(
     (node: HTMLDivElement) => {
@@ -134,9 +147,11 @@ const DisplayStudents: FC = () => {
       observer.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            displayResidents
-              ? setResidentsPage((prev) => prev + 1)
-              : setMessPage((prev) => prev + 1);
+            if (displayResidents) {
+              setResidentsPage((prev) => prev + 1);
+            } else {
+              setMessPage((prev) => prev + 1);
+            }
           }
         },
         { threshold: 1 }
@@ -151,29 +166,17 @@ const DisplayStudents: FC = () => {
     setSearchName(e.target.value);
   };
 
-  const fetchStudentsByName = async () => {
-    const result = await searchStudentsByName(
-      debouncedName,
-      displayResidents ? UserRole.Resident : UserRole.Mess
-    );
-    if (result.status === 200) {
-      setSearchResults(result.students);
-      return;
-    }
-    setSearchResults([]);
-  };
-
   useEffect(() => {
     if (displayResidents && residentsPage > 1) {
       fetchResidents();
     }
-  }, [residentsPage, displayResidents]);
+  }, [residentsPage, displayResidents, fetchResidents]);
 
   useEffect(() => {
     if (!displayResidents && messPage > 1) {
       fetchMessStudents();
     }
-  }, [messPage, displayResidents]);
+  }, [messPage, displayResidents, fetchMessStudents]);
 
   useEffect(() => {
     if (displayResidents && !hasFetchedInitial.current.residents) {
@@ -183,7 +186,7 @@ const DisplayStudents: FC = () => {
       fetchMessStudents();
       hasFetchedInitial.current.mess = true;
     }
-  }, [displayResidents]);
+  }, [displayResidents, fetchMessStudents, fetchResidents]);
 
   useEffect(() => {
     const timeoutID = setTimeout(() => {
@@ -195,10 +198,23 @@ const DisplayStudents: FC = () => {
 
   useEffect(() => {
     if (debouncedName.trim().length) {
+      const fetchStudentsByName = async () => {
+        const result = await searchStudentsByName(
+          debouncedName,
+          displayResidents ? UserRole.Resident : UserRole.Mess
+        );
+        if (result.status === 200) {
+          setSearchResults(result.students);
+          return;
+        }
+        setSearchResults([]);
+      };
+
       fetchStudentsByName();
     } else {
       setSearchResults([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedName]);
 
   const currentList = debouncedName.length
