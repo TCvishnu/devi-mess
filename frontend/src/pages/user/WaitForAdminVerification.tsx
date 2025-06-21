@@ -2,7 +2,7 @@ import { fetchCurrentUser } from "@services/userService";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { FC, useEffect } from "react";
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import { UserRole } from "@type/enums";
 
 const WaitingForAdminVerification: FC = () => {

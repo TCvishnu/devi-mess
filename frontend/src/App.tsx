@@ -7,7 +7,7 @@ import UserFees from "./pages/verified-user/UserFees";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProfileCompletePage from "./pages/user/ProfileCompletePage";
-import AuthProvider from "./contexts/AuthContext";
+import AuthProvider from "./contexts/AuthProvider";
 import AdminLayout from "./pages/admin/AdminLayout";
 
 import UserRoutesWrapper from "./pages/UserRoutesWrapper";

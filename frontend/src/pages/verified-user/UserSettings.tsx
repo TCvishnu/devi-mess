@@ -9,7 +9,7 @@ import Button from "../../common/components/button/Button";
 import { mealTypes } from "@constants/mealTypes";
 
 import type { ProfileDataType } from "../../types/user";
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import { Building, Gender, MealType } from "@type/enums";
 
 import { labelMealKeys } from "@constants/rateMealKeys";

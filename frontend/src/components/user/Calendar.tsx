@@ -21,7 +21,7 @@ import {
   deleteMessCuts,
 } from "@services/messcutService";
 
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import useTimer from "@hooks/useTimer";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

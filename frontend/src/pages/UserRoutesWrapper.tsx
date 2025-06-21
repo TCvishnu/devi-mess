@@ -1,4 +1,4 @@
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import { fetchCurrentUser } from "@services/userService";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";

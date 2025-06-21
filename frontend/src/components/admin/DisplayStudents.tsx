@@ -48,7 +48,11 @@ const DisplayStudents: FC = () => {
   const toggleMagnifiedUsers = (userID: string) => {
     setMagnifiedUsers((prev) => {
       const updated = new Set(prev);
-      updated.has(userID) ? updated.delete(userID) : updated.add(userID);
+      if (updated.has(userID)) {
+        updated.delete(userID);
+      } else {
+        updated.add(userID);
+      }
       return updated;
     });
   };

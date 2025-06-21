@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { RateMealType, UserRole } from "@type/enums";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import { getMonthlyMessBill } from "@services/billService";
 import { BillComponent } from "@type/bill";
 import { labelRateMealKeys } from "@constants/rateMealKeys";

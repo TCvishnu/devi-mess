@@ -4,7 +4,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm";
 import { ProfileCompleteFormData } from "@type/user";
 import { saveProfile } from "@services/userService";
-import { useAuthContext } from "../../contexts/AuthContext";
+import useAuthContext from "../../contexts/useAuthContext";
 import { UserRole } from "@type/enums";
 
 const ProfileCompletePage = () => {
