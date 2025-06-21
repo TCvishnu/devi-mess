@@ -13,6 +13,14 @@ const getMonthlyMessBill = async (req: Request, res: Response) => {
       userID
     );
 
+    console.log(result.userBill);
+    if (!result.userBill) {
+      res
+        .status(404)
+        .json({ message: `User has no bills in: ${year}/${month}` });
+      return;
+    }
+
     res.status(200).json({ result });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

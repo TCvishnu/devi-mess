@@ -12,9 +12,12 @@ import { BillTypeConfiguration } from "@type/configuration";
 import { generateRent } from "@services/billService";
 
 const fixedSkipIndex = [7, 0, 5];
+const today = dayjs();
 
 export default function AdminSettings() {
   const [config, setConfig] = useState<BillTypeConfiguration[]>([]);
+  const [disableGenerateButton, setDisableGenerateButton] =
+    useState<boolean>(false);
 
   const initialData = useRef<BillTypeConfiguration[]>([]);
 
@@ -24,7 +27,10 @@ export default function AdminSettings() {
     setConfig(settingsData);
     initialData.current = JSON.parse(JSON.stringify(settingsData)); // deeeep copy
     console.log(
-      settingsData.map((setting: BillTypeConfiguration) => setting.type)
+      settingsData.map((setting: BillTypeConfiguration) => [
+        setting.type,
+        setting.classifier,
+      ])
     );
   };
 
@@ -55,6 +61,30 @@ export default function AdminSettings() {
         });
       }
     }
+    console.log(changedPrices);
+    return changedPrices;
+  };
+
+  const validateVariablePricesChanged = () => {
+    let changedPrices: { id: string; amount: number }[] = [];
+
+    for (let i = 2; i <= 4; i++) {
+      if (Number(config[i].amount) !== initialData.current[i].amount) {
+        changedPrices.unshift({
+          id: config[i].id,
+          amount: Number(config[i].amount),
+        });
+      }
+    }
+
+    for (let i = 10; i <= 12; i++) {
+      if (Number(config[i].amount) !== initialData.current[i].amount) {
+        changedPrices.unshift({
+          id: config[i].id,
+          amount: Number(config[i].amount),
+        });
+      }
+    }
 
     return changedPrices;
   };
@@ -66,11 +96,18 @@ export default function AdminSettings() {
       return;
     }
 
-    await updateFixedConfig(changedPrices);
+    const { status } = await updateFixedConfig(changedPrices);
+
+    if (status === 200) {
+      initialData.current = JSON.parse(JSON.stringify(config)); // deep copy
+      console.log(initialData.current);
+    }
   };
 
-  const handleGen = () => {
-    generateRent([]);
+  const handleGen = async () => {
+    const changedPrices = validateVariablePricesChanged();
+    setDisableGenerateButton(true);
+    await generateRent(changedPrices);
   };
 
   if (!config.length) {
@@ -148,9 +185,6 @@ export default function AdminSettings() {
                   <label className="block mb-1 text-sm font-medium text-gray-700">
                     {floorLabel[floor]}
                   </label>
-                  <span className="text-xs">
-                    - {dayjs(config[2 + index].updatedAt).format("MMM")}
-                  </span>
                 </div>
 
                 <input
@@ -183,9 +217,6 @@ export default function AdminSettings() {
                   <label className="block mb-1 text-sm font-medium text-gray-700">
                     {floorLabel[floor]}
                   </label>
-                  <span className="text-xs">
-                    - {dayjs(config[10 + index].updatedAt).format("MMM")}
-                  </span>
                 </div>
                 <input
                   value={config[10 + index].amount}
@@ -200,10 +231,11 @@ export default function AdminSettings() {
         </section>
 
         <button
-          className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md "
+          className="w-full mb-4 py-3 bg-primary text-white rounded-md shadow-md disabled:opacity-40"
           onClick={handleGen}
+          disabled={disableGenerateButton}
         >
-          Generate Resident Bills
+          Generate Resident Bills ({today.subtract(1, "month").format("MMM")})
         </button>
       </div>
     </div>

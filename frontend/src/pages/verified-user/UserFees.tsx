@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { MealType, RateMealType, UserRole } from "@type/enums";
-import { ResidentFeesType } from "@type/user";
+import { RateMealType, UserRole } from "@type/enums";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useAuthContext } from "@contexts/AuthContext";
 import { getMonthlyMessBill } from "@services/billService";
@@ -17,8 +17,6 @@ const residentialBillTypes = new Set([
   BillType.RENT,
 ]);
 
-const today = dayjs();
-
 const UserFees: FC = () => {
   const { user } = useAuthContext();
 
@@ -30,16 +28,12 @@ const UserFees: FC = () => {
     BillComponent[] | null
   >(null);
 
+  const [noBillsYet, setNoBillsYet] = useState<boolean>(false);
+
   const getBillingMonthAndYear = () => {
     const now = new Date();
 
-    const isFirstOfMonthEarly = now.getDate() === 1 && now.getHours() < 1;
-
     const date = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-
-    if (isFirstOfMonthEarly) {
-      date.setMonth(date.getMonth() - 1);
-    }
 
     return {
       month: date.getMonth(),
@@ -60,7 +54,12 @@ const UserFees: FC = () => {
       return;
     }
 
-    const { bill } = result;
+    const { status, bill } = result;
+    console.log(bill);
+    if (status === 404) {
+      setNoBillsYet(true);
+      return;
+    }
     setMessBillComponents(
       bill.billComponents.filter(
         (component: BillComponent) => !residentialBillTypes.has(component.type)
@@ -89,18 +88,22 @@ const UserFees: FC = () => {
     fetchPrevMonthMessBill();
   }, []);
 
+  if (noBillsYet) {
+    return (
+      <div className="py-8 w-full flex flex-col items-center justify-center gap-3 h-full text-center">
+        <div className="size-20 bg-gray-100 rounded-full flex items-center justify-center">
+          <Icon icon="mdi:invoice-text-remove-outline" className="size-10" />
+        </div>
+        <h2 className="text-xl font-semibold text-primary">No Bills Yet</h2>
+        <p className="text-sm text-gray-500">
+          Your monthly bills will appear here when available.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="py-6 w-full flex flex-col gap-4">
-      {monthYear &&
-        monthYear.month() !== today.subtract(1, "month").month() && (
-          <div className="text-center w-full font-semibold mt-4 flex flex-col">
-            <span>
-              {today.subtract(1, "month").format("MMMM, YYYY")}'s fees is being
-              calculated.
-            </span>
-            <span>Try again after 1am</span>
-          </div>
-        )}
       {messBillComponents && (
         <div
           className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
@@ -159,44 +162,46 @@ const UserFees: FC = () => {
         </div>
       )}
 
-      {rentBillComponents && (
-        <div
-          className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
+      {user?.role === UserRole.Resident &&
+        rentBillComponents &&
+        rentBillComponents.length > 0 && (
+          <div
+            className="w-full border border-gray-300 rounded-lg p-6 shadow-sm 
         flex flex-col justify-start"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-              <Icon icon="healthicons:home-outline" className="size-8" />
-              Hostel Fees
-            </h2>
-            <span className="text-primary font-semibold">
-              {monthYear?.format("MMMM, YYYY")}
-            </span>
-          </div>
-
-          {rentBillComponents.map((component: BillComponent) => (
-            <div
-              className=" w-full flex justify-between text-gray-500"
-              key={component.id}
-            >
-              <span>{residentialBillTypeLabel[component.type]}</span>
-              <span>{component.amount > 0 ? component.amount : "--"}</span>
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                <Icon icon="healthicons:home-outline" className="size-8" />
+                Hostel Fees
+              </h2>
+              <span className="text-primary font-semibold">
+                {monthYear?.format("MMMM, YYYY")}
+              </span>
             </div>
-          ))}
-          <div className="w-full border-b border-b-gray-600 mt-4" />
 
-          <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
-            <span className="flex items-center gap-1">Final Fees</span>
-            <span className="text-accent font-black flex items-center">
-              <Icon icon="mdi:currency-inr" className=" size-5 " />
-              {rentBillComponents.reduce(
-                (acc, component) => acc + component.amount,
-                0
-              )}
-            </span>
+            {rentBillComponents.map((component: BillComponent) => (
+              <div
+                className=" w-full flex justify-between text-gray-500"
+                key={component.id}
+              >
+                <span>{residentialBillTypeLabel[component.type]}</span>
+                <span>{component.amount > 0 ? component.amount : "--"}</span>
+              </div>
+            ))}
+            <div className="w-full border-b border-b-gray-600 mt-4" />
+
+            <div className="flex justify-between items-center mt-4 text-lg font-semibold text-primary">
+              <span className="flex items-center gap-1">Final Fees</span>
+              <span className="text-accent font-black flex items-center">
+                <Icon icon="mdi:currency-inr" className=" size-5 " />
+                {rentBillComponents.reduce(
+                  (acc, component) => acc + component.amount,
+                  0
+                )}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

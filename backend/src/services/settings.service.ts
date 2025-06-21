@@ -4,11 +4,11 @@ import { makeWorkerUtils } from "graphile-worker";
 import { UserRole } from "@prisma/client";
 
 const getSettingsConfiguration = async (db: ReturnType<typeof getPrisma>) => {
-  const rawConfig = db.billTypeConfiguration.findMany();
+  const rawConfig = await db.billTypeConfiguration.findMany();
 
-  return (await rawConfig).sort(
+  return rawConfig.sort(
     (a: BillTypeConfiguration, b: BillTypeConfiguration) =>
-      a.type.localeCompare(b.type)
+      a.type.localeCompare(b.type) || b.classifier.localeCompare(a.classifier)
   );
 };
 
@@ -33,8 +33,9 @@ const generateRent = async (
   db: ReturnType<typeof getPrisma>,
   updateData: { id: string; amount: number }[]
 ) => {
-  // const count = await settingsService.updateConfig(db, updateData);
-  // if (!count) return;
+  console.log("yes: ", updateData);
+
+  await updateConfig(db, updateData);
 
   const now = new Date();
 

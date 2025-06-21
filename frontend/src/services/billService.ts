@@ -11,6 +11,13 @@ export const getMonthlyMessBill = async (
       `/api/verified-user/${userID}/bill?month=${month}&year=${year}`
     );
 
+    if (response.status === 404) {
+      return {
+        status: response.status,
+        bill: null,
+      };
+    }
+
     return {
       status: response.status,
       bill: response.data.result.userBill,
@@ -31,7 +38,7 @@ export const generateRent = async (
   try {
     const response = await fetchApi(`/api/settings/generate-rent`, {
       method: "POST",
-      body: JSON.stringify(updateData),
+      body: JSON.stringify({ updateData }),
     });
 
     console.log(response);

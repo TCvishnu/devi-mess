@@ -3,6 +3,7 @@ import { Outlet, useParams, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import { useAuthContext } from "@contexts/AuthContext";
 import { logoutUser } from "@services/authService";
+import { UserRole } from "@type/enums";
 
 const UserLayout: FC = () => {
   const { user, logout } = useAuthContext();
@@ -20,6 +21,10 @@ const UserLayout: FC = () => {
     if (user.id !== userID) {
       // user tries to access some other user content
       navigate(`/user/${user.id}`);
+      return;
+    }
+    if (user.role === UserRole.Admin) {
+      navigate("/admin");
       return;
     }
     if (!user.hasOnboarded) {
