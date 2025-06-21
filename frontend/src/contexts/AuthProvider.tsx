@@ -1,19 +1,6 @@
-import { createContext, useState, ReactNode } from "react";
+import { useState, ReactNode } from "react";
+import AuthContext from "./authContext";
 import { UserDetails } from "@type/user";
-
-export type AuthContextType = {
-  user: UserDetails | null;
-  login: (user: UserDetails) => void;
-  logout: () => void;
-  updateUser: (updatedData: Partial<UserDetails>) => void;
-};
-
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  login: () => {},
-  logout: () => {},
-  updateUser: () => {},
-});
 
 type AuthProviderProps = {
   children: ReactNode;

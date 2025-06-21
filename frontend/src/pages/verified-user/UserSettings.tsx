@@ -17,19 +17,21 @@ import { toTitleCase } from "@utils/stringUtils";
 
 const UserSettings: FC = () => {
   const { user, updateUser } = useAuthContext();
-  if (!user) {
-    return <></>; // type safety
-  }
-
-  const [profileData, setProfileData] = useState<ProfileDataType>({
-    fullName: user.name ?? "",
-    gender: user.gender ?? Gender.Male,
-    isVeg: user.isVeg ?? false,
-    phoneNumber: user.phoneNumber ?? "",
-    mealType: user.mealType ?? MealType.Full,
-  });
 
   const [errorInName, setErrorInName] = useState<boolean>(false);
+
+  // Safe fallback values, even if user is null
+  const [profileData, setProfileData] = useState<ProfileDataType>({
+    fullName: user?.name ?? "",
+    gender: user?.gender ?? Gender.Male,
+    isVeg: user?.isVeg ?? false,
+    phoneNumber: user?.phoneNumber ?? "",
+    mealType: user?.mealType ?? MealType.Full,
+  });
+
+  if (!user) {
+    return <></>;
+  }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
