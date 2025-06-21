@@ -3,12 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { FC, useEffect } from "react";
 import { useAuthContext } from "@contexts/AuthContext";
+import { UserRole } from "@type/enums";
 
 const WaitingForAdminVerification: FC = () => {
   const { user, updateUser } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.role === UserRole.Admin) {
+      navigate("/admin");
+      return;
+    }
+    if (user?.adminVerified) {
+      navigate(`/user/${user.id}`);
+      return;
+    }
     const interval = setInterval(async () => {
       const { data } = await fetchCurrentUser();
       if (!data) return;
@@ -20,7 +29,7 @@ const WaitingForAdminVerification: FC = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [navigate]);
+  }, [navigate, user?.adminVerified]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-4">
