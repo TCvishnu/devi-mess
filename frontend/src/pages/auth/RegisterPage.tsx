@@ -27,7 +27,7 @@ const RegisterPage = () => {
 	}
 
 	const handleSubmit = async (
-		event: FormEvent<HTMLFormElement>,
+		_event: FormEvent<HTMLFormElement>,
 		formData: RegisterFormData
 	) => {
 		try {
