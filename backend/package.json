@@ -1,8 +1,8 @@
 {
 	"scripts": {
 		"zen:generate": "npx zenstack generate",
-		"build": "tsc",
-		"start": "node start.js",
+		"build": "tsup",
+		"start": "node dist/app.js",
 		"dev": "nodemon"
 	},
 	"devDependencies": {
