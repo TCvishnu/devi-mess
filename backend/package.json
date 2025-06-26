@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"zen:generate": "npx zenstack generate",
-		"build": "tsup",
+		"build": "npx zenstack generate && tsup",
 		"start": "node dist/app.js",
 		"dev": "nodemon"
 	},
