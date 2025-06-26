@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Outlet, useParams, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import { logoutUser } from "@services/authService";
 import { UserRole } from "@type/enums";
 

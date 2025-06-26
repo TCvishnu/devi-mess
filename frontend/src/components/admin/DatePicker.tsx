@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useDate } from "@contexts/DateContext";
+import { useDate } from "@contexts/useDate";
 
 import { Dayjs } from "dayjs";
 

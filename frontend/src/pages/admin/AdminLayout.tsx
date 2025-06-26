@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import DatePicker from "@components/admin/DatePicker";
 import AdminDashboard from "./AdminDashboard";
-import { DateContextProvider } from "@contexts/DateContext";
-import { useAuthContext } from "@contexts/AuthContext";
+import { DateContextProvider } from "@contexts/DateContextProvider";
+import useAuthContext from "@contexts/useAuthContext";
 import { fetchCurrentUser } from "@services/userService";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "@services/authService";
@@ -21,24 +21,6 @@ const AdminLayout: FC = () => {
     setAllowDateChanging(allow);
   };
 
-  const getCurrentUser = async () => {
-    try {
-      if (user) return;
-      const { data, error } = await fetchCurrentUser();
-
-      if (!error && data) {
-        updateUser(data);
-      } else {
-        navigate("/");
-      }
-    } catch (err) {
-      console.log(err);
-      navigate("/");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogout = async () => {
     setIsLoggingOut(true);
     const status = await logoutUser();
@@ -50,8 +32,26 @@ const AdminLayout: FC = () => {
   };
 
   useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        if (user) return;
+        const { data, error } = await fetchCurrentUser();
+
+        if (!error && data) {
+          updateUser(data);
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getCurrentUser();
-  }, []);
+  }, [navigate, updateUser, user]);
 
   if (loading) {
     return (

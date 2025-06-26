@@ -1,41 +1,34 @@
-import { useId } from "react"
-import ErrorBox from "./ErrorBox"
+import { useId } from "react";
+import ErrorBox from "./ErrorBox";
 
 type CheckBoxProps = React.InputHTMLAttributes<HTMLInputElement> & {
-	label?: string
-	className?: string
-	errorMessage?: string
-	isError?: boolean
-}
+  label?: string;
+  errorMessage?: string;
+  isError?: boolean;
+};
 
 const CheckBox: React.FC<CheckBoxProps> = ({
-	label,
-	className,
-	errorMessage,
-	isError,
-	...props
+  label,
+  errorMessage,
+  isError,
+  ...props
 }) => {
-	const id: string = useId()
+  const id: string = useId();
 
-	return (
-		<div className=" w-full font-semibold ">
-			<div className=" w-full flex items-center gap-3">
-				{label && (
-					<label htmlFor={id} className=" opacity-60">
-						{label}
-					</label>
-				)}
-				<input
-					id={id}
-					className=" w-4 h-4"
-					type="checkbox"
-					{...props}
-				/>
-			</div>
+  return (
+    <div className=" w-full font-semibold ">
+      <div className=" w-full flex items-center gap-3">
+        {label && (
+          <label htmlFor={id} className=" opacity-60">
+            {label}
+          </label>
+        )}
+        <input id={id} className=" w-4 h-4" type="checkbox" {...props} />
+      </div>
 
-			{isError && <ErrorBox isError={isError} message={errorMessage} />}
-		</div>
-	)
-}
+      {isError && <ErrorBox isError={isError} message={errorMessage} />}
+    </div>
+  );
+};
 
-export default CheckBox
+export default CheckBox;

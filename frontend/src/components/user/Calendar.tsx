@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import type { FC } from "react";
 
@@ -21,7 +21,7 @@ import {
   deleteMessCuts,
 } from "@services/messcutService";
 
-import { useAuthContext } from "@contexts/AuthContext";
+import useAuthContext from "@contexts/useAuthContext";
 import useTimer from "@hooks/useTimer";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -54,7 +54,12 @@ const Calendar: FC = () => {
     cutType: string;
     position: { top: number; left: number };
   } | null>(null);
-  const { resetTimer } = useTimer(2, () => setPopupInfo(null));
+
+  const onEnd = useCallback(() => {
+    setPopupInfo(null);
+  }, []);
+
+  const { resetTimer } = useTimer(2, onEnd);
 
   const startOfMonth: Dayjs = currentMonthDisplayed.startOf("month");
   const endOfMonth: Dayjs = currentMonthDisplayed.endOf("month");
@@ -302,7 +307,7 @@ const Calendar: FC = () => {
     };
 
     fetchMonthlyMessCuts();
-  }, [currentMonthDisplayed]);
+  }, [currentMonthDisplayed, user]);
 
   return (
     <div className="w-full max-w-md bg-white rounded-lg p-4 h-full flex flex-col relative">

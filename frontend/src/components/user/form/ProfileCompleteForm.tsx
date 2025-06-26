@@ -2,15 +2,12 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import Button from "../../../common/components/button/Button";
 import { ProfileCompleteFormData } from "@type/user";
 import { Gender, MealType, UserRole } from "@type/enums";
-import SelectBox from "@form/Select";
+import { Select, Option } from "@form/Select";
 import CheckBox from "@form/Checkbox";
 import { Icon } from "@iconify/react";
 
 type ProfileCompleteFormProps = {
-  onSubmit: (
-    event: FormEvent<HTMLFormElement>,
-    formData: ProfileCompleteFormData
-  ) => void;
+  onSubmit: (formData: ProfileCompleteFormData) => void;
   disable?: boolean;
   pending?: boolean;
 };
@@ -82,93 +79,81 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // console.log(formData)
-    onSubmit(event, formData);
+    onSubmit(formData);
   };
 
   return (
-    <form className=" w-full flex flex-col gap-4" onSubmit={handleSubmit}>
-      <SelectBox.Select
+    <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
+      <Select
         name="gender"
         label="Gender"
         onChange={handleChange}
         value={formData.gender}
       >
-        <SelectBox.Option value={Gender.Male}>Male</SelectBox.Option>
-        <SelectBox.Option value={Gender.Female}>Female</SelectBox.Option>
-      </SelectBox.Select>
+        <Option value={Gender.Male}>Male</Option>
+        <Option value={Gender.Female}>Female</Option>
+      </Select>
 
-      <SelectBox.Select
+      <Select
         name="mealType"
         label="Meal Selection"
         onChange={handleChange}
         value={formData.mealType}
       >
-        <SelectBox.Option value={MealType.Full}>Full day</SelectBox.Option>
-        {formData.gender == Gender.Female && (
+        <Option value={MealType.Full}>Full day</Option>
+        {formData.gender === Gender.Female && (
           <>
-            <SelectBox.Option value={MealType.Morning}>
-              Morning
-            </SelectBox.Option>
-            <SelectBox.Option value={MealType.Afternoon}>
-              Afternoon
-            </SelectBox.Option>
-            <SelectBox.Option value={MealType.Evening}>
-              Evening
-            </SelectBox.Option>
+            <Option value={MealType.Morning}>Morning</Option>
+            <Option value={MealType.Afternoon}>Afternoon</Option>
+            <Option value={MealType.Evening}>Evening</Option>
           </>
         )}
-      </SelectBox.Select>
+      </Select>
 
-      <SelectBox.Select
+      <Select
         name="role"
         label="Type"
         onChange={handleChange}
         value={formData.role}
       >
-        <SelectBox.Option value={UserRole.Mess}>Mess</SelectBox.Option>
+        <Option value={UserRole.Mess}>Mess</Option>
         {formData.gender === Gender.Male && (
-          <SelectBox.Option value={UserRole.Resident}>
-            Resident
-          </SelectBox.Option>
+          <Option value={UserRole.Resident}>Resident</Option>
         )}
-      </SelectBox.Select>
+      </Select>
 
-      {formData.role == UserRole.Resident && (
+      {formData.role === UserRole.Resident && (
         <>
-          <SelectBox.Select
+          <Select
             name="building"
-            label="Recident place"
+            label="Resident Place"
             onChange={handleResidentChange}
             value={formData.residentialData?.building}
             required
           >
-            <SelectBox.Option value="">Select a type</SelectBox.Option>
-            <SelectBox.Option value="DEVI_HOUSE">Devi house</SelectBox.Option>
-            <SelectBox.Option value="ROCKLAND_ARCADE">
-              Rockland arcade
-            </SelectBox.Option>
-          </SelectBox.Select>
+            <Option value="">Select a type</Option>
+            <Option value="DEVI_HOUSE">Devi House</Option>
+            <Option value="ROCKLAND_ARCADE">Rockland Arcade</Option>
+          </Select>
 
-          <SelectBox.Select
+          <Select
             name="floor"
-            label="Recident place"
+            label="Resident Floor"
             onChange={handleResidentChange}
             value={formData.residentialData?.floor}
             required
           >
-            <SelectBox.Option value="">Select a floor</SelectBox.Option>
+            <Option value="">Select a floor</Option>
             {formData.residentialData?.building === "ROCKLAND_ARCADE" && (
-              <SelectBox.Option value="GROUND">Ground floor</SelectBox.Option>
+              <Option value="GROUND">Ground Floor</Option>
             )}
-            <SelectBox.Option value="TOP">Top floor</SelectBox.Option>
-          </SelectBox.Select>
+            <Option value="TOP">Top Floor</Option>
+          </Select>
         </>
       )}
 
       <div className="w-full flex flex-col gap-1">
-        <label className=" font-semibold opacity-60 flex items-center gap-1">
+        <label className="font-semibold opacity-60 flex items-center gap-1">
           Mess Start Date
           <span className="text-xs text-primary"> (from tomorrow only)</span>
         </label>
@@ -190,7 +175,7 @@ const ProfileCompleteForm: React.FC<ProfileCompleteFormProps> = ({
       />
 
       <Button
-        className=" mt-4 flex justify-center items-center"
+        className="mt-4 flex justify-center items-center"
         disabled={disable}
       >
         {pending ? (

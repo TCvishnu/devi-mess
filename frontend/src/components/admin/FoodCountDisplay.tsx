@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from "react";
-import { useDate } from "@contexts/DateContext";
+import { useDate } from "@contexts/useDate";
 
 import { getDailyFoodCount } from "@services/analysisService";
 
@@ -20,31 +20,31 @@ const FoodCountDisplay: FC = () => {
 
   const { selectedDate } = useDate();
 
-  const fetchCurrentDateCount = async () => {
-    const result = await getDailyFoodCount(selectedDate);
-    if (result.status === 200) {
-      const cutMap = result.cutCounts;
-      setFoodCounts({
-        MORNING: {
-          count: cutMap.MORNING_MEAL.veg + cutMap.MORNING_MEAL.nonVeg,
-          veg: cutMap.MORNING_MEAL.veg,
-          nonVeg: cutMap.MORNING_MEAL.nonVeg,
-        },
-        AFTERNOON: {
-          count: cutMap.AFTERNOON_MEAL.veg + cutMap.AFTERNOON_MEAL.nonVeg,
-          veg: cutMap.AFTERNOON_MEAL.veg,
-          nonVeg: cutMap.AFTERNOON_MEAL.nonVeg,
-        },
-        EVENING: {
-          count: cutMap.EVENING_MEAL.veg + cutMap.EVENING_MEAL.nonVeg,
-          veg: cutMap.EVENING_MEAL.veg,
-          nonVeg: cutMap.EVENING_MEAL.nonVeg,
-        },
-      });
-    }
-  };
-
   useEffect(() => {
+    const fetchCurrentDateCount = async () => {
+      const result = await getDailyFoodCount(selectedDate);
+      if (result.status === 200) {
+        const cutMap = result.cutCounts;
+        setFoodCounts({
+          MORNING: {
+            count: cutMap.MORNING_MEAL.veg + cutMap.MORNING_MEAL.nonVeg,
+            veg: cutMap.MORNING_MEAL.veg,
+            nonVeg: cutMap.MORNING_MEAL.nonVeg,
+          },
+          AFTERNOON: {
+            count: cutMap.AFTERNOON_MEAL.veg + cutMap.AFTERNOON_MEAL.nonVeg,
+            veg: cutMap.AFTERNOON_MEAL.veg,
+            nonVeg: cutMap.AFTERNOON_MEAL.nonVeg,
+          },
+          EVENING: {
+            count: cutMap.EVENING_MEAL.veg + cutMap.EVENING_MEAL.nonVeg,
+            veg: cutMap.EVENING_MEAL.veg,
+            nonVeg: cutMap.EVENING_MEAL.nonVeg,
+          },
+        });
+      }
+    };
+
     fetchCurrentDateCount();
   }, [selectedDate]);
 

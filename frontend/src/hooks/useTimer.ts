@@ -1,30 +1,31 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 const useTimer = (initialTime: number = 10, onEnd?: () => void) => {
-	const [timeLeft, setTimeLeft] = useState(initialTime)
+  // **always memoize the onEnd function when using this hook**
+  const [timeLeft, setTimeLeft] = useState(initialTime);
 
-	useEffect(() => {
-		if (timeLeft <= 0) {
-			if (onEnd) onEnd()
+  useEffect(() => {
+    console.log("onEnd");
+    if (timeLeft <= 0) {
+      if (onEnd) onEnd();
+      return;
+    }
 
-			return
-		}
+    const intervalId = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
 
-		const intervalId = setInterval(() => {
-			setTimeLeft((prev) => prev - 1)
-		}, 1000)
+    return () => clearInterval(intervalId);
+  }, [timeLeft, onEnd]);
 
-		return () => clearInterval(intervalId)
-	}, [timeLeft])
+  const resetTimer = () => {
+    setTimeLeft(initialTime);
+  };
 
-	const resetTimer = () => {
-		setTimeLeft(initialTime)
-	}
+  return {
+    timeLeft,
+    resetTimer,
+  };
+};
 
-	return {
-		timeLeft,
-		resetTimer,
-	}
-}
-
-export default useTimer
+export default useTimer;

@@ -1,10 +1,10 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify-icon/react/dist/iconify.mjs";
 import ProfileCompleteForm from "../../components/user/form/ProfileCompleteForm";
 import { ProfileCompleteFormData } from "@type/user";
 import { saveProfile } from "@services/userService";
-import { useAuthContext } from "../../contexts/AuthContext";
+import useAuthContext from "../../contexts/useAuthContext";
 import { UserRole } from "@type/enums";
 
 const ProfileCompletePage = () => {
@@ -13,14 +13,10 @@ const ProfileCompletePage = () => {
   const { user, updateUser } = useAuthContext();
 
   const [pending, setPending] = useState<boolean>(false);
-  const [disable, setDisable] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
 
-  const handleSubmit = async (
-    event: FormEvent,
-    formData: ProfileCompleteFormData
-  ) => {
+  const handleSubmit = async (formData: ProfileCompleteFormData) => {
     try {
       setPending(true);
       const { data, error } = await saveProfile({ ...formData });
@@ -45,12 +41,12 @@ const ProfileCompletePage = () => {
   };
 
   useEffect(() => {
-    if (user && user.hasOnboarded) {
+    if (user?.hasOnboarded) {
       navigate(`/user/${user.id}`);
     } else if (user?.role === UserRole.Admin) {
       navigate("/admin");
     }
-  }, []);
+  }, [navigate, user?.hasOnboarded, user?.role, user?.id]);
 
   return (
     <div className=" px-6 py-4 min-h-dvh flex flex-col gap-10 justify-between">
@@ -78,7 +74,7 @@ const ProfileCompletePage = () => {
           )}
           <ProfileCompleteForm
             onSubmit={handleSubmit}
-            disable={pending || disable}
+            disable={pending}
             pending={pending}
           />
         </div>
