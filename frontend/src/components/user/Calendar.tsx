@@ -116,12 +116,12 @@ const Calendar: FC = () => {
       setNewCutRange([day, null]);
     } else if (start !== null && end === null) {
       // start range selected, end not selected
-      if (day === start) {
+      if (day.isSame(start, "day")) {
         // user wants single day cut
         setNewCutRange([day, day]);
       } else {
         const sortedRange = [start, day].sort(
-          (a, b) => a.date() - b.date() && a.month() - b.month()
+          (a, b) => a.valueOf() - b.valueOf()
         );
         setNewCutRange([sortedRange[0], sortedRange[1]]);
       }
@@ -153,7 +153,9 @@ const Calendar: FC = () => {
     isInNewCutRange: boolean,
     matchingCut: DisplayingCutType | undefined
   ) => {
-    const thisDayIsCutDay = messCuts.some((cut) => cut.date.isSame(day, "day"));
+    const thisDayIsCutDay =
+      dayIsWithinMonthDates &&
+      messCuts.some((cut) => cut.date.isSame(day, "day"));
     const selectedToRemove = matchingCut && cutsToRemove?.has(matchingCut?.id);
 
     return clsx(
@@ -214,7 +216,11 @@ const Calendar: FC = () => {
         <CalendarDateButton
           key={i}
           onClick={(e) => handleButtonClick(date, matchingCut, e)}
-          disabled={disableDuringNewCuts || disableDuringCutRemoval}
+          disabled={
+            !dayIsWithinMonthDates ||
+            disableDuringNewCuts ||
+            disableDuringCutRemoval
+          }
           className={getDayClassNames(
             date,
             dayIsWithinMonthDates,
