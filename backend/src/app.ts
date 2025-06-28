@@ -78,6 +78,10 @@ app.use("/api/analysis", authenticateAdmin, analysisRouter)
 app.use("/api/settings", authenticateAdmin, settingsRouter)
 app.use("/api/reports", authenticateAdmin, reportRouter)
 
+app.get("/health", (req, res) => {
+	res.status(200).send("OK")
+})
+
 nodeCron.schedule("0 0 1 * *", async () => {
 	await tryRunningTriggerMessBillJob()
 })
