@@ -2,7 +2,7 @@ import '../base/base'
 import "../user/user"
 
 model Resident extends Base {
-    user     User     @relation(fields: [userId], references: [id])
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId   String   @unique()
 
     building Building
