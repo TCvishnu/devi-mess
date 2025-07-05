@@ -16,26 +16,23 @@ const selectFields = {
 	adminVerified: true,
 }
 
-const create = async (user: User) => {
-	return await prisma.user.create({
+const create = async (db: ReturnType<typeof getPrisma>, user: User) => {
+	return await db.user.create({
 		data: user,
 	})
 }
 
-const updateOnBoardDetails = async (
+const onboardStudent = async (
 	db: ReturnType<typeof getPrisma>,
-	id: string,
 	updatedData: User,
 	residentialData: Resident
 ) => {
 	return await db.$transaction(async (tx) => {
-		const updatedUser = await tx.user.update({
-			where: {
-				id,
-			},
+		const updatedUser = await tx.user.create({
 			data: {
 				...updatedData,
 				hasOnboarded: true,
+				adminVerified: true,
 				startDate: new Date(updatedData.startDate!),
 			},
 		})
@@ -204,5 +201,5 @@ export default {
 	findByPhoneNumber,
 	findByIdAndUpdate,
 	findNotVerifiedUsers,
-	updateOnBoardDetails,
+	onboardStudent,
 }

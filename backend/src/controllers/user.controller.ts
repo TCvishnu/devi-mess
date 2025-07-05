@@ -2,8 +2,9 @@ import { Request, Response } from "express"
 import { handleError } from "./utils/errorHandler.util"
 import getPrisma from "@lib/getPrisma"
 import userServices from "@services/user.service"
-import { Resident, User } from "@prisma/client"
+import { User } from "@prisma/client"
 import residentService from "@services/resident.service"
+import { hashPassword } from "@utils/bcrypt.util"
 
 const getCurrentUser = async (req: Request, res: Response) => {
 	try {
@@ -112,16 +113,15 @@ const markAsVerified = async (req: Request, res: Response) => {
 	}
 }
 
-const updateOnboardDetails = async (req: Request, res: Response) => {
+const create = async (req: Request, res: Response) => {
 	try {
-		const db = getPrisma(req) // replace with request method
-
 		const { residentialData, ...profileDetails } = req.body
 
-		const updatedUser = await userServices.updateOnBoardDetails(
-			db,
-			(req.user as User).id,
-			profileDetails,
+		const hashedPassword = await hashPassword(profileDetails.password)
+
+		const updatedUser = await userServices.onboardStudent(
+			req.db,
+			{ ...profileDetails, password: hashedPassword },
 			residentialData
 		)
 
@@ -141,7 +141,7 @@ const updateOnboardDetails = async (req: Request, res: Response) => {
 export default {
 	getCurrentUser,
 	getResidentDetails,
-	updateOnboardDetails,
+	create,
 	getNotVerifiedList,
 	markAsVerified,
 }

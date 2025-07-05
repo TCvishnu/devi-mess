@@ -3,18 +3,6 @@ import * as yup from "yup"
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/
 
-export const RegisterRequest = yup
-	.object()
-	.shape({
-		name: yup.string().trim().required("name is required"),
-		phoneNumber: yup
-			.string()
-			.required("phoneNumber is required")
-			.length(10),
-		password: yup.string().required("password is required"),
-	})
-	.stripUnknown()
-
 export const LoginRequest = yup
 	.object()
 	.shape({
@@ -26,9 +14,15 @@ export const LoginRequest = yup
 	})
 	.stripUnknown()
 
-export const ProfileCompleteRequest = yup
+export const RegisterRequest = yup
 	.object()
 	.shape({
+		name: yup.string().trim().required("name is required"),
+		phoneNumber: yup
+			.string()
+			.required("phoneNumber is required")
+			.length(10),
+		password: yup.string().required("password is required"),
 		gender: yup
 			.string()
 			.oneOf([Gender.FEMALE, Gender.MALE])
