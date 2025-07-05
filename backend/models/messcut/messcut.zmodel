@@ -4,7 +4,7 @@ import "../user/user"
 model Messcut extends Base {
   date    DateTime
   cutType CutType
-  user    User     @relation(fields: [userId], references: [id])
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
 
   @@unique([date, cutType, userId])
