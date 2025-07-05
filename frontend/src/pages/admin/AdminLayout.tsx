@@ -8,6 +8,7 @@ import useAuthContext from "@contexts/useAuthContext";
 import { fetchCurrentUser } from "@services/userService";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "@services/authService";
+import { UserRole } from "@type/enums";
 
 const AdminLayout: FC = () => {
   const { user, login: updateUser, logout } = useAuthContext();
@@ -39,6 +40,9 @@ const AdminLayout: FC = () => {
 
         if (!error && data) {
           updateUser(data);
+          if (data.role !== UserRole.Admin) {
+            navigate(`/user/${data.id}`);
+          }
         } else {
           navigate("/");
         }

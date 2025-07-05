@@ -40,7 +40,7 @@ function App() {
           </Route>
 
           <Route path="/admin" element={<AdminLayout />} />
-          <Route path="/admin/:userID" element={<EditUser />} />
+          <Route path="/admin/edit-user/:userID" element={<EditUser />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>

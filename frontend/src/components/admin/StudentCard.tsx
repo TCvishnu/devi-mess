@@ -43,7 +43,7 @@ const StudentCard: FC<StudentCardType> = ({
         </div>
 
         <div className="flex gap-2 items-center">
-          <Link type="button" to={`${user.id}`}>
+          <Link type="button" to={`edit-user/${user.id}`}>
             <Icon icon="ic:outline-edit" className="size-6 text-gray-500" />
           </Link>
           <button type="button" onClick={() => onDelete(user)}>
