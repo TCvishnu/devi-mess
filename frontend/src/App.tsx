@@ -9,6 +9,7 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import ProfileCompletePage from "./pages/user/ProfileCompletePage";
 import AuthProvider from "./contexts/AuthProvider";
 import AdminLayout from "./pages/admin/AdminLayout";
+import EditUser from "./pages/admin/EditUser";
 
 import UserRoutesWrapper from "./pages/UserRoutesWrapper";
 import WaitingForAdminVerification from "./pages/user/WaitForAdminVerification";
@@ -39,6 +40,7 @@ function App() {
           </Route>
 
           <Route path="/admin" element={<AdminLayout />} />
+          <Route path="/admin/:userID" element={<EditUser />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>

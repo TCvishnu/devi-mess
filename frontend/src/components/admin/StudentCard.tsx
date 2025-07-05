@@ -4,6 +4,7 @@ import { toTitleCase } from "@utils/stringUtils";
 import { Building, MealType } from "@type/enums";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { labelMealKeys } from "@constants/rateMealKeys";
+import { Link } from "react-router-dom";
 
 type StudentCardType = {
   user: UserWithoutPassword;
@@ -42,6 +43,9 @@ const StudentCard: FC<StudentCardType> = ({
         </div>
 
         <div className="flex gap-2 items-center">
+          <Link type="button" to={`${user.id}`}>
+            <Icon icon="ic:outline-edit" className="size-6 text-gray-500" />
+          </Link>
           <button type="button" onClick={() => onDelete(user)}>
             <Icon
               icon="material-symbols:delete-sharp"
