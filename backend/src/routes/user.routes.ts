@@ -11,6 +11,7 @@ import {
   ProfileCompleteRequest,
 } from "@validations/user.yup";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
+import authenticateAdmin from "auth/authenticateAdmin";
 
 const router = Router();
 
@@ -43,6 +44,7 @@ router.post(
   userController.updateOnboardDetails
 );
 
+router.get("/:userID", authenticateAdmin, userController.getUserById);
 router.delete("/:userID", verifyUserID, userController.deleteUser);
 
 export default router;

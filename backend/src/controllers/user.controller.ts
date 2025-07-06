@@ -145,6 +145,17 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+const getUserById = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const result = await userServices.getFullUserDetails(req.db, userID);
+
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export default {
   getCurrentUser,
   getResidentDetails,
@@ -152,4 +163,5 @@ export default {
   getNotVerifiedList,
   markAsVerified,
   deleteUser,
+  getUserById,
 };
