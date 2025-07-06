@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import userController from "@controllers/user.controller";
-
 import {
   validateAndTransformRequest,
   validateQueryAndTransformRequest,
@@ -50,6 +49,11 @@ router.patch(
   "/update-meal-type",
   authenticateAdmin,
   userController.updateMealType
+);
+router.patch(
+  "/update-password/:userID",
+  authenticateAdmin,
+  userController.updatePassword
 );
 
 export default router;

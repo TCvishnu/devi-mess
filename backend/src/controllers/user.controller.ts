@@ -165,8 +165,21 @@ const updateMealType = async (req: Request, res: Response) => {
       mealType,
       gender
     );
-    console.log("eeehaaaaaa: ", result);
+
     res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const updatePassword = async (req: Request, res: Response) => {
+  try {
+    const { password } = req.body;
+    const { userID } = req.params;
+
+    const result = await userServices.updatePassword(req.db, userID, password);
+    console.log("update pass: ", result);
+    res.status(200).json({ message: "password updated successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -181,4 +194,5 @@ export default {
   deleteUser,
   getUserById,
   updateMealType,
+  updatePassword,
 };

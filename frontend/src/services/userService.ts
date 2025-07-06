@@ -200,7 +200,26 @@ export const updateUserMealType = async (
     if (err instanceof Error) handleError(err.message);
 
     return {
-      error: "Failed to fetch user details",
+      error: "Failed to update user meal type",
+    };
+  }
+};
+
+export const updatePassword = async (userID: string, password: string) => {
+  try {
+    const response = await fetchApi(`/api/user/update-password/${userID}`, {
+      method: "PATCH",
+      body: JSON.stringify({ password }),
+    });
+    console.log(response);
+    return {
+      status: response.status,
+    };
+  } catch (err: unknown) {
+    if (err instanceof Error) handleError(err.message);
+
+    return {
+      error: "Failed to update password",
     };
   }
 };

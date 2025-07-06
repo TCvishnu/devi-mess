@@ -8,6 +8,7 @@ import {
 } from "@prisma/client";
 import prisma from "@lib/prisma";
 import getPrisma from "@lib/getPrisma";
+import { hashPassword } from "@utils/bcrypt.util";
 
 const selectFields = {
   id: true,
@@ -264,6 +265,19 @@ const updateMealType = async (
   });
 };
 
+const updatePassword = async (
+  db: ReturnType<typeof getPrisma>,
+  userID: string,
+  password: string
+) => {
+  const hashedPassword = await hashPassword(password);
+
+  return await db.user.update({
+    where: { id: userID },
+    data: { password: hashedPassword },
+  });
+};
+
 // const findBy = async (id: string): Promise<User | null> => {
 // 	return await prisma.user.findUnique({
 // 		where: {
@@ -282,4 +296,5 @@ export default {
   updateOnBoardDetails,
   deleteUser,
   updateMealType,
+  updatePassword,
 };

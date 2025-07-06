@@ -12,6 +12,7 @@ import Input from "@form/Input";
 import Button from "../../common/components/button/Button";
 import { mealTypes } from "@constants/mealTypes";
 import MealTypeButton from "@components/user/MealTypeButton";
+import EditPassword from "@components/admin/EditPassword";
 
 const EditUser = () => {
   const [userToEdit, setUserToEdit] = useState<User>();
@@ -135,7 +136,7 @@ const EditUser = () => {
         </div>
 
         <Button
-          className="w-full mt-4 text-white font-semibold h-12"
+          className="w-full mt-4 text-white font-semibold h-12 bg-primary"
           radiusSize="sm"
         >
           Save Changes
@@ -149,7 +150,10 @@ const EditUser = () => {
         onChange={(e) => setPhoneNumber(e.target.value)}
         errorMessage="Your name cannot be blank"
       />
-      <Button className="w-full text-white font-semibold h-12" radiusSize="sm">
+      <Button
+        className="w-full text-white font-semibold h-12 bg-primary"
+        radiusSize="sm"
+      >
         Save Phone Number
       </Button>
 
@@ -168,6 +172,8 @@ const EditUser = () => {
           ))}
         </div>
       </div>
+
+      <EditPassword userID={userToEdit.id} />
     </div>
   );
 };
