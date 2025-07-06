@@ -3,6 +3,8 @@ import {
   User,
   BillTypeConfiguration,
   BillType,
+  MealType,
+  Gender,
 } from "@prisma/client";
 import prisma from "@lib/prisma";
 import getPrisma from "@lib/getPrisma";
@@ -198,6 +200,70 @@ const deleteUser = async (db: ReturnType<typeof getPrisma>, userID: string) => {
   await db.user.delete({ where: { id: userID } }); // onDelete Cascade
 };
 
+const updateMealType = async (
+  db: ReturnType<typeof getPrisma>,
+  userID: string,
+  mealType: MealType,
+  gender: Gender
+) => {
+  await db.$transaction(async (tx) => {
+    await tx.user.update({ where: { id: userID }, data: { mealType } });
+    await tx.userBillTypeConfiguration.deleteMany({
+      where: {
+        billTypeConfiguration: {
+          type: {
+            in: [
+              BillType.MORNING_MEAL,
+              BillType.AFTERNOON_MEAL,
+              BillType.EVENING_MEAL,
+              BillType.FULL_MEAL,
+            ],
+          },
+        },
+      },
+    });
+
+    if (mealType === MealType.FULL_MEAL) {
+      const typesToInsert = [
+        BillType.MORNING_MEAL,
+        BillType.AFTERNOON_MEAL,
+        BillType.EVENING_MEAL,
+      ];
+
+      const billTypeConfigs = await tx.billTypeConfiguration.findMany({
+        where: {
+          type: { in: typesToInsert },
+          classifier: gender,
+        },
+      });
+      for (const config of billTypeConfigs) {
+        await tx.userBillTypeConfiguration.create({
+          data: {
+            userId: userID,
+            billTypeConfigurationId: config.id,
+            overriddenAmount: 0,
+          },
+        });
+      }
+    } else {
+      const billTypeConfig = await tx.billTypeConfiguration.findFirst({
+        where: { type: mealType, classifier: gender },
+      });
+      if (!billTypeConfig) {
+        throw new Error("BillTypeConfiguration not found");
+      }
+
+      await tx.userBillTypeConfiguration.create({
+        data: {
+          userId: userID,
+          billTypeConfigurationId: billTypeConfig.id,
+          overriddenAmount: 0,
+        },
+      });
+    }
+  });
+};
+
 // const findBy = async (id: string): Promise<User | null> => {
 // 	return await prisma.user.findUnique({
 // 		where: {
@@ -215,4 +281,5 @@ export default {
   findNotVerifiedUsers,
   updateOnBoardDetails,
   deleteUser,
+  updateMealType,
 };

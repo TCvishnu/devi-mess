@@ -156,6 +156,22 @@ const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+const updateMealType = async (req: Request, res: Response) => {
+  try {
+    const { mealType, gender, userID } = req.body;
+    const result = await userServices.updateMealType(
+      req.db,
+      userID,
+      mealType,
+      gender
+    );
+    console.log("eeehaaaaaa: ", result);
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export default {
   getCurrentUser,
   getResidentDetails,
@@ -164,4 +180,5 @@ export default {
   markAsVerified,
   deleteUser,
   getUserById,
+  updateMealType,
 };

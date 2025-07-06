@@ -1,8 +1,12 @@
 import { useEffect, useState, ChangeEvent } from "react";
-import { fetchCurrentUser, fetchUserByID } from "@services/userService";
+import {
+  fetchCurrentUser,
+  fetchUserByID,
+  updateUserMealType,
+} from "@services/userService";
 import useAuthContext from "@contexts/useAuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { UserRole } from "@type/enums";
+import { Gender, MealType, UserRole } from "@type/enums";
 import { User } from "@type/user";
 import Input from "@form/Input";
 import Button from "../../common/components/button/Button";
@@ -26,6 +30,20 @@ const EditUser = () => {
     setUserToEdit((prev) => {
       return { ...(prev as User), isVeg };
     });
+  };
+
+  const handleMealTypeUpdate = async (mealType: MealType) => {
+    if (!userToEdit) return;
+
+    const result = await updateUserMealType(
+      mealType,
+      userToEdit.gender,
+      userToEdit.id
+    );
+
+    if (result.status === 200) {
+      setUserToEdit((prev) => ({ ...(prev as User), mealType }));
+    }
   };
 
   useEffect(() => {
@@ -144,6 +162,8 @@ const EditUser = () => {
               mealType={mealType.mealType}
               selectedMealType={userToEdit.mealType}
               icon={mealType.icon}
+              disabled={userToEdit.gender === Gender.Male}
+              onClick={() => handleMealTypeUpdate(mealType.mealType)}
             />
           ))}
         </div>

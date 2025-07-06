@@ -1,6 +1,7 @@
 import { ResidentialDataType, UserDetails } from "@type/user";
 import fetchApi from "./fetchConfig/fetchWrapper";
 import { handleError } from "./handlerService";
+import { Gender, MealType } from "@type/enums";
 
 type UpdateProfileReturn = {
   data?: Partial<UserDetails>;
@@ -169,7 +170,37 @@ export const fetchUserByID = async (userId: string) => {
     if (err instanceof Error) handleError(err.message);
 
     return {
-      error: "Failed to fetch verification requests",
+      error: "Failed to fetch user details",
+    };
+  }
+};
+
+export const updateUserMealType = async (
+  mealType: MealType,
+  gender: Gender,
+  userID: string
+) => {
+  try {
+    const sendData = {
+      mealType,
+      gender,
+      userID,
+    };
+
+    const response = await fetchApi(`/api/user/update-meal-type`, {
+      method: "PATCH",
+      body: JSON.stringify(sendData),
+    });
+
+    console.log(response);
+    return {
+      status: response.status,
+    };
+  } catch (err: unknown) {
+    if (err instanceof Error) handleError(err.message);
+
+    return {
+      error: "Failed to fetch user details",
     };
   }
 };

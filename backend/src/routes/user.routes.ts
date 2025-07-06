@@ -46,5 +46,10 @@ router.post(
 
 router.get("/:userID", authenticateAdmin, userController.getUserById);
 router.delete("/:userID", verifyUserID, userController.deleteUser);
+router.patch(
+  "/update-meal-type",
+  authenticateAdmin,
+  userController.updateMealType
+);
 
 export default router;
