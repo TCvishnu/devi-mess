@@ -4,6 +4,7 @@ import { toTitleCase } from "@utils/stringUtils";
 import { Building, MealType } from "@type/enums";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { labelMealKeys } from "@constants/rateMealKeys";
+import { Link } from "react-router-dom";
 
 type StudentCardType = {
   user: UserWithoutPassword;
@@ -11,6 +12,7 @@ type StudentCardType = {
   maxHeight: string;
   index: number;
   onToggleExpand: (id: string) => void;
+  onDelete: (user: UserWithoutPassword) => void;
 } & HTMLAttributes<HTMLDivElement>;
 const StudentCard: FC<StudentCardType> = ({
   user,
@@ -18,6 +20,7 @@ const StudentCard: FC<StudentCardType> = ({
   maxHeight,
   index,
   onToggleExpand,
+  onDelete,
   ...props
 }) => {
   return (
@@ -38,13 +41,26 @@ const StudentCard: FC<StudentCardType> = ({
             {user.name}
           </span>
         </div>
-        <button type="button" onClick={() => onToggleExpand(user.id)}>
-          <Icon
-            icon="mynaui:chevron-right-solid"
-            className={`text-gray-500 size-8 transform transition-transform duration-700 ease-in-out 
+
+        <div className="flex gap-2 items-center">
+          <Link type="button" to={`edit-user/${user.id}`}>
+            <Icon icon="ic:outline-edit" className="size-6 text-gray-500" />
+          </Link>
+          <button type="button" onClick={() => onDelete(user)}>
+            <Icon
+              icon="material-symbols:delete-sharp"
+              className="size-6 text-gray-500"
+            />
+          </button>
+
+          <button type="button" onClick={() => onToggleExpand(user.id)}>
+            <Icon
+              icon="mynaui:chevron-right-solid"
+              className={`text-gray-500 size-8 transform transition-transform duration-700 ease-in-out 
             ${isExpanded && "rotate-90"}`}
-          />
-        </button>
+            />
+          </button>
+        </div>
       </div>
 
       <div className="flex w-full px-4 text-gray-400 font-medium justify-between">

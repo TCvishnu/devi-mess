@@ -7,7 +7,7 @@ import "../userBillTypeConfiguration/userBillTypeConfiguration"
 model User extends Base {
   name                      String
   phoneNumber               String                      @unique()
-  password                  String                      @password()
+  password                  String
   gender                    Gender?
   mealType                  MealType?
   role                      UserRole?

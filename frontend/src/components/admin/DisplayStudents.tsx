@@ -16,6 +16,7 @@ import {
 
 import StudentCard from "./StudentCard";
 import { UserRole } from "@type/enums";
+import DeleteUserModal from "./DeleteUserModal";
 
 const LIMIT = 10 as const;
 
@@ -44,6 +45,9 @@ const DisplayStudents: FC = () => {
   const [debouncedName, setDebouncedName] = useState<string>("");
 
   const [searchResults, setSearchResults] = useState<UserWithoutPassword[]>([]);
+
+  const [deleteUserData, setDeleteUserData] =
+    useState<UserWithoutPassword | null>(null);
 
   const toggleMagnifiedUsers = (userID: string) => {
     setMagnifiedUsers((prev) => {
@@ -113,7 +117,6 @@ const DisplayStudents: FC = () => {
   ]);
 
   const fetchMessStudents = useCallback(async () => {
-    console.log("fetchMess");
     if (displayResidents || !hasMoreMessStudents || loading) return;
     setLoading(true);
     try {
@@ -164,6 +167,10 @@ const DisplayStudents: FC = () => {
 
   const changeName = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchName(e.target.value);
+  };
+
+  const openUserDeletePopup = (user: UserWithoutPassword) => {
+    setDeleteUserData(user);
   };
 
   useEffect(() => {
@@ -272,6 +279,7 @@ const DisplayStudents: FC = () => {
                   maxHeight={maxHeight}
                   index={index}
                   onToggleExpand={toggleMagnifiedUsers}
+                  onDelete={openUserDeletePopup}
                 />
               </div>
             );
@@ -283,6 +291,7 @@ const DisplayStudents: FC = () => {
               isExpanded={isExpanded}
               maxHeight={maxHeight}
               index={index}
+              onDelete={openUserDeletePopup}
               onToggleExpand={toggleMagnifiedUsers}
             />
           );
@@ -303,6 +312,14 @@ const DisplayStudents: FC = () => {
           </span>
         )}
       </div>
+      {deleteUserData && (
+        <DeleteUserModal
+          deleteUserData={deleteUserData}
+          handleCancelDelete={() => {
+            setDeleteUserData(null);
+          }}
+        />
+      )}
     </div>
   );
 };
