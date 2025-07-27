@@ -118,6 +118,25 @@ export const fetchVerificationRequests = async (
   }
 };
 
+export const deleteUserByUserID = async (userID: string) => {
+  try {
+    const response = await fetchApi(`/api/user/${userID}`, {
+      method: "DELETE",
+    });
+    console.log(response);
+    return {
+      status: true,
+    };
+  } catch (err: unknown) {
+    if (err instanceof Error) handleError(err.message);
+
+    return {
+      status: false,
+      error: "Failed to fetch verification requests",
+    };
+  }
+};
+
 export const updateVerificationStatus = async (
   userId: string
 ): Promise<MarkAsVerifiedReturn> => {

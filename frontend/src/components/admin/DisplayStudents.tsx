@@ -116,6 +116,23 @@ const DisplayStudents: FC = () => {
     residents.length,
   ]);
 
+  const handleCancelDelete = (hasDeleted: boolean) => {
+    if (!hasDeleted) {
+      setDeleteUserData(null);
+      return;
+    }
+    if (displayResidents) {
+      setResidents((prev) =>
+        prev.filter((resident) => resident.id !== deleteUserData?.id)
+      );
+    } else {
+      setMessStudents((prev) =>
+        prev.filter((messStudent) => messStudent.id !== deleteUserData?.id)
+      );
+    }
+    setDeleteUserData(null);
+  };
+
   const fetchMessStudents = useCallback(async () => {
     if (displayResidents || !hasMoreMessStudents || loading) return;
     setLoading(true);
@@ -315,9 +332,7 @@ const DisplayStudents: FC = () => {
       {deleteUserData && (
         <DeleteUserModal
           deleteUserData={deleteUserData}
-          handleCancelDelete={() => {
-            setDeleteUserData(null);
-          }}
+          onCancelDelete={handleCancelDelete}
         />
       )}
     </div>

@@ -3,10 +3,10 @@ import "../user/user"
 import "../billTypeConfiguration/billTypeConfiguration"
 
 model UserBillTypeConfiguration extends Base {
-    user                    User                  @relation(fields: [userId], references: [id])
+    user                    User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId                  String
 
-    billTypeConfiguration   BillTypeConfiguration @relation(fields: [billTypeConfigurationId], references: [id])
+    billTypeConfiguration   BillTypeConfiguration @relation(fields: [billTypeConfigurationId], references: [id], onDelete: Cascade)
     billTypeConfigurationId String
 
     overriddenAmount        Float

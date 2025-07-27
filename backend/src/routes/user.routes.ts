@@ -44,7 +44,12 @@ router.post(
 );
 
 router.get("/:userID", authenticateAdmin, userController.getUserById);
-router.delete("/:userID", verifyUserID, userController.deleteUser);
+router.delete(
+  "/:userID",
+  authenticateAdmin,
+  verifyUserID,
+  userController.deleteUser
+);
 router.patch(
   "/update-meal-type",
   authenticateAdmin,
