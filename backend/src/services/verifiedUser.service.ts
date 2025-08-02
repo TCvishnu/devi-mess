@@ -29,7 +29,6 @@ const selectFields = {
   mealType: true,
   role: true,
   isVeg: true,
-  hasOnboarded: true,
   residentialData: true,
 };
 

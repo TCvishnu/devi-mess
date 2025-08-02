@@ -78,7 +78,6 @@ model User {
   userBills                 UserBill[]
   userBillTypeConfiguration UserBillTypeConfiguration[]
   startDate                 DateTime?
-  hasOnboarded              Boolean                     @default(false)
 }
 
 model Messcut {

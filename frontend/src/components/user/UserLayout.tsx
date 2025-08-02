@@ -27,14 +27,6 @@ const UserLayout: FC = () => {
       navigate("/admin");
       return;
     }
-    if (!user.hasOnboarded) {
-      navigate("/complete-profile");
-      return;
-    }
-    if (!user.adminVerified) {
-      navigate("/waiting-for-verification");
-      return;
-    }
   }, [user, userID, navigate]);
 
   const handleLogout = async () => {

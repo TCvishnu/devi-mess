@@ -10,7 +10,6 @@ export interface UserDetails {
   isVeg?: boolean;
   messcuts?: Array<object>;
   residentialData?: ResidentialDataType;
-  hasOnboarded?: boolean;
   startDate?: string;
 }
 
@@ -43,7 +42,6 @@ export interface User {
   mealType: MealType;
   role: UserRole;
   isVeg: boolean;
-  hasOnboarded: boolean;
   messcuts: Messcut[];
   residentialData?: ResidentialDataType;
 }

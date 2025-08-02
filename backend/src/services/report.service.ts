@@ -41,7 +41,6 @@ const generateReport = async (
   const users = await db.user.findMany({
     where: {
       role: reportType,
-      hasOnboarded: true,
       startDate: {
         lt: reportEligibleLastDate,
       },

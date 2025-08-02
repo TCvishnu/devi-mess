@@ -18,8 +18,6 @@ model User extends Base {
   userBillTypeConfiguration UserBillTypeConfiguration[]
   startDate                 DateTime?
 
-  hasOnboarded              Boolean                     @default(false)
-
   @@allow('create', true)
   @@allow('read', auth() == this || auth().role == "ADMIN")
   @@allow('update,delete', auth() == this || auth().role == "ADMIN")
