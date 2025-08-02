@@ -1,5 +1,5 @@
 import getPrisma from "../lib/getPrisma";
-import { BillTypeConfiguration } from "@prisma/client";
+import { BillTypeConfiguration, CutType, MealType } from "@prisma/client";
 import { makeWorkerUtils } from "graphile-worker";
 import { UserRole } from "@prisma/client";
 
@@ -79,4 +79,68 @@ const generateRent = async (
   return {};
 };
 
-export default { getSettingsConfiguration, updateConfig, generateRent };
+const addMessHoliday = async (
+  db: ReturnType<typeof getPrisma>,
+  holidays: Date[]
+) => {
+  const users = await db.user.findMany({
+    where: {
+      role: { not: UserRole.ADMIN },
+    },
+    select: { id: true, mealType: true },
+  });
+
+  const createdHolidays = [];
+
+  const sortedHolidays = holidays.sort(
+    (holiday1, holiday2) => holiday1.getTime() - holiday2.getTime()
+  );
+
+  for (const holiday of sortedHolidays) {
+    const created = await db.$transaction(async (tx) => {
+      const createdHoliday = await tx.messHolidays.create({
+        data: { date: holiday },
+      });
+
+      const messcuts = users.map((user) => ({
+        date: holiday,
+        cutType: user.mealType || MealType.FULL_MEAL,
+        userId: user.id,
+      }));
+
+      await tx.messcut.createMany({ data: messcuts });
+
+      return createdHoliday;
+    });
+
+    createdHolidays.push(created);
+  }
+
+  return createdHolidays;
+};
+
+const getMessHolidays = async (
+  db: ReturnType<typeof getPrisma>,
+  month: number,
+  year: number
+) => {
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 1);
+
+  return await db.messHolidays.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lt: endDate,
+      },
+    },
+  });
+};
+
+export default {
+  getSettingsConfiguration,
+  updateConfig,
+  generateRent,
+  addMessHoliday,
+  getMessHolidays,
+};

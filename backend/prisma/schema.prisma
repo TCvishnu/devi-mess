@@ -166,3 +166,12 @@ model Report {
   month     Int
   year      Int
 }
+
+model MessHolidays {
+  id        String   @id() @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  date      DateTime
+
+  @@unique([date])
+}

@@ -1,0 +1,8 @@
+import '../base/base'
+
+model MessHolidays extends Base {
+    date DateTime
+
+    @@unique([date])
+    @@allow("all", auth().role == "ADMIN")
+}
