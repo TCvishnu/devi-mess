@@ -3,7 +3,7 @@ import "../userBills/userBills"
 import "../enums/billtype"
 
 model BillComponents extends Base {
-    userBill   UserBill @relation(fields: [userBillid], references: [id])
+    userBill   UserBill @relation(fields: [userBillid], references: [id], onDelete: Cascade)
     userBillid String
 
     totalDays  Int

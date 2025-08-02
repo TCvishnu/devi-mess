@@ -3,7 +3,7 @@ import "../user/user"
 import "../billComponents/billComponents"
 
 model UserBill extends Base {
-    user           User             @relation(fields: [userId], references: [id])
+    user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId         String
     draft          Boolean
     month          Int

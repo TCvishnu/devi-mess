@@ -8,3 +8,10 @@ export type BillTypeConfiguration = {
   classifier: string;
   amount: number | string;
 };
+
+export type MessHoliday = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  date: Date;
+};
