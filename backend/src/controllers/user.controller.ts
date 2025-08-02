@@ -88,27 +88,6 @@ const getResidentDetails = async (req: Request, res: Response) => {
   }
 };
 
-const markAsVerified = async (req: Request, res: Response) => {
-  try {
-    const db = getPrisma(req);
-
-    const data = await userServices.findByIdAndUpdate(db, req.params.userID, {
-      adminVerified: true,
-    });
-
-    const { password, ...safeUser } = data;
-
-    res.status(200).json({ data: safeUser });
-  } catch (err) {
-    handleError(
-      res,
-      500,
-      "Internal Server error",
-      err instanceof Error ? err.message : ""
-    );
-  }
-};
-
 const create = async (req: Request, res: Response) => {
   try {
     const { residentialData, ...profileDetails } = req.body;
@@ -190,7 +169,6 @@ export default {
   getResidentDetails,
   create,
   getNotVerifiedList,
-  markAsVerified,
   updatePassword,
   updateMealType,
   getUserById,

@@ -19,7 +19,6 @@ model User extends Base {
   startDate                 DateTime?
 
   hasOnboarded              Boolean                     @default(false)
-  adminVerified             Boolean                     @default(false)
 
   @@allow('create', true)
   @@allow('read', auth() == this || auth().role == "ADMIN")

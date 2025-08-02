@@ -57,7 +57,6 @@ const generateRent = async (
   const residentialUsers = await db.user.findMany({
     where: {
       role: UserRole.RESIDENT,
-      adminVerified: true,
       startDate: { lt: prevMonthEnd },
     },
     select: { id: true },

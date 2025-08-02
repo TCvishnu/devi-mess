@@ -21,7 +21,6 @@ const selectFields = {
   role: true,
   isVeg: true,
   hasOnboarded: true,
-  adminVerified: true,
 };
 
 const create = async (db: ReturnType<typeof getPrisma>, user: User) => {
@@ -40,7 +39,6 @@ const onboardStudent = async (
       data: {
         ...updatedData,
         hasOnboarded: true,
-        adminVerified: true,
         startDate: new Date(updatedData.startDate!),
       },
     });
@@ -159,7 +157,6 @@ const findNotVerifiedUsers = async (
   const take = 5;
 
   const whereClause: { [key: string]: any } = {
-    adminVerified: false,
     hasOnboarded: true,
   };
 

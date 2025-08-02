@@ -30,7 +30,6 @@ const selectFields = {
   role: true,
   isVeg: true,
   hasOnboarded: true,
-  adminVerified: true,
   residentialData: true,
 };
 
@@ -42,7 +41,6 @@ const getResidents = async (
   const skip = (page - 1) * limit;
   const residents = await db.user.findMany({
     where: {
-      adminVerified: true,
       role: UserRole.RESIDENT,
     },
     select: selectFields,
@@ -53,7 +51,6 @@ const getResidents = async (
   // redis cache?
   const total = await db.user.count({
     where: {
-      adminVerified: true,
       role: UserRole.RESIDENT,
     },
   });
@@ -69,7 +66,6 @@ const getMessStudents = async (
   const skip = (page - 1) * limit;
   const messStudents = await db.user.findMany({
     where: {
-      adminVerified: true,
       role: UserRole.MESS,
     },
     select: selectFields,
@@ -79,7 +75,6 @@ const getMessStudents = async (
 
   const total = await db.user.count({
     where: {
-      adminVerified: true,
       role: UserRole.MESS,
     },
   });
@@ -99,7 +94,6 @@ const searchStudentsByName = async (
         startsWith: name,
         mode: "insensitive",
       },
-      adminVerified: true,
     },
     select: selectFields,
   });

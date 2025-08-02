@@ -79,7 +79,6 @@ model User {
   userBillTypeConfiguration UserBillTypeConfiguration[]
   startDate                 DateTime?
   hasOnboarded              Boolean                     @default(false)
-  adminVerified             Boolean                     @default(false)
 }
 
 model Messcut {
