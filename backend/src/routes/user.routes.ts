@@ -5,12 +5,10 @@ import {
   validateAndTransformRequest,
   validateQueryAndTransformRequest,
 } from "@middlewares/validation.middleware";
-import {
-  NotVerifiedListRequest,
-  ProfileCompleteRequest,
-} from "@validations/user.yup";
+import { NotVerifiedListRequest } from "@validations/user.yup";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
 import authenticateAdmin from "auth/authenticateAdmin";
+import { RegisterRequest } from "@validations/user.yup";
 
 const router = Router();
 
@@ -38,9 +36,10 @@ router.post(
 ///////
 
 router.post(
-  "/complete-profile",
-  validateAndTransformRequest(ProfileCompleteRequest),
-  userController.updateOnboardDetails
+  "/register",
+  validateAndTransformRequest(RegisterRequest),
+  authenticateAdmin,
+  userController.create
 );
 
 router.get("/:userID", authenticateAdmin, userController.getUserById);

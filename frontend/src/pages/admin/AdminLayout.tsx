@@ -32,6 +32,10 @@ const AdminLayout: FC = () => {
     setIsLoggingOut(false);
   };
 
+  const handleRegister = () => {
+    navigate("/admin/register");
+  };
+
   useEffect(() => {
     const getCurrentUser = async () => {
       try {
@@ -80,7 +84,16 @@ const AdminLayout: FC = () => {
         </button>
       </div>
 
-      <h1 className="text-white text-3xl font-bold">{user?.name}</h1>
+      <div className=" flex justify-between mt-2">
+        <h1 className="text-white text-3xl font-bold">{user?.name}</h1>
+        <button
+          className="bg-accent text-white font-semibold py-2 px-5 text-sm rounded-xs cursor-pointer"
+          onClick={handleRegister}
+        >
+          Register
+        </button>
+      </div>
+
       {user && (
         <DateContextProvider>
           <DatePicker allowDateChanging={allowDateChanging} />
