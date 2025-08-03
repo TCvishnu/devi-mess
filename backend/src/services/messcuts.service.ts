@@ -100,4 +100,41 @@ const deleteMessCuts = async (
     },
   });
 };
-export default { createMany, readMonthlyMessCuts, deleteMessCuts };
+
+const readUnverifiedCuts = async (
+  db: ReturnType<typeof getPrisma>,
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
+
+  const cuts = await db.messcut.findMany({
+    where: {
+      adminVerified: false,
+    },
+    orderBy: {
+      date: "desc",
+    },
+    skip,
+    take: limit,
+    include: {
+      user: true,
+    },
+  });
+
+  const totalCuts = await db.messcut.count({ where: { adminVerified: false } });
+
+  return {
+    cuts,
+    totalCuts,
+    page,
+    totalPages: Math.ceil(totalCuts / limit),
+  };
+};
+
+export default {
+  createMany,
+  readMonthlyMessCuts,
+  deleteMessCuts,
+  readUnverifiedCuts,
+};

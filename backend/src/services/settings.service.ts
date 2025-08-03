@@ -80,8 +80,13 @@ const generateRent = async (
 
 const addMessHoliday = async (
   db: ReturnType<typeof getPrisma>,
-  holidays: Date[]
+  holidays: string[]
 ) => {
+  const strippedHolidays = holidays.map((isoStr) => {
+    const date = new Date(isoStr);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  });
+
   const users = await db.user.findMany({
     where: {
       role: { not: UserRole.ADMIN },
@@ -91,7 +96,7 @@ const addMessHoliday = async (
 
   const createdHolidays = [];
 
-  const sortedHolidays = holidays.sort(
+  const sortedHolidays = strippedHolidays.sort(
     (holiday1, holiday2) => holiday1.getTime() - holiday2.getTime()
   );
 

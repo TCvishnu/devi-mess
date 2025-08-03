@@ -66,4 +66,24 @@ const deleteMessCuts = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-export default { createMany, readMonthlyMessCuts, deleteMessCuts };
+
+const readUnverifiedCuts = async (req: Request, res: Response) => {
+  const { page, limit } = req.validatedQuery as { page: number; limit: number };
+  try {
+    const result = await messcutsService.readUnverifiedCuts(
+      req.db,
+      page,
+      limit
+    );
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default {
+  createMany,
+  readMonthlyMessCuts,
+  deleteMessCuts,
+  readUnverifiedCuts,
+};

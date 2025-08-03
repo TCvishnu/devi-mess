@@ -100,3 +100,21 @@ export const deleteMessCuts = async (userID: string, cutIDs: string[]) => {
     };
   }
 };
+
+export const readUnverifiedCuts = async (page: number, limit = 20) => {
+  try {
+    const response = await fetchApi(
+      `/api/settings/unverified-cuts?page=${page}&limit=${limit}`
+    );
+    console.log(response.data.result);
+    return {
+      status: response.status,
+      result: response.data.result,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "An error occured. Please try again later",
+    };
+  }
+};

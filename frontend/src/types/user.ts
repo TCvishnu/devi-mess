@@ -58,6 +58,10 @@ export interface Messcut {
   adminVerified: boolean;
 }
 
+export type MesscutWithUser = Messcut & {
+  user: UserWithoutPassword;
+};
+
 export type ResidentFeesType = {
   rent: number;
   wifi: number;

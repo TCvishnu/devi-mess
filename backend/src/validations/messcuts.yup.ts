@@ -33,6 +33,11 @@ export const monthYearQueryMessCutsSchema = yup.object({
   year: yup.number().integer().min(2025).max(2100).required(),
 });
 
+export const unverifiedCutsQuerySchema = yup.object({
+  page: yup.number().required().min(1),
+  limit: yup.number().integer().min(0),
+});
+
 export const deleteMessCutsSchema = yup.object({
   cutIDs: yup
     .array()
