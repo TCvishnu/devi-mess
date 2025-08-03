@@ -77,7 +77,7 @@ const AdminLayout: FC = () => {
       <div className="w-full flex justify-between">
         <h1 className="text-white text-3xl font-bold">Hi!</h1>
         <button
-          className="bg-white text-black font-semibold py-2 px-5 text-sm rounded-xs"
+          className="bg-white text-black font-semibold py-2 w-24 text-sm rounded-xs"
           onClick={handleLogout}
         >
           Logout
@@ -87,7 +87,7 @@ const AdminLayout: FC = () => {
       <div className=" flex justify-between mt-2">
         <h1 className="text-white text-3xl font-bold">{user?.name}</h1>
         <button
-          className="bg-accent text-white font-semibold py-2 px-5 text-sm rounded-xs cursor-pointer"
+          className="bg-white text-primary font-semibold py-2 w-24 text-sm rounded-xs cursor-pointer"
           onClick={handleRegister}
         >
           Register

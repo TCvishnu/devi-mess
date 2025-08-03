@@ -8,7 +8,8 @@ const createMany = async (
   userID: string,
   cutType: CutType,
   month: number,
-  year: number
+  year: number,
+  needsVerification: boolean
 ) => {
   try {
     if (!endDate || startDate.getTime() === endDate.getTime()) {
@@ -18,6 +19,7 @@ const createMany = async (
           date: startDate,
           cutType,
           userId: userID,
+          adminVerified: !needsVerification,
         },
       });
       return [messcut];
@@ -47,7 +49,12 @@ const createMany = async (
     const newDates = dates.filter((date) => !existingDates.has(date.getTime()));
 
     await db.messcut.createMany({
-      data: newDates.map((date) => ({ date, cutType, userId: userID })),
+      data: newDates.map((date) => ({
+        date,
+        cutType,
+        userId: userID,
+        adminVerified: !needsVerification,
+      })),
     });
 
     return await readMonthlyMessCuts(db, month, year, userID);

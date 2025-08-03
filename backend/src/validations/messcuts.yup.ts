@@ -25,6 +25,7 @@ export const createManyMessCutsSchema = yup.object({
   month: yup.number().integer().min(0).max(11).required(),
 
   year: yup.number().integer().min(2025).max(2100).required(),
+  needsVerification: yup.boolean().required(),
 });
 
 export const monthYearQueryMessCutsSchema = yup.object({

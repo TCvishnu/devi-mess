@@ -45,13 +45,13 @@ const Calendar: FC = () => {
   ]);
   const [messCuts, setMessCuts] = useState<DisplayingCutType[]>([]);
 
-  useEffect(() => console.log(messCuts), [messCuts]);
+  // useEffect(() => console.log(messCuts), [messCuts]);
 
   const [cutsToRemove, setCutsToRemove] = useState<Set<CutID>>(new Set());
 
   const [popupInfo, setPopupInfo] = useState<{
     day: Dayjs;
-    cutType: string;
+    cutType: MealType;
     position: { top: number; left: number };
   } | null>(null);
 
@@ -163,11 +163,15 @@ const Calendar: FC = () => {
       isToday ? "text-primary font-black" : "font-medium",
       isInNewCutRange &&
         !messCuts.some((cut) => cut.date.isSame(day, "day")) &&
-        "border-2 border-primary",
+        `border-2 border-primary`,
       thisDayIsCutDay
         ? selectedToRemove
           ? "border-2 border-accent line-through decoration-accent"
-          : "border-2 border-primary line-through decoration-primary"
+          : `border-2  ${
+              matchingCut?.adminVerified
+                ? "border-primary"
+                : "border-orange-500"
+            } line-through decoration-primary`
         : "bg-gray-50"
     );
   };
@@ -246,22 +250,27 @@ const Calendar: FC = () => {
       newCutRange,
       selectedCutType,
       currentMonthDisplayed.month(),
-      currentMonthDisplayed.year()
+      currentMonthDisplayed.year(),
+      selectedCutType !== user?.mealType
     );
     if (result.status !== 201) {
       handleNewCutsCancel();
       return;
     }
-    console.log("cjeck: ", result.data);
+
     if (result.data.length === 1) {
-      const { id, cutType, date } = result.data[0];
-      setMessCuts((prev) => [...prev, { id, cutType, date: dayjs(date) }]);
+      const { id, cutType, date, adminVerified } = result.data[0];
+      setMessCuts((prev) => [
+        ...prev,
+        { id, cutType, date: dayjs(date), adminVerified },
+      ]);
     } else {
       setMessCuts(
         result.data.map((cut: Messcut) => ({
           id: cut.id,
           cutType: cut.cutType,
           date: dayjs(cut.date),
+          adminVerified: cut.adminVerified,
         }))
       );
     }
@@ -306,6 +315,7 @@ const Calendar: FC = () => {
             id: cutDate.id,
             cutType: cutDate.cutType,
             date: dayjs(cutDate.date),
+            adminVerified: cutDate.adminVerified,
           }))
         );
         // console.log(result.data.map((cutDate: Messcut) => cutDate.id));
@@ -356,7 +366,6 @@ const Calendar: FC = () => {
         {isSelectingCuts &&
           mealTypes.map(({ mealType, icon }) => (
             <MealTypeButton
-              disabled={mealType !== user?.mealType}
               key={mealType}
               mealType={mealType}
               icon={icon}
@@ -416,7 +425,7 @@ const Calendar: FC = () => {
             <span className="block truncate max-w-[120px]">
               {popupInfo.cutType === MealType.Full
                 ? "Full Day"
-                : toTitleCase(popupInfo.cutType)}
+                : toTitleCase(popupInfo.cutType.split("_")[0])}
             </span>
             <span>Cut</span>
           </div>

@@ -55,6 +55,7 @@ export interface Messcut {
   date: Date;
   cutType: MealType;
   userId: string;
+  adminVerified: boolean;
 }
 
 export type ResidentFeesType = {

@@ -81,13 +81,14 @@ model User {
 }
 
 model Messcut {
-  id        String   @id() @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-  date      DateTime
-  cutType   CutType
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+  id            String   @id() @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt()
+  date          DateTime
+  cutType       CutType
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  adminVerified Boolean  @default(true)
 
   @@unique([date, cutType, userId])
 }

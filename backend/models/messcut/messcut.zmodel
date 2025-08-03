@@ -2,10 +2,11 @@ import '../base/base'
 import "../user/user"
 
 model Messcut extends Base {
-  date    DateTime
-  cutType CutType
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
+  date          DateTime
+  cutType       CutType
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  adminVerified Boolean  @default(true)
 
   @@unique([date, cutType, userId])
 

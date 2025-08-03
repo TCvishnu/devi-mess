@@ -38,7 +38,8 @@ export const createMesscuts = async (
   cutRange: [Dayjs | null, Dayjs | null],
   cutType: MealType,
   month: number,
-  year: number
+  year: number,
+  needsVerification: boolean
 ) => {
   try {
     const istStart = cutRange[0]
@@ -56,6 +57,7 @@ export const createMesscuts = async (
       cutType,
       month,
       year,
+      needsVerification,
     };
 
     const response = await fetchApi(`/api/verified-user/${userID}/messcuts`, {
