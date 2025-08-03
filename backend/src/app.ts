@@ -48,10 +48,7 @@ declare global {
 // middlewares
 app.use(
   cors({
-    origin:
-      NODE_ENV === "prod"
-        ? [process.env.ORIGIN as string]
-        : ["http://localhost:5173"],
+    origin: "*",
     credentials: true,
   })
 );
