@@ -44,4 +44,6 @@ settingsRouter.delete(
   messcutsController.deleteUnverifiedCut
 );
 
+settingsRouter.patch("/unverified-cuts", messcutsController.verifyCut);
+
 export default settingsRouter;

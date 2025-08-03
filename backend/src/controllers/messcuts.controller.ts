@@ -80,6 +80,7 @@ const readUnverifiedCuts = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 const deleteUnverifiedCut = async (req: Request, res: Response) => {
   const { cutID } = req.body;
 
@@ -92,10 +93,23 @@ const deleteUnverifiedCut = async (req: Request, res: Response) => {
   }
 };
 
+const verifyCut = async (req: Request, res: Response) => {
+  const { cutID } = req.body;
+
+  try {
+    await messcutsService.verifyCut(req.db, cutID);
+    res.status(200).json({ message: "verified successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error", reason: error });
+  }
+};
+
 export default {
   createMany,
   readMonthlyMessCuts,
   deleteMessCuts,
   readUnverifiedCuts,
   deleteUnverifiedCut,
+  verifyCut,
 };

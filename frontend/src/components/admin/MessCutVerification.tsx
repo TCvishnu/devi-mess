@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { readUnverifiedCuts } from "@services/messcutService";
 import { useEffect, useState } from "react";
 import { MesscutWithUser } from "@type/user";
-import { deleteUnverifiedCut } from "@services/messcutService";
+import { deleteUnverifiedCut, verifyCut } from "@services/messcutService";
 
 const LIMIT = 20 as const;
 
@@ -42,6 +42,13 @@ const MessCutVerification = () => {
     }
   };
 
+  const verifyTheCut = async (cutID: string) => {
+    const result = await verifyCut(cutID);
+    if (result.status === 200) {
+      setUnverifiedCuts((prev) => prev.filter((cut) => cut.id !== cutID));
+    }
+  };
+
   useEffect(() => {
     fetchUnVerifiedCuts();
   }, [page]);
@@ -72,7 +79,10 @@ const MessCutVerification = () => {
             </div>
 
             <div className="flex flex-col gap-2 justify-center h-full">
-              <button className="px-3 py-1 text-sm border border-primary rounded hover:bg-primary hover:text-white transition">
+              <button
+                className="px-3 py-1 text-sm border border-primary rounded hover:bg-primary hover:text-white transition"
+                onClick={() => verifyTheCut(unverifiedCut.id)}
+              >
                 Verify
               </button>
               <button

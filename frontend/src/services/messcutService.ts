@@ -137,3 +137,22 @@ export const deleteUnverifiedCut = async (cutID: string) => {
     };
   }
 };
+
+export const verifyCut = async (cutID: string) => {
+  try {
+    const response = await fetchApi(`/api/settings/unverified-cuts`, {
+      method: "PATCH",
+      body: JSON.stringify({ cutID }),
+    });
+    console.log(response.data.result);
+    return {
+      status: response.status,
+      result: response.data.result,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "An error occured. Please try again later",
+    };
+  }
+};
