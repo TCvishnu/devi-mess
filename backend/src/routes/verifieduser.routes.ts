@@ -1,7 +1,6 @@
 import { Router } from "express";
 import verifiedUserController from "@controllers/verifiedUser.controller";
 
-import { userAdminVerified } from "@middlewares/userAdminVerified.middleware";
 import { verifyUserID } from "@middlewares/verifyUserID.middleware";
 import {
   validateAndTransformRequest,
@@ -20,7 +19,6 @@ const verifiedUserRouter = Router();
 verifiedUserRouter.patch(
   "/:userID",
   verifyUserID,
-  userAdminVerified,
   validateAndTransformRequest(updateUserNameAndFoodPreferenceSchema),
   verifiedUserController.updateUserNameAndFoodPreference
 );

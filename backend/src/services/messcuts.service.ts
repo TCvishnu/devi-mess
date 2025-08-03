@@ -8,7 +8,8 @@ const createMany = async (
   userID: string,
   cutType: CutType,
   month: number,
-  year: number
+  year: number,
+  needsVerification: boolean
 ) => {
   try {
     if (!endDate || startDate.getTime() === endDate.getTime()) {
@@ -18,6 +19,7 @@ const createMany = async (
           date: startDate,
           cutType,
           userId: userID,
+          adminVerified: !needsVerification,
         },
       });
       return [messcut];
@@ -47,7 +49,12 @@ const createMany = async (
     const newDates = dates.filter((date) => !existingDates.has(date.getTime()));
 
     await db.messcut.createMany({
-      data: newDates.map((date) => ({ date, cutType, userId: userID })),
+      data: newDates.map((date) => ({
+        date,
+        cutType,
+        userId: userID,
+        adminVerified: !needsVerification,
+      })),
     });
 
     return await readMonthlyMessCuts(db, month, year, userID);
@@ -93,4 +100,65 @@ const deleteMessCuts = async (
     },
   });
 };
-export default { createMany, readMonthlyMessCuts, deleteMessCuts };
+
+const readUnverifiedCuts = async (
+  db: ReturnType<typeof getPrisma>,
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit;
+
+  const cuts = await db.messcut.findMany({
+    where: {
+      adminVerified: false,
+    },
+    orderBy: {
+      date: "desc",
+    },
+    skip,
+    take: limit,
+    include: {
+      user: true,
+    },
+  });
+
+  const totalCuts = await db.messcut.count({ where: { adminVerified: false } });
+
+  return {
+    cuts,
+    totalCuts,
+    page,
+    totalPages: Math.ceil(totalCuts / limit),
+  };
+};
+
+const deleteUnverifiedCut = async (
+  db: ReturnType<typeof getPrisma>,
+  cutID: string
+) => {
+  await db.messcut.delete({
+    where: {
+      id: cutID,
+    },
+  });
+};
+
+const verifyCut = async (db: ReturnType<typeof getPrisma>, cutID: string) => {
+  await db.messcut.update({
+    where: {
+      id: cutID,
+    },
+    data: {
+      adminVerified: true,
+    },
+  });
+};
+
+export default {
+  createMany,
+  readMonthlyMessCuts,
+  deleteMessCuts,
+  readUnverifiedCuts,
+  deleteUnverifiedCut,
+  verifyCut,
+};

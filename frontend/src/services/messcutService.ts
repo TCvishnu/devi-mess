@@ -38,7 +38,8 @@ export const createMesscuts = async (
   cutRange: [Dayjs | null, Dayjs | null],
   cutType: MealType,
   month: number,
-  year: number
+  year: number,
+  needsVerification: boolean
 ) => {
   try {
     const istStart = cutRange[0]
@@ -56,6 +57,7 @@ export const createMesscuts = async (
       cutType,
       month,
       year,
+      needsVerification,
     };
 
     const response = await fetchApi(`/api/verified-user/${userID}/messcuts`, {
@@ -92,6 +94,62 @@ export const deleteMessCuts = async (userID: string, cutIDs: string[]) => {
   } catch (error) {
     if (error instanceof Error) handleError(error.message);
 
+    return {
+      status: false,
+      message: "An error occured. Please try again later",
+    };
+  }
+};
+
+export const readUnverifiedCuts = async (page: number, limit = 20) => {
+  try {
+    const response = await fetchApi(
+      `/api/settings/unverified-cuts?page=${page}&limit=${limit}`
+    );
+    console.log(response.data.result);
+    return {
+      status: response.status,
+      result: response.data.result,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "An error occured. Please try again later",
+    };
+  }
+};
+
+export const deleteUnverifiedCut = async (cutID: string) => {
+  try {
+    const response = await fetchApi(`/api/settings/unverified-cuts`, {
+      method: "DELETE",
+      body: JSON.stringify({ cutID }),
+    });
+    console.log(response.data.result);
+    return {
+      status: response.status,
+      result: response.data.result,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "An error occured. Please try again later",
+    };
+  }
+};
+
+export const verifyCut = async (cutID: string) => {
+  try {
+    const response = await fetchApi(`/api/settings/unverified-cuts`, {
+      method: "PATCH",
+      body: JSON.stringify({ cutID }),
+    });
+    console.log(response.data.result);
+    return {
+      status: response.status,
+      result: response.data.result,
+    };
+  } catch (error) {
     return {
       status: false,
       message: "An error occured. Please try again later",

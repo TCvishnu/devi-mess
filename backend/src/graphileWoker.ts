@@ -22,7 +22,6 @@ export const jobRun = run({
 
       const messUsers = await prisma.user.findMany({
         where: {
-          adminVerified: true,
           role: {
             not: "ADMIN",
           },

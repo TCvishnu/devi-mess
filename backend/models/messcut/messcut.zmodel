@@ -2,16 +2,15 @@ import '../base/base'
 import "../user/user"
 
 model Messcut extends Base {
-  date    DateTime
-  cutType CutType
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
+  date          DateTime
+  cutType       CutType
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  adminVerified Boolean  @default(true)
 
   @@unique([date, cutType, userId])
 
-  @@allow('create', auth() != null && (auth().id == userId || auth().role == "ADMIN"))
-  @@allow('read', auth().id == userId || auth().role == "ADMIN")
-  @@allow('update,delete', auth().id == userId)
+  @@allow('all', auth() != null && (auth().id == userId || auth().role == "ADMIN"))
 }
 
 enum CutType {

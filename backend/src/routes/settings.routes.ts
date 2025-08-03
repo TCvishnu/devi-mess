@@ -1,11 +1,15 @@
 import { Router } from "express";
 import settingsController from "@controllers/settings.controller";
+import messcutsController from "@controllers/messcuts.controller";
 import { fixedSettingsUpdateSchema } from "@validations/settings.yup";
 import {
   validateAndTransformRequest,
   validateQueryAndTransformRequest,
 } from "@middlewares/validation.middleware";
-import { monthYearQueryMessCutsSchema } from "@validations/messcuts.yup";
+import {
+  monthYearQueryMessCutsSchema,
+  unverifiedCutsQuerySchema,
+} from "@validations/messcuts.yup";
 
 const settingsRouter = Router();
 
@@ -28,4 +32,18 @@ settingsRouter.get(
   validateQueryAndTransformRequest(monthYearQueryMessCutsSchema),
   settingsController.getMessHolidays
 );
+
+settingsRouter.get(
+  "/unverified-cuts",
+  validateQueryAndTransformRequest(unverifiedCutsQuerySchema),
+  messcutsController.readUnverifiedCuts
+);
+
+settingsRouter.delete(
+  "/unverified-cuts",
+  messcutsController.deleteUnverifiedCut
+);
+
+settingsRouter.patch("/unverified-cuts", messcutsController.verifyCut);
+
 export default settingsRouter;

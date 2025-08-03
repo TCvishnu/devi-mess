@@ -20,8 +20,6 @@ const selectFields = {
   mealType: true,
   role: true,
   isVeg: true,
-  hasOnboarded: true,
-  adminVerified: true,
 };
 
 const create = async (db: ReturnType<typeof getPrisma>, user: User) => {
@@ -39,8 +37,6 @@ const onboardStudent = async (
     const updatedUser = await tx.user.create({
       data: {
         ...updatedData,
-        hasOnboarded: true,
-        adminVerified: true,
         startDate: new Date(updatedData.startDate!),
       },
     });
@@ -149,51 +145,6 @@ const findByPhoneNumber = async (phoneNumber: string) => {
   });
 };
 
-const findNotVerifiedUsers = async (
-  db: ReturnType<typeof getPrisma>,
-  page: number,
-  limit: number,
-  query?: Omit<Partial<User>, "password">
-) => {
-  const skip = (page - 1) * 5;
-  const take = 5;
-
-  const whereClause: { [key: string]: any } = {
-    adminVerified: false,
-    hasOnboarded: true,
-  };
-
-  if (query?.name) {
-    whereClause.name = {
-      contains: query.name,
-      mode: "insensitive",
-    };
-  }
-
-  const totalUsers = await db.user.count({
-    where: whereClause,
-  });
-
-  const result = await db.user.findMany({
-    where: whereClause,
-    select: selectFields,
-    orderBy: {
-      updatedAt: "desc",
-    },
-    skip,
-    take,
-  });
-
-  return {
-    pagination: {
-      currentPage: page,
-      limit,
-      totalPages: Math.ceil(totalUsers / limit),
-    },
-    result,
-  };
-};
-
 const deleteUser = async (db: ReturnType<typeof getPrisma>, userID: string) => {
   await db.user.delete({ where: { id: userID } }); // onDelete Cascade
 };
@@ -289,7 +240,6 @@ export default {
   getFullUserDetails,
   findByPhoneNumber,
   findByIdAndUpdate,
-  findNotVerifiedUsers,
   deleteUser,
   updateMealType,
   updatePassword,

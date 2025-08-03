@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import messcutsService from "../services/messcuts.service";
 
 const createMany = async (req: Request, res: Response) => {
-  const { startDate, endDate, cutType, month, year } = req.body;
+  const { startDate, endDate, cutType, month, year, needsVerification } =
+    req.body;
   const { userID } = req.params;
 
   const startDateStr = new Date(startDate);
@@ -21,7 +22,8 @@ const createMany = async (req: Request, res: Response) => {
       userID,
       cutType,
       month,
-      year
+      year,
+      needsVerification
     );
 
     res.status(201).json({ result });
@@ -64,4 +66,50 @@ const deleteMessCuts = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-export default { createMany, readMonthlyMessCuts, deleteMessCuts };
+
+const readUnverifiedCuts = async (req: Request, res: Response) => {
+  const { page, limit } = req.validatedQuery as { page: number; limit: number };
+  try {
+    const result = await messcutsService.readUnverifiedCuts(
+      req.db,
+      page,
+      limit
+    );
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const deleteUnverifiedCut = async (req: Request, res: Response) => {
+  const { cutID } = req.body;
+
+  try {
+    await messcutsService.deleteUnverifiedCut(req.db, cutID);
+    res.status(200).json({ message: "deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error", reason: error });
+  }
+};
+
+const verifyCut = async (req: Request, res: Response) => {
+  const { cutID } = req.body;
+
+  try {
+    await messcutsService.verifyCut(req.db, cutID);
+    res.status(200).json({ message: "verified successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error", reason: error });
+  }
+};
+
+export default {
+  createMany,
+  readMonthlyMessCuts,
+  deleteMessCuts,
+  readUnverifiedCuts,
+  deleteUnverifiedCut,
+  verifyCut,
+};

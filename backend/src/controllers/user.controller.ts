@@ -30,39 +30,6 @@ const getCurrentUser = async (req: Request, res: Response) => {
   }
 };
 
-const getNotVerifiedList = async (req: Request, res: Response) => {
-  try {
-    const page = parseInt(req.validatedQuery?.page as string) || 1;
-    const limit = parseInt(req.validatedQuery?.limit as string) || 10;
-
-    const db = getPrisma(req);
-
-    delete req.validatedQuery?.page;
-    delete req.validatedQuery?.limit;
-
-    const data = await userServices.findNotVerifiedUsers(
-      db,
-      page,
-      limit,
-      req.validatedQuery
-    );
-
-    if (!data.result.length) {
-      handleError(res, 404, "No users found");
-      return;
-    }
-
-    res.status(200).json(data);
-  } catch (err) {
-    handleError(
-      res,
-      500,
-      "Internal Server error",
-      err instanceof Error ? err.message : ""
-    );
-  }
-};
-
 const getResidentDetails = async (req: Request, res: Response) => {
   try {
     const db = getPrisma(req);
@@ -78,27 +45,6 @@ const getResidentDetails = async (req: Request, res: Response) => {
     }
 
     res.status(200).json(data);
-  } catch (err) {
-    handleError(
-      res,
-      500,
-      "Internal Server error",
-      err instanceof Error ? err.message : ""
-    );
-  }
-};
-
-const markAsVerified = async (req: Request, res: Response) => {
-  try {
-    const db = getPrisma(req);
-
-    const data = await userServices.findByIdAndUpdate(db, req.params.userID, {
-      adminVerified: true,
-    });
-
-    const { password, ...safeUser } = data;
-
-    res.status(200).json({ data: safeUser });
   } catch (err) {
     handleError(
       res,
@@ -189,8 +135,6 @@ export default {
   getCurrentUser,
   getResidentDetails,
   create,
-  getNotVerifiedList,
-  markAsVerified,
   updatePassword,
   updateMealType,
   getUserById,

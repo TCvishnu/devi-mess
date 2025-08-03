@@ -15,7 +15,6 @@ const getDailyFoodCount = async (
     },
     where: {
       role: { not: "ADMIN" },
-      adminVerified: true,
     },
   });
 
