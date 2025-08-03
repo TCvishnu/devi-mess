@@ -10,8 +10,7 @@ model Messcut extends Base {
 
   @@unique([date, cutType, userId])
 
-  @@allow('create', auth() != null && (auth().id == userId || auth().role == "ADMIN"))
-  @@allow('read', auth().id == userId || auth().role == "ADMIN")
+  @@allow('create,delete,read', auth() != null && (auth().id == userId || auth().role == "ADMIN"))
   @@allow('update,delete', auth().id == userId)
 }
 

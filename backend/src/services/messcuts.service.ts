@@ -132,9 +132,21 @@ const readUnverifiedCuts = async (
   };
 };
 
+const deleteUnverifiedCut = async (
+  db: ReturnType<typeof getPrisma>,
+  cutID: string
+) => {
+  await db.messcut.delete({
+    where: {
+      id: cutID,
+    },
+  });
+};
+
 export default {
   createMany,
   readMonthlyMessCuts,
   deleteMessCuts,
   readUnverifiedCuts,
+  deleteUnverifiedCut,
 };

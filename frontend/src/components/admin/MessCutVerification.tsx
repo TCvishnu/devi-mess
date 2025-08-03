@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { readUnverifiedCuts } from "@services/messcutService";
 import { useEffect, useState } from "react";
 import { MesscutWithUser } from "@type/user";
+import { deleteUnverifiedCut } from "@services/messcutService";
 
 const LIMIT = 20 as const;
 
@@ -31,6 +32,13 @@ const MessCutVerification = () => {
       });
 
       setNoUsersLeft(result.result.totalPages === page);
+    }
+  };
+
+  const cancelACut = async (cutID: string) => {
+    const result = await deleteUnverifiedCut(cutID);
+    if (result.status === 200) {
+      setUnverifiedCuts((prev) => prev.filter((cut) => cut.id !== cutID));
     }
   };
 
@@ -67,7 +75,10 @@ const MessCutVerification = () => {
               <button className="px-3 py-1 text-sm border border-primary rounded hover:bg-primary hover:text-white transition">
                 Verify
               </button>
-              <button className="px-3 py-1 text-sm border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition">
+              <button
+                className="px-3 py-1 text-sm border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition"
+                onClick={() => cancelACut(unverifiedCut.id)}
+              >
                 Cancel
               </button>
             </div>

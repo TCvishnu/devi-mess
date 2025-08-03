@@ -38,4 +38,10 @@ settingsRouter.get(
   validateQueryAndTransformRequest(unverifiedCutsQuerySchema),
   messcutsController.readUnverifiedCuts
 );
+
+settingsRouter.delete(
+  "/unverified-cuts",
+  messcutsController.deleteUnverifiedCut
+);
+
 export default settingsRouter;
