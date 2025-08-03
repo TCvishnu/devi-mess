@@ -219,6 +219,7 @@ const messBill = async (userID: string) => {
         userId: {
           equals: user.id,
         },
+        adminVerified: true,
         date: {
           gte: prevMonthStart,
           lt: startOfCurrentMonth,
