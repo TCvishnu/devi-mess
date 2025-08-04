@@ -31,7 +31,7 @@ const MessCutVerification = () => {
         return [...prev, ...newCuts];
       });
 
-      setNoUsersLeft(result.result.totalPages === page);
+      setNoUsersLeft(result.result.totalPages > page);
     }
   };
 

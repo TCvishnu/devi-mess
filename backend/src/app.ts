@@ -48,7 +48,11 @@ declare global {
 // middlewares
 app.use(
   cors({
-    origin: "*",
+    origin:
+      NODE_ENV === "prod"
+        ? [process.env.ORIGIN as string]
+        : ["http://localhost:5173"],
+    credentials: true,
   })
 );
 app.use(cookieParser());
